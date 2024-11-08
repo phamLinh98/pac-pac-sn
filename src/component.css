@@ -1,0 +1,4 @@
+input::placeholder {
+  padding-left: 2px;
+  /* Cách trái cho placeholder */
+}
