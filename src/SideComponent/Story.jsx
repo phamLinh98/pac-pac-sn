@@ -21,7 +21,7 @@ export const Story = () => {
   return (
     <div
       style={{
-        width: "90%", // Chiều rộng của container chiếm toàn bộ không gian
+        width: "95%", // Chiều rộng của container chiếm toàn bộ không gian
         overflowX: "hidden", // Ẩn thanh cuộn mặc định
         position: "relative", // Để đặt các nút cuộn bên ngoài container
       }}

@@ -25,18 +25,21 @@ export const CardComponent = () => {
   const handleClick = () => {
     setIsExpanded(!isExpanded);
   };
-  
+
   return (
     <Space
       direction="vertical"
-      size="middle"
+      size="small"
       style={{
         display: "flex",
       }}
     >
       <Story />
       {/* My status */}
-      <Card title={`${loginUser} ơi nay bạn có tin gì mới không ?`} size="small">
+      <Card
+        title={`${loginUser} ơi nay bạn có tin gì mới không ?`}
+        size="small"
+      >
         <Space
           style={{
             flex: 1,
@@ -59,121 +62,122 @@ export const CardComponent = () => {
           </Button>
         </Space>
       </Card>
-      
+
       {/* Friend Status */}
-        <Card title={`${user.name} đã đăng tải bài viết (10p)`} size="small">
-          <div>
-            <p>
-              {isExpanded ? text : `${text.slice(0, maxLength)}...`}{" "}
-              <span
-                onClick={handleClick}
-                style={{ color: "blue", cursor: "pointer" }}
-              >
-                {isExpanded ? "Ẩn bớt" : " xem tiếp"}{" "}
-              </span>
-            </p>
-          </div>
-          <UploadImage />
-          <Space
-            style={{
-              flex: 1,
-              minWidth: 0,
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Button>
-              <SlLike /> Like
-            </Button>
-            <Button>
-              <FaRegCommentAlt />
-              Comment
-            </Button>
-            <Button>
-              <VscShare />
-              Share
-            </Button>
-          </Space>
-        </Card>
+      <Card title={`${user.name} đã đăng tải bài viết (10p)`} size="small">
+        <div>
+          <p>
+            {isExpanded ? text : `${text.slice(0, maxLength)}...`}{" "}
+            <span
+              onClick={handleClick}
+              style={{ color: "blue", cursor: "pointer" }}
+            >
+              {isExpanded ? "Ẩn bớt" : " xem tiếp"}{" "}
+            </span>
+          </p>
+        </div>
+        <UploadImage />
+        <Space
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Button>
+            <SlLike /> Like
+          </Button>
+          <Button>
+            <FaRegCommentAlt />
+            Comment
+          </Button>
+          <Button>
+            <VscShare />
+            Share
+          </Button>
+        </Space>
+      </Card>
 
-        <Card title={`${user.name} đã đăng tải bài viết (10p)`} size="small">
-          <div>
-            <p>
-              {isExpanded ? text : `${text.slice(0, maxLength)}...`}{" "}
-              <span
-                onClick={handleClick}
-                style={{ color: "blue", cursor: "pointer" }}
-              >
-                {isExpanded ? "Ẩn bớt" : " xem tiếp"}{" "}
-              </span>
-            </p>
-          </div>
-          <UploadImage />
-          <Space
-            style={{
-              flex: 1,
-              minWidth: 0,
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Button>
-              <SlLike /> Like
-            </Button>
-            <Button>
-              <FaRegCommentAlt />
-              Comment
-            </Button>
-            <Button>
-              <VscShare />
-              Share
-            </Button>
-          </Space>
-        </Card>
+      <Card title={`${user.name} đã đăng tải bài viết (10p)`} size="small">
+        <div>
+          <p>
+            {isExpanded ? text : `${text.slice(0, maxLength)}...`}{" "}
+            <span
+              onClick={handleClick}
+              style={{ color: "blue", cursor: "pointer" }}
+            >
+              {isExpanded ? "Ẩn bớt" : " xem tiếp"}{" "}
+            </span>
+          </p>
+        </div>
+        <UploadImage />
+        <Space
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Button>
+            <SlLike /> Like
+          </Button>
+          <Button>
+            <FaRegCommentAlt />
+            Comment
+          </Button>
+          <Button>
+            <VscShare />
+            Share
+          </Button>
+        </Space>
+      </Card>
 
-        <Card title={`${user.name} đã đăng tải bài viết (10p)`} size="small">
-          <div>
-            <p>
-              {isExpanded ? text : `${text.slice(0, maxLength)}...`}{" "}
-              <span
-                onClick={handleClick}
-                style={{ color: "blue", cursor: "pointer" }}
-              >
-                {isExpanded ? "Ẩn bớt" : " xem tiếp"}{" "}
-              </span>
-            </p>
-          </div>
-          <UploadImage />
-          <Space
-            style={{
-              flex: 1,
-              minWidth: 0,
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Button>
-              <SlLike /> Like
-            </Button>
-            <Button>
-              <FaRegCommentAlt />
-              Comment
-            </Button>
-            <Button>
-              <VscShare />
-              Share
-            </Button>
-          </Space>
-        </Card>
+      <Card title={`${user.name} đã đăng tải bài viết (10p)`} size="small">
+        <div>
+          <p>
+            {isExpanded ? text : `${text.slice(0, maxLength)}...`}{" "}
+            <span
+              onClick={handleClick}
+              style={{ color: "blue", cursor: "pointer" }}
+            >
+              {isExpanded ? "Ẩn bớt" : " xem tiếp"}{" "}
+            </span>
+          </p>
+        </div>
+        <UploadImage />
+        <Space
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Button>
+            <SlLike /> Like
+          </Button>
+          <Button>
+            <FaRegCommentAlt />
+            Comment
+          </Button>
+          <Button>
+            <VscShare />
+            Share
+          </Button>
+        </Space>
+      </Card>
 
       {/* Footer */}
       <Layout.Footer
         style={{
-          textAlign: 'center',
+          textAlign: "center",
           marginTop: 20, // Add margin for spacing
         }}
       >
-        Ant Design ©{new Date().getFullYear()} Created by Ant UED
+        Linhthusinh ©{new Date().getFullYear()} donate để mình thuê Server ngon
+        hơn
       </Layout.Footer>
     </Space>
   );
