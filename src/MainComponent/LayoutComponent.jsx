@@ -3,12 +3,28 @@ import React from "react";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import { FaUserFriends } from "react-icons/fa";
 import { RxAvatar } from "react-icons/rx";
-import { GrGroup } from "react-icons/gr";
-const { Header, Content, Sider } = Layout;
-const items1 = ["1", "2", "3", "4"].map((key) => ({
-  key,
-  label: `nav ${key}`,
-}));
+import { GrGroup, GrNotification } from "react-icons/gr";
+import { Content, Header } from "antd/es/layout/layout";
+import Sider from "antd/es/layout/Sider";
+import { SiMessenger } from "react-icons/si";
+import { TbBrandGravatar } from "react-icons/tb";
+import { CardComponent } from "../SideComponent/CardComponent";
+
+const headerItem = [
+  {
+    key: "1",
+    label: <GrNotification style={{fontSize:"17px"}}/>,
+  },
+  {
+    key: "2",
+    label: <SiMessenger style={{fontSize:"17px"}}/>,
+  },
+  {
+    key: "3",
+    label: <TbBrandGravatar style={{fontSize:"17px"}}/>,
+  },
+];
+
 const items2 = [RxAvatar, FaUserFriends, GrGroup].map((icon, index) => {
   const key = String(index + 1);
   return {
@@ -45,7 +61,7 @@ export const LayoutComponent = () => {
           theme="dark"
           mode="horizontal"
           defaultSelectedKeys={["2"]}
-          items={items1}
+          items={headerItem}
           style={{
             flex: 1,
             minWidth: 0,
@@ -109,7 +125,7 @@ export const LayoutComponent = () => {
               background: "none",
             }}
           >
-            Content
+            <CardComponent/>
           </Content>
         </Layout>
       </Layout>
