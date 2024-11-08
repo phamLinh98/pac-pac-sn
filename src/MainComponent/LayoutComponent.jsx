@@ -1,46 +1,43 @@
 import React from "react";
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+
 import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { FaUserFriends } from "react-icons/fa";
+import { RxAvatar } from "react-icons/rx";
+import { GrGroup } from "react-icons/gr";
 const { Header, Content, Sider } = Layout;
-const items1 = ["1", "2", "3"].map((key) => ({
+const items1 = ["1", "2", "3", "4"].map((key) => ({
   key,
   label: `nav ${key}`,
 }));
-const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
-  (icon, index) => {
-    const key = String(index + 1);
-    return {
-      key: `sub${key}`,
-      icon: React.createElement(icon),
-      label: `subnav ${key}`,
-      children: new Array(4).fill(null).map((_, j) => {
-        const subKey = index * 4 + j + 1;
-        return {
-          key: subKey,
-          label: `option${subKey}`,
-        };
-      }),
-    };
-  }
-);
+const items2 = [RxAvatar, FaUserFriends, GrGroup].map((icon, index) => {
+  const key = String(index + 1);
+  return {
+    key: `sub${key}`,
+    icon: React.createElement(icon),
+    label: `subnav ${key}`,
+    children: new Array(4).fill(null).map((_, j) => {
+      const subKey = index * 4 + j + 1;
+      return {
+        key: subKey,
+        label: `option${subKey}`,
+      };
+    }),
+  };
+});
+
 export const LayoutComponent = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   return (
-    <Layout
-      style={{
-        padding: "0", // Loại bỏ padding
-      }}
-    >
+    <Layout style={{ height: "100vh" }}>
       <Header
         style={{
           display: "flex",
           alignItems: "center",
+          position: "fixed",
+          width: "100%",
+          zIndex: 1,
         }}
       >
         <div className="demo-logo" />
@@ -52,14 +49,21 @@ export const LayoutComponent = () => {
           style={{
             flex: 1,
             minWidth: 0,
+            display: "flex",
+            justifyContent: "flex-end", // Căn các items1 sang phải
           }}
         />
       </Header>
-      <Layout>
+
+      <Layout style={{ marginTop: 64 }}>
         <Sider
           width={200}
           style={{
             background: colorBgContainer,
+            position: "fixed",
+            height: "100vh",
+            left: 0,
+            top: 64,
           }}
         >
           <Menu
@@ -75,7 +79,10 @@ export const LayoutComponent = () => {
         </Sider>
         <Layout
           style={{
+            marginLeft: 200,
             padding: "0 24px 24px",
+            overflow: "auto",
+            height: "calc(100vh - 64px)",
           }}
         >
           <Breadcrumb
@@ -98,7 +105,7 @@ export const LayoutComponent = () => {
             style={{
               padding: 0,
               margin: 0,
-              minHeight: "100vh",
+              minHeight: "100%",
               background: "none",
             }}
           >
