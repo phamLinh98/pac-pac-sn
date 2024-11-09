@@ -1,15 +1,16 @@
-import React from "react";
-
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Layout,theme } from "antd";
 import { FaUserFriends } from "react-icons/fa";
 import { RxAvatar } from "react-icons/rx";
 import { GrGroup, GrNotification } from "react-icons/gr";
-import { Content, Header } from "antd/es/layout/layout";
+import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SiMessenger } from "react-icons/si";
 import { TbBrandGravatar } from "react-icons/tb";
-import { CardComponent } from "../SideComponent/CardComponent";
+import { BodyMainComponent } from "./BodyMainComponent";
+import { MenuLeftComponent } from "./MenuLeftComponent";
+import { HeaderComponent } from "./HeaderComponent";
 
+// item for Header Menu
 const headerItem = [
   {
     key: "1",
@@ -25,52 +26,73 @@ const headerItem = [
   },
 ];
 
-const items2 = [RxAvatar, FaUserFriends, GrGroup].map((icon, index) => {
-  const key = String(index + 1);
-  return {
-    key: `sub${key}`,
-    icon: React.createElement(icon),
-    label: `subnav ${key}`,
-    children: new Array(4).fill(null).map((_, j) => {
-      const subKey = index * 4 + j + 1;
-      return {
-        key: subKey,
-        label: `option${subKey}`,
-      };
-    }),
-  };
-});
+// items for Left Menu
+const items2 = [
+  {
+      "key": "sub1",
+      "icon": RxAvatar,
+      "label": "Home",
+  },
+  {
+      "key": "sub2",
+      "icon": FaUserFriends,
+      "label": "Online Friends",
+      "children": [
+          {
+              "key": 5,
+              "label": "Liễu Như Yên"
+          },
+          {
+              "key": 6,
+              "label": "Liễu Như Yên"
+          },
+          {
+              "key": 7,
+              "label": "Liễu Như Yên"
+          },
+          {
+              "key": 8,
+              "label": "Liễu Như Yên"
+          }
+      ]
+  },
+  {
+      "key": "sub3",
+      "icon": GrGroup,
+      "label": "Groups",
+      "children": [
+          {
+              "key": 9,
+              "label": "ScriptChat"
+          },
+          {
+              "key": 10,
+              "label": "ScriptChat"
+          },
+          {
+              "key": 11,
+              "label": "ScriptChat"
+          },
+          {
+              "key": 12,
+              "label": "ScriptChat"
+          }
+      ]
+  }
+]
 
 export const LayoutComponent = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
   return (
     <Layout style={{ height: "100vh" }}>
-      <Header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          position: "fixed",
-          width: "100%",
-          zIndex: 1,
-        }}
-      >
-        <div className="demo-logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={["2"]}
-          items={headerItem}
-          style={{
-            flex: 1,
-            minWidth: 0,
-            display: "flex",
-            justifyContent: "flex-end", // Căn các items1 sang phải
-          }}
-        />
-      </Header>
 
+      {/* TODO: Solve Header */}
+      <HeaderComponent items={headerItem}/>
+      
+      {/* TODO:Solve Content */}
       <Layout style={{ marginTop: 64 }}>
         <Sider
           width={200}
@@ -82,16 +104,7 @@ export const LayoutComponent = () => {
             top: 64,
           }}
         >
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
-            style={{
-              height: "100%",
-              borderRight: 0,
-            }}
-            items={items2}
-          />
+          <MenuLeftComponent items={items2}/>
         </Sider>
         <Layout
           style={{
@@ -101,22 +114,6 @@ export const LayoutComponent = () => {
             height: "calc(100vh - 64px)",
           }}
         >
-          <Breadcrumb
-            items={[
-              {
-                title: "Home",
-              },
-              {
-                title: "List",
-              },
-              {
-                title: "App",
-              },
-            ]}
-            style={{
-              margin: "16px 0",
-            }}
-          />
           <Content
             style={{
               padding: 0,
@@ -125,10 +122,11 @@ export const LayoutComponent = () => {
               background: "none",
             }}
           >
-            <CardComponent/>
+            <BodyMainComponent/>
           </Content>
         </Layout>
       </Layout>
+
     </Layout>
   );
 };
