@@ -1,6 +1,7 @@
 import { Button, Card, Space } from "antd";
 import { BsFillImageFill } from "react-icons/bs";
 import { RiLiveLine } from "react-icons/ri";
+import { MyStatusButtonModalComponent } from "./MyStatusButtonModalComponent";
 import { TfiThemifyFavicon } from "react-icons/tfi";
 
 // Login User now , bài đăng 
@@ -16,14 +17,14 @@ export const MyStatusComponent = () => {
           justifyContent: "flex-end",
         }}
       >
-        <Button>
+        <MyStatusButtonModalComponent>
           <TfiThemifyFavicon />
           New Status
-        </Button>
-        <Button>
-          <BsFillImageFill />
-          Image
-        </Button>
+        </MyStatusButtonModalComponent>
+        <MyStatusButtonModalComponent>
+           <BsFillImageFill />
+           Image
+        </MyStatusButtonModalComponent>
         <Button>
           <RiLiveLine />
           Live

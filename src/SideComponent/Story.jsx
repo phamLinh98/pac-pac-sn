@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Card } from "antd";
+import { Card, Image } from "antd";
 import { TiChevronLeft, TiChevronRight } from "react-icons/ti";
 const { Meta } = Card;
 
@@ -55,23 +55,25 @@ export const Story = () => {
         }}
       >
         {[...Array(10)].map((_, index) => (
-          <Card
-            key={index}
-            hoverable
-            style={{
-              width: 150, // Chiều rộng của mỗi thẻ
-              display: "inline-block", // Đảm bảo các thẻ không bị ngắt dòng
-              marginRight: "16px", // Khoảng cách giữa các thẻ
-            }}
-            cover={
-              <img
-                alt="example"
-                src="https://rrdarlkddjxzqbcojwdc.supabase.co/storage/v1/object/public/image-uploads/Radish_Spirit.webp"
-              />
-            }
-          >
-            <Meta title={`Lê Thu Huyền ${index + 1}`} />
-          </Card>
+         <Card
+         key={index}
+         hoverable
+         style={{
+           width: 150,
+           display: "inline-block",
+           marginRight: "16px",
+         }}
+         cover={
+           <Image
+             alt="example"
+             src="https://rrdarlkddjxzqbcojwdc.supabase.co/storage/v1/object/public/image-uploads/Radish_Spirit.webp"
+             preview={true} // Kích hoạt tính năng preview
+           />
+         }
+       >
+         <Meta title={`Lê Thu Huyền ${index + 1}`} />
+       </Card>
+       
         ))}
       </div>
 
