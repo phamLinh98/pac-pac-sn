@@ -5,7 +5,11 @@
             "user_id": "123",
             "content": {
                 "title": "Hom nay la thu may",
-                "image": "anh123.jpg"
+                "images": [
+                    "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
+                    "https://i.pinimg.com/736x/d0/44/15/d04415aee5829eca8584e6405a9fd9de.jpg",
+                    "https://i.pinimg.com/736x/6a/c5/6c/6ac56c9e41b598dd26d8304f5353b96a.jpg"
+                ]
             },
             "like": 100,
             "shared": 100,

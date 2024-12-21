@@ -1,11 +1,17 @@
 import { useRef } from "react";
-import { Card, Image } from "antd";
+import { Card } from "antd";
 import { TiChevronLeft, TiChevronRight } from "react-icons/ti";
+import { ImageStatus } from "./ImageStatus";
 const { Meta } = Card;
 
-export const Story = () => {
+export const AllStory = () => {
   const containerRef = useRef(null); // Sử dụng ref để truy cập container
-
+  // Tạm mock List Ảnh
+  const imageList = [
+    "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
+    "https://i.pinimg.com/736x/94/8d/b4/948db4d850c19147444aa1280fb8a5a4.jpg",
+    "https://i.pinimg.com/736x/6a/c5/6c/6ac56c9e41b598dd26d8304f5353b96a.jpg"
+  ];
   const handleScrollLeft = () => {
     if (containerRef.current) {
       containerRef.current.scrollLeft -= 200; // Cuộn sang trái
@@ -55,26 +61,22 @@ export const Story = () => {
         }}
       >
         {[...Array(10)].map((_, index) => (
-         <Card
-         key={index}
-         hoverable
-         style={{
-           width: 150,
-           display: "inline-block",
-           marginRight: "16px",
-         }}
-         cover={
-           <Image
-             alt="example"
-             src="https://rrdarlkddjxzqbcojwdc.supabase.co/storage/v1/object/public/image-uploads/Radish_Spirit.webp"
-             preview={true} // Kích hoạt tính năng preview
-           />
-         }
-       >
-         <Meta title={`Lê Thu Huyền ${index + 1}`} />
-       </Card>
-       
-        ))}
+        <Card
+          key={index}
+          hoverable
+          style={{
+            width: 150,
+            display: "inline-block",
+            marginRight: "16px",
+            marginBottom: "16px"
+          }}
+          cover={
+            <ImageStatus image={imageList[index % imageList.length]} width={150}/>
+          }
+        >
+          <Meta title={`Lê Thu Huyền ${index + 1}`} />
+        </Card>
+      ))}
       </div>
 
       <button

@@ -1,7 +1,7 @@
 import { Space, Layout } from "antd";
-import { Story } from "../SideComponent/Story";
 import { MyStatusAreaComponent } from "./MyStatusAreaComponent";
 import { FriendStatusListComponent } from "./FriendStatusListComponent";
+import { AllStory } from "../SideComponent/Story";
 
 export const MainShowStatusAndStory = () => {
 
@@ -14,7 +14,7 @@ export const MainShowStatusAndStory = () => {
       }}
     >
       {/* Story of friends */}
-      <Story />
+      <AllStory />
 
       {/* My status */}
       <MyStatusAreaComponent />
