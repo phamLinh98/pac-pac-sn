@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
+    "@reduxjs/toolkit": "^2.5.0",
     "antd": "^5.21.6",
     "json-server": "^1.0.0-beta.3",
     "react": "^18.3.1",
