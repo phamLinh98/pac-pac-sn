@@ -6,9 +6,9 @@ import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SiMessenger } from "react-icons/si";
 import { TbBrandGravatar } from "react-icons/tb";
-import { BodyMainComponent } from "./BodyMainComponent";
+import { MainShowStatusAndStory } from "./MainShowStatusAndStory";
 import { MenuLeftComponent } from "./MenuLeftComponent";
-import { HeaderComponent } from "./HeaderComponent";
+import { PrivateAreaComponent } from "./PrivateAreaComponent";
 
 // item for Header Menu
 const headerItem = [
@@ -90,7 +90,7 @@ export const LayoutComponent = () => {
     <Layout style={{ height: "100vh" }}>
 
       {/* TODO: Solve Header */}
-      <HeaderComponent items={headerItem}/>
+      <PrivateAreaComponent items={headerItem}/>
       
       {/* TODO:Solve Content */}
       <Layout style={{ marginTop: 64 }}>
@@ -122,7 +122,7 @@ export const LayoutComponent = () => {
               background: "none",
             }}
           >
-            <BodyMainComponent/>
+            <MainShowStatusAndStory/>
           </Content>
         </Layout>
       </Layout>

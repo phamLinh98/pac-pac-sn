@@ -1,0 +1,52 @@
+{
+    "list": [
+        {
+            "id": "1",
+            "content": {
+                "title": "Hom nay la thu may",
+                "image": "anh123.jpg"
+            },
+            "like": 100,
+            "shared": 100,
+            "created_at": "2024-12-21T10:30:00Z",
+            "updated_at": "2024-12-21T10:30:00Z"
+        }
+    ],
+    "comment": [
+        {
+            "id": "1",
+            "post_id": "1",
+            "content": "Bài viết rất hay!",
+            "user_id": "123",
+            "created_at": "2024-12-21T10:30:00Z",
+            "updated_at": "2024-12-21T10:30:00Z",
+            "replies": [
+                {
+                    "id": "1",
+                    "comment_id": "1",
+                    "content": "Cảm ơn bạn nhé!",
+                    "user_id": "124",
+                    "created_at": "2024-12-21T10:40:00Z",
+                    "updated_at": "2024-12-21T10:40:00Z"
+                },
+                {
+                    "id": "2",
+                    "comment_id": "1",
+                    "content": "Đồng ý, bài viết rất hữu ích!",
+                    "user_id": "125",
+                    "created_at": "2024-12-21T11:00:00Z",
+                    "updated_at": "2024-12-21T11:00:00Z"
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "post_id": "1",
+            "content": "Cảm ơn bạn đã chia sẻ!",
+            "user_id": "124",
+            "created_at": "2024-12-21T11:00:00Z",
+            "updated_at": "2024-12-21T11:00:00Z",
+            "replies": []
+        }
+    ]
+}
