@@ -1,12 +1,12 @@
 import { Button, Card, Space } from "antd";
 import { BsFillImageFill } from "react-icons/bs";
 import { RiLiveLine } from "react-icons/ri";
-import { MyStatusButtonModalComponent } from "./MyStatusButtonModalComponent";
+import { MyStatusAreaUploadComponent } from "./MyStatusAreaUploadComponent";
 import { TfiThemifyFavicon } from "react-icons/tfi";
 
 // Login User now , bài đăng 
 const loginUser = "Rin";
-export const MyStatusComponent = () => {
+export const MyStatusAreaComponent = () => {
   return (
     <Card title={`${loginUser} ơi nay bạn có tin gì mới không ?`} size="small">
       <Space
@@ -17,14 +17,14 @@ export const MyStatusComponent = () => {
           justifyContent: "flex-end",
         }}
       >
-        <MyStatusButtonModalComponent>
+        <MyStatusAreaUploadComponent>
           <TfiThemifyFavicon />
           New Status
-        </MyStatusButtonModalComponent>
-        <MyStatusButtonModalComponent>
+        </MyStatusAreaUploadComponent>
+        <MyStatusAreaUploadComponent>
            <BsFillImageFill />
            Image
-        </MyStatusButtonModalComponent>
+        </MyStatusAreaUploadComponent>
         <Button>
           <RiLiveLine />
           Live

@@ -3,7 +3,11 @@ import { LayoutComponent } from "../MainComponent/LayoutComponent";
 
 export const router = createBrowserRouter([
     {
-        path: "/home",
-        element: <LayoutComponent/>
+        path: "/",
+        element: <LayoutComponent />
     },
+    {
+        path: "/home",
+        element: <LayoutComponent />
+    }
 ]);

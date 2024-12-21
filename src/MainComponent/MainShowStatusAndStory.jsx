@@ -1,9 +1,9 @@
 import { Space, Layout } from "antd";
 import { Story } from "../SideComponent/Story";
-import { MyStatusComponent } from "./MyStatusComponent";
-import { FriendStatusComponent } from "./FriendStatusComponent";
+import { MyStatusAreaComponent } from "./MyStatusAreaComponent";
+import { FriendStatusListComponent } from "./FriendStatusListComponent";
 
-export const BodyMainComponent = () => {
+export const MainShowStatusAndStory = () => {
 
   return (
     <Space
@@ -15,12 +15,12 @@ export const BodyMainComponent = () => {
     >
       {/* Story of friends */}
       <Story />
-      
+
       {/* My status */}
-       <MyStatusComponent/>
+      <MyStatusAreaComponent />
 
       {/* Friend Status */}
-      <FriendStatusComponent/>
+      <FriendStatusListComponent />
 
       {/* Footer */}
       <Layout.Footer

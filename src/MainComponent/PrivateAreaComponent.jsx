@@ -2,7 +2,7 @@
 import { Menu } from "antd"
 import { Header } from "antd/es/layout/layout"
 
-export const HeaderComponent = ({items}) => {
+export const PrivateAreaComponent = ({items}) => {
   return <Header
     style={{
       display: "flex",

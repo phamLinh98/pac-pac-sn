@@ -2,7 +2,7 @@
 import { Button, Flex, Image, Modal } from 'antd';
 import { useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
-export const MyStatusButtonModalComponent = ({children}) => {
+export const MyStatusAreaUploadComponent = ({children}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
