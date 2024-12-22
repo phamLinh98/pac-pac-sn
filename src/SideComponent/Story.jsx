@@ -67,8 +67,8 @@ export const AllStory = () => {
           style={{
             width: 150,
             display: "inline-block",
-            marginRight: "16px",
-            marginBottom: "16px"
+            marginRight: "5px",
+            marginBottom: "5px"
           }}
           cover={
             <ImageStatus image={imageList[index % imageList.length]} width={150}/>

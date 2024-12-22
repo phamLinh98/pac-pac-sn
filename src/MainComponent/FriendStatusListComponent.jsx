@@ -1,64 +1,166 @@
-import { Button, Card, Space } from "antd"
-import { VscShare } from "react-icons/vsc";
-import { SlLike } from "react-icons/sl";
-import { useState } from "react";
-import { FriendStatusButtonModalComponent } from "./FriendStatusContentDetailsComponent";
-import { ImageStatus } from "../SideComponent/ImageStatus";
-
-// fake account friends
-const user = {
-  name: "Lê Thị Ánh Huyền",
-  time: "10 phút",
-};
+import React, { useState, useRef } from 'react';
+import { Button, Card, Space } from 'antd';
+import { SlLike } from 'react-icons/sl';
+import { VscShare } from 'react-icons/vsc';
+import { TiChevronLeft, TiChevronRight } from 'react-icons/ti';
+import { ImageStatus } from '../SideComponent/ImageStatus';
+import { FriendStatusButtonModalComponent } from './FriendStatusContentDetailsComponent';
+import { useFacadeOnlineApp } from '../reduxs/useFacade';
 
 export const FriendStatusListComponent = () => {
-  const text = "Apollo 7 là chuyến bay có người lái đầu tiên thuộc chương trình không gian Apollo của NASA. Sứ mệnh cũng chứng kiến ​​cơ quan này tiếp tục các chuyến bay đưa con người vào vũ trụ kể từ sau vụ hỏa hoạn khiến ba phi hành gia Apollo 1 thiệt mạng trong cuộc thử nghiệm diễn tập cho phi vụ phóng vào ngày 27 tháng 1 năm 1967. Chỉ huy của phi hành đoàn Apollo 7 là Walter M. Schirra, với Donn F. Eisele làm phi công mô-đun chỉ huy và R. Walter Cunningham đảm nhiệm chức vụ phi công mô-đun Mặt Trăng (ông đã được chỉ định như vậy mặc dù Apollo 7 không mang theo Mô-đun Mặt Trăng). Ba phi hành gia này ban đầu được lựa chọn để tham gia chuyến bay có người lái thứ hai trong chương trình Apollo và sau đó trở thành phi hành đoàn dự phòng cho Apollo 1.";
-  const maxLength = 50; // Đặt giới hạn ký tự mỗi dòng
+  const { list, loading } = useFacadeOnlineApp(); // Giả sử bạn đã có hook này để lấy dữ liệu
+  console.log('list1', list);
+  console.log('loading', loading);
 
+  // Đặt giới hạn ký tự mỗi dòng
+  const maxLength = 150;
+
+  // Ẩn bớt hoặc Show hết Title bài viết
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleClick = () => {
+  const showAllOrHideTitle = () => {
     setIsExpanded(!isExpanded);
   };
-  
-  // tạm mock list ảnh
-  const imageList = [
-    "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
-    "https://i.pinimg.com/736x/94/8d/b4/948db4d850c19147444aa1280fb8a5a4.jpg",
-    "https://i.pinimg.com/736x/6a/c5/6c/6ac56c9e41b598dd26d8304f5353b96a.jpg"
-  ]
 
-  return <Card title={`${user.name} đã đăng tải bài viết (10p)`} size="small">
-    <div>
-      <p>
-        {isExpanded ? text : `${text.slice(0, maxLength)}...`}{" "}
-        <span
-          onClick={handleClick}
-          style={{ color: "blue", cursor: "pointer" }}
-        >
-          {isExpanded ? "Ẩn bớt" : " xem tiếp"}{" "}
-        </span>
-      </p>
+  // Du lieu chua loading ra se show Loading...
+  if (loading) {
+    return <div>Đang tải dữ liệu...</div>;
+  }
+
+  // Sử dụng mảng ref để mỗi item có một ref riêng biệt
+  const containerRefs = useRef([]);
+
+  const handleScrollLeft = (index) => {
+    if (containerRefs.current[index]) {
+      containerRefs.current[index].scrollLeft -= 200;
+    }
+  };
+
+  const handleScrollRight = (index) => {
+    if (containerRefs.current[index]) {
+      containerRefs.current[index].scrollLeft += 200;
+    }
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+      {list.length > 0 &&
+        list.map((item, index) => (
+          <Card key={item.id} title={`${item.id} đã đăng tải bài viết (10p)`} size="small">
+            <div>
+              <p>
+                {isExpanded
+                  ? item.content.title
+                  : `${item.content.title.slice(0, maxLength)}...`}{" "}
+                <span
+                  onClick={showAllOrHideTitle}
+                  style={{ color: "blue", cursor: "pointer" }}
+                >
+                  {isExpanded ? "Ẩn bớt" : " xem tiếp"}{" "}
+                </span>
+              </p>
+            </div>
+
+            {/* Flex container for UploadImage */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              {/* Nút cuộn trái */}
+              <div
+                style={{ position: "relative", width: "100%", overflowX: "hidden" }}
+              >
+                <button
+                  onClick={() => handleScrollLeft(index)}
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: 0,
+                    transform: "translateY(-50%)",
+                    zIndex: 1,
+                    background: "rgba(0, 0, 0, 0.3)",
+                    color: "white",
+                    border: "none",
+                    padding: "10px",
+                    cursor: "pointer",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <TiChevronLeft />
+                </button>
+
+                {/* Container ảnh */}
+                <div
+                  ref={(el) => (containerRefs.current[index] = el)}
+                  style={{
+                    display: "flex",
+                    gap: "5px",
+                    overflowX: "auto",
+                    whiteSpace: "nowrap",
+                    scrollbarWidth: "none", // Ẩn thanh cuộn cho Firefox
+                    msOverflowStyle: "none", // Ẩn thanh cuộn cho IE
+                  }}
+                >
+                  {item.content.images.map((image, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: 'inline-block',
+                        marginRight: "5px", // Để tránh khoảng trống cuối
+                        marginBottom: '5px', // Nếu muốn giữ margin dưới các hình ảnh
+                        padding: 0, // Bỏ padding nếu có
+                      }}
+                    >
+                      <ImageStatus image={image} width={200} />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Nút cuộn phải */}
+                <button
+                  onClick={() => handleScrollRight(index)}
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    right: 0,
+                    transform: "translateY(-50%)",
+                    zIndex: 1,
+                    background: "rgba(0, 0, 0, 0.3)",
+                    color: "white",
+                    border: "none",
+                    padding: "10px",
+                    cursor: "pointer",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <TiChevronRight />
+                </button>
+              </div>
+
+              {/* Các button Like, Share và comment */}
+              <Space
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Button>
+                  <SlLike />
+                  <span>{item.like}</span>Like
+                </Button>
+                <FriendStatusButtonModalComponent
+                  comment_count={item.comment}
+                  title={item.content.title}
+                  like={item.like}
+                  shared={item.shared}
+                  image={item.content.images}
+                />
+                <Button>
+                  <VscShare />
+                  <span>{item.shared}</span>Share
+                </Button>
+              </Space>
+            </div>
+          </Card>
+        ))}
     </div>
-
-    {/* Flex container for UploadImage */}
-    <div style={{ display: "flex", gap: "5px" }}>
-      {imageList.map((image, index) => (
-        <ImageStatus key={index} image={image} width={200} />
-      ))}
-    </div>
-
-    <Space
-      style={{
-        flex: 1,
-        minWidth: 0,
-        display: "flex",
-        justifyContent: "flex-end"
-      }}
-    >
-      <Button><SlLike /><span>100</span>Like</Button>
-      <FriendStatusButtonModalComponent />
-      <Button><VscShare /><span>100</span>Share</Button>
-    </Space>
-  </Card>
-}
+  );
+};

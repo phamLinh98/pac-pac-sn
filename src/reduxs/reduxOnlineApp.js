@@ -12,7 +12,7 @@ export const OnlineAppSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
         },
-        eventLoading: (state, action) => {
+        eventLoading: (state) => {
             state.loading = true;
         }
     }
