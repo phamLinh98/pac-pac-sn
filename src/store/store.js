@@ -4,7 +4,7 @@ import reduxStory from '../reduxs/reduxStory';
 
 export const store = configureStore({
     reducer: {
-        reduxListStatus: reduxList,
-        reduxStory: reduxStory
+        reduxListStatus: reduxList, // store for List
+        reduxStory: reduxStory // store for story
     }
 })
