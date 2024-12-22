@@ -3,9 +3,9 @@ import { useRef, useState } from 'react';
 import { FaRegCommentAlt } from 'react-icons/fa';
 import { SlLike } from 'react-icons/sl';
 import { VscShare } from 'react-icons/vsc';
-import { ListComponent } from '../SideComponent/List';
 import { ImageStatus } from '../SideComponent/ImageStatus';
 import { TiChevronLeft, TiChevronRight } from 'react-icons/ti';
+import { CommentListInDetailComponent } from '../SideComponent/CommentListInStatus';
 
 export const FriendStatusButtonModalComponent = ({ comment_count, title, like, shared, image }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -158,8 +158,8 @@ export const FriendStatusButtonModalComponent = ({ comment_count, title, like, s
           </Button>
         </Space>
 
-        {/* List Component */}
-        <ListComponent />
+        {/* List Component each Status of User */}
+        <CommentListInDetailComponent />
       </Modal>
     </>
   );
