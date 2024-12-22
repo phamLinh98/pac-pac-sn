@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import { LayoutComponent } from "../MainComponent/LayoutComponent";
-import { FakeComponent } from "../FakeComponent";
 
 // Define your routes
 export const router = createBrowserRouter(
@@ -12,11 +11,7 @@ export const router = createBrowserRouter(
     {
       path: "/home",
       element: <LayoutComponent />
-    },
-    {
-      path: "/fake",
-      element: <FakeComponent />
-    },
+    }
   ],
   {
     future: {

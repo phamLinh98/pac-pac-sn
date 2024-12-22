@@ -1,5 +1,7 @@
-import { eventLoading, getListStatus, logError } from "./reduxOnlineApp";
+import { getListStatus, logError } from "./reduxListStatus";
+import { getStory } from "./reduxStory";
 
+// Redux thunk cho list status 
 export const getListThunkFunction = () => {
     return async (dispatch) => {
         //dispatch(eventLoading());

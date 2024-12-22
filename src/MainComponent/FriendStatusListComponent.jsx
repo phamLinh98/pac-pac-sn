@@ -5,10 +5,11 @@ import { VscShare } from 'react-icons/vsc';
 import { TiChevronLeft, TiChevronRight } from 'react-icons/ti';
 import { ImageStatus } from '../SideComponent/ImageStatus';
 import { FriendStatusButtonModalComponent } from './FriendStatusContentDetailsComponent';
-import { useFacadeOnlineApp } from '../reduxs/useFacade';
+import { useFacadeList } from '../reduxs/useFacadeList';
 
 export const FriendStatusListComponent = () => {
-  const { list, loading } = useFacadeOnlineApp(); // Giả sử bạn đã có hook này để lấy dữ liệu
+  // facade cho list
+  const { list, loading } = useFacadeList();
   console.log('list1', list);
   console.log('loading', loading);
 
@@ -29,12 +30,14 @@ export const FriendStatusListComponent = () => {
   // Sử dụng mảng ref để mỗi item có một ref riêng biệt
   const containerRefs = useRef([]);
 
+  // left button
   const handleScrollLeft = (index) => {
     if (containerRefs.current[index]) {
       containerRefs.current[index].scrollLeft -= 200;
     }
   };
 
+  // right button
   const handleScrollRight = (index) => {
     if (containerRefs.current[index]) {
       containerRefs.current[index].scrollLeft += 200;

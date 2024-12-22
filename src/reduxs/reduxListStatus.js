@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const OnlineAppSlice = createSlice({
-    name: "OnlineAppSlice",
+export const List = createSlice({
+    name: "List",
     initialState: { list: [], error: '', loading: false },
     reducers: {
         getListStatus: (state, action) => {
@@ -18,5 +18,5 @@ export const OnlineAppSlice = createSlice({
     }
 })
 
-export const { getListStatus, logError, eventLoading } = OnlineAppSlice.actions;
-export default OnlineAppSlice.reducer;
+export const { getListStatus, logError, eventLoading } = List.actions;
+export default List.reducer;

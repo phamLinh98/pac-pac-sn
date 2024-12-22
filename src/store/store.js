@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import onlineAppRedux from '../reduxs/reduxOnlineApp';
+import reduxList from '../reduxs/reduxListStatus';
+import reduxStory from '../reduxs/reduxStory';
 
 export const store = configureStore({
     reducer: {
-        onlineApp: onlineAppRedux, // Use a matching or descriptive name.
+        reduxListStatus: reduxList,
+        reduxStory: reduxStory
     }
 })
