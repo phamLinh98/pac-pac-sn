@@ -7,37 +7,67 @@
                 "title": "Hom nay la thu may",
                 "images": [
                     "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
-                    "https://i.pinimg.com/736x/d0/44/15/d04415aee5829eca8584e6405a9fd9de.jpg",
-                    "https://i.pinimg.com/736x/6a/c5/6c/6ac56c9e41b598dd26d8304f5353b96a.jpg"
+                    "https://i.pinimg.com/736x/f2/b9/3c/f2b93c00dbe9f6cd761d6e48d2b6141d.jpg",
+                    "https://i.pinimg.com/736x/94/8d/b4/948db4d850c19147444aa1280fb8a5a4.jpg",
+                    "https://i.pinimg.com/736x/6a/c5/6c/6ac56c9e41b598dd26d8304f5353b96a.jpg",
+                    "https://i.pinimg.com/736x/a3/1f/05/a31f05288811fffe86f7427fbe12bd47.jpg",
+                    "https://i.pinimg.com/736x/00/b5/4a/00b54ada669c26101f15dafad3f13be4.jpg",
+                    "https://i.pinimg.com/736x/00/b5/4a/00b54ada669c26101f15dafad3f13be4.jpg"
                 ]
             },
             "like": 100,
             "shared": 100,
+            "comment":12,
+            "created_at": "2024-12-21T10:30:00Z",
+            "updated_at": "2024-12-21T10:30:00Z"
+        },
+        {
+            "id": "2",
+            "user_id": "234",
+            "content": {
+                "title": "Troi hom nay that dep",
+                "images": [
+                    "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
+                    "https://i.pinimg.com/736x/f2/b9/3c/f2b93c00dbe9f6cd761d6e48d2b6141d.jpg",
+                    "https://i.pinimg.com/736x/94/8d/b4/948db4d850c19147444aa1280fb8a5a4.jpg",
+                    "https://i.pinimg.com/736x/6a/c5/6c/6ac56c9e41b598dd26d8304f5353b96a.jpg",
+                    "https://i.pinimg.com/736x/a3/1f/05/a31f05288811fffe86f7427fbe12bd47.jpg",
+                    "https://i.pinimg.com/736x/00/b5/4a/00b54ada669c26101f15dafad3f13be4.jpg",
+                    "https://i.pinimg.com/736x/00/b5/4a/00b54ada669c26101f15dafad3f13be4.jpg",
+                    "https://i.pinimg.com/736x/00/b5/4a/00b54ada669c26101f15dafad3f13be4.jpg"
+                ]
+            },
+            "like": 300,
+            "shared": 1,
+            "comment":20,
             "created_at": "2024-12-21T10:30:00Z",
             "updated_at": "2024-12-21T10:30:00Z"
         }
     ],
     "user": [
         {
-            "id": 1,
+            "id": "123",
             "name": "John Doe",
             "email": "johndoe@example.com",
+            "avatar":"",
             "password": "hashed_password_123",
             "created_at": "2024-12-21T10:00:00Z",
             "updated_at": "2024-12-21T10:00:00Z"
         },
         {
-            "id": 2,
+            "id": "234",
             "name": "Jane Smith",
             "email": "janesmith@example.com",
+            "avatar":"",
             "password": "hashed_password_456",
             "created_at": "2024-12-21T10:10:00Z",
             "updated_at": "2024-12-21T10:10:00Z"
         },
         {
-            "id": 3,
+            "id": "345",
             "name": "Alice Nguyen",
             "email": "alicenguyen@example.com",
+            "avatar":"",
             "password": "hashed_password_789",
             "created_at": "2024-12-21T10:20:00Z",
             "updated_at": "2024-12-21T10:20:00Z"
@@ -79,5 +109,6 @@
             "updated_at": "2024-12-21T11:00:00Z",
             "replies": []
         }
-    ]
+    ],
+    "story":[]
 }
