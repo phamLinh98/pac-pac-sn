@@ -16,7 +16,7 @@ export const PrivateAreaComponent = ({items}) => {
     <Menu
       theme="dark"
       mode="horizontal"
-      defaultSelectedKeys={["2"]}
+      defaultSelectedKeys={["3"]}
       items={items}
       style={{
         flex: 1,
