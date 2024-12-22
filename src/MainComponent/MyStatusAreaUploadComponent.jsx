@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Button, Flex, Image, Modal } from 'antd';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 export const MyStatusAreaUploadComponent = ({children}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,6 +12,19 @@ export const MyStatusAreaUploadComponent = ({children}) => {
   };
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const fileInputRef = useRef(null);
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click(); // Kích hoạt click trên input file
+  };
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log("Selected file:", file);
+      // Thực hiện upload hoặc xử lý file
+    }
   };
 
   return (
@@ -35,7 +48,14 @@ export const MyStatusAreaUploadComponent = ({children}) => {
        src="/image.svg"
        style={{paddingBottom:'5px', paddingTop:'5px'}}
        preview={false}
+       onClick={handleImageClick}
        />
+       <input
+        type="file"
+        ref={fileInputRef} // Tham chiếu đến input
+        style={{ display: "none" }} // Ẩn input
+        onChange={handleFileChange} // Xử lý khi file thay đổi
+      />
        <Flex vertical gap="small" style={{width: '100%'}}>
         <Button type="primary" block>Post</Button>
        </Flex>
