@@ -44,7 +44,6 @@ export const AllStory = () => {
           background: "rgba(0, 0, 0, 0.3)",
           color: "white",
           border: "none",
-          padding: "10px",
           cursor: "pointer",
           borderRadius: "5px",
         }}
@@ -91,7 +90,6 @@ export const AllStory = () => {
           background: "rgba(0, 0, 0, 0.3)",
           color: "white",
           border: "none",
-          padding: "10px",
           cursor: "pointer",
           borderRadius: "5px",
         }}
