@@ -4,8 +4,8 @@ import { SlLike } from 'react-icons/sl';
 import { VscShare } from 'react-icons/vsc';
 import { TiChevronLeft, TiChevronRight } from 'react-icons/ti';
 import { ImageStatus } from '../SideComponent/ImageStatus';
-import { FriendStatusButtonModalComponent } from './FriendStatusContentDetailsComponent';
 import { useFacadeList } from '../reduxs/useFacadeList';
+import { FriendStatusContentDetailsComponent } from './FriendStatusContentDetailsComponent';
 
 export const FriendStatusListComponent = () => {
   // facade cho list
@@ -147,7 +147,7 @@ export const FriendStatusListComponent = () => {
                   <SlLike />
                   <span>{item.like}</span>Like
                 </Button>
-                <FriendStatusButtonModalComponent
+                <FriendStatusContentDetailsComponent
                   comment_count={item.comment}
                   title={item.content.title}
                   like={item.like}

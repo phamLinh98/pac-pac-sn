@@ -7,7 +7,7 @@ import { ImageStatus } from '../SideComponent/ImageStatus';
 import { TiChevronLeft, TiChevronRight } from 'react-icons/ti';
 import { CommentListInDetailComponent } from '../SideComponent/CommentListInStatus';
 
-export const FriendStatusButtonModalComponent = ({ comment_count, title, like, shared, image }) => {
+export const FriendStatusContentDetailsComponent = ({ comment_count, title, like, shared, image }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
