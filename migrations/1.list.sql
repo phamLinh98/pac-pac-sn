@@ -4,9 +4,9 @@ CREATE TABLE list (
     content JSONB,
     like INT,
     shared INT,
+    comment INT,
     created_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ,
-    images TEXT[] -- Thêm trường images kiểu mảng chuỗi
 );
 
 
