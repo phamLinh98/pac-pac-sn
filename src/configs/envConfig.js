@@ -1,3 +1,3 @@
 export const envConfig = {
-    host: import.meta.env.VITE_BACKEND_HOST || "http://localhost:4000"
-}
+    host: import.meta.env.VITE_API_KEY || "http://localhost:4000"
+};
