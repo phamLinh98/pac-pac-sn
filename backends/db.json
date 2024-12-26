@@ -108,6 +108,24 @@
             "created_at": "2024-12-21T11:00:00Z",
             "updated_at": "2024-12-21T11:00:00Z",
             "replies": []
+        },
+        {
+            "id": "3",
+            "post_id": "2",
+            "content": "Cảm ơn bạn đã chia sẻ!",
+            "user_id": "124",
+            "created_at": "2024-12-21T11:00:00Z",
+            "updated_at": "2024-12-21T11:00:00Z",
+            "replies": []
+        },
+        {
+            "id": "3",
+            "post_id": "2",
+            "content": "Cảm ơn bạn đã chia sẻ!",
+            "user_id": "124",
+            "created_at": "2024-12-21T11:00:00Z",
+            "updated_at": "2024-12-21T11:00:00Z",
+            "replies": []
         }
     ],
     "story": [
