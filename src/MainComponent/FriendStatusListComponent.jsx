@@ -150,7 +150,7 @@ export const FriendStatusListComponent = () => {
                   like={item.like}
                   shared={item.shared}
                   image={item.content.images}
-                  // postId={item.id}
+                  postId={item}
                 />
                 <Button>
                   <VscShare />

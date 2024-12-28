@@ -1,28 +1,11 @@
-import { useEffect, useState } from 'react';
-import { Avatar, Divider, List, Skeleton } from 'antd';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { useFacadeComment } from '../reduxs/useFacadeComment';
+import { Avatar, List } from 'antd';
 
-export const CommentListInDetailComponent = () => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const loadMoreData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    fetch('https://randomuser.me/api/?results=10&inc=name,gender,email,nat,picture&noinfo')
-      .then((res) => res.json())
-      .then((body) => {
-        setData([...data, ...body.results]);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  };
-  useEffect(() => {
-    loadMoreData();
-  }, []);
+
+export const CommentListInDetailComponent = ({ postIdFromListId }) => {
+  const { listComment } = useFacadeComment(postIdFromListId);
+  console.log('listComment', listComment)
+
   return (
     <div
       id="scrollableDiv"
@@ -33,10 +16,24 @@ export const CommentListInDetailComponent = () => {
         border: '1px solid rgba(140, 140, 140, 0.35)',
       }}
     >
-      <InfiniteScroll
-        dataLength={data.length}
-        next={loadMoreData}
-        hasMore={data.length < 50}
+      <List
+        dataSource={listComment}
+        renderItem={(item) => (
+          <List.Item key={item.id}>
+            <List.Item.Meta
+              avatar={<Avatar src={item.avatar} />}
+              title={<a href="https://ant.design">{item.user_name}</a>}
+              description={item.content}
+            />
+            <div>Content</div>
+          </List.Item>
+        )}
+      />
+
+      {/* <InfiniteScroll
+        dataLength={listComment.length}
+        //next={loadMoreData}
+        hasMore={listComment.length < 20}
         loader={
           <Skeleton
             avatar
@@ -48,21 +45,8 @@ export const CommentListInDetailComponent = () => {
         }
         endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
         scrollableTarget="scrollableDiv"
-      >
-        <List
-          dataSource={data}
-          renderItem={(item) => (
-            <List.Item key={item.email}>
-              <List.Item.Meta
-                avatar={<Avatar src={item.picture.large} />}
-                title={<a href="https://ant.design">{item.name.last}</a>}
-                description={item.email}
-              />
-              <div>Content</div>
-            </List.Item>
-          )}
-        />
-      </InfiniteScroll>
+      > */}
+      {/* </InfiniteScroll> */}
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { ImageStatus } from '../SideComponent/ImageStatus';
 import { TiChevronLeft, TiChevronRight } from 'react-icons/ti';
 import { CommentListInDetailComponent } from '../SideComponent/CommentListInStatus';
 
-export const FriendStatusContentDetailsComponent = ({ comment_count, title, like, shared, image }) => {
+export const FriendStatusContentDetailsComponent = ({ comment_count, title, like, shared, image, postId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -157,7 +157,7 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
         </Space>
 
         {/* List Component each Status of User */}
-        <CommentListInDetailComponent />
+        <CommentListInDetailComponent postIdFromListId = {postId.id}/>
       </Modal>
     </>
   );
