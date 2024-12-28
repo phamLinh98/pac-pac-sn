@@ -10,9 +10,6 @@ import { FriendStatusContentDetailsComponent } from './FriendStatusContentDetail
 export const FriendStatusListComponent = () => {
   // facade cho list
   const { list, loading } = useFacadeList();
-  console.log('list1', list);
-  console.log('loading', loading);
-
   // Đặt giới hạn ký tự mỗi dòng
   const maxLength = 150;
 
@@ -153,6 +150,7 @@ export const FriendStatusListComponent = () => {
                   like={item.like}
                   shared={item.shared}
                   image={item.content.images}
+                  // postId={item.id}
                 />
                 <Button>
                   <VscShare />

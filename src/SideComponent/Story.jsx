@@ -23,9 +23,6 @@ export const AllStory = () => {
   };
 
   const { story, loadingStory } = useFacadeStory();
-  console.log('story', story);
-  console.log('loadingStory', loadingStory);
-
   return (
     <div
       style={{
