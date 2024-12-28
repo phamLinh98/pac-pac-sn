@@ -4,8 +4,7 @@ import { Avatar, List } from 'antd';
 
 export const CommentListInDetailComponent = ({ postIdFromListId }) => {
   const { listComment } = useFacadeComment(postIdFromListId);
-  console.log('listComment', listComment)
-
+  
   return (
     <div
       id="scrollableDiv"

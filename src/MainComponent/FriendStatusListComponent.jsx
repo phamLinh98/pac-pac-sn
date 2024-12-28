@@ -45,7 +45,12 @@ export const FriendStatusListComponent = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
       {list.length > 0 &&
         list.map((item, index) => (
-          <Card key={item.id} title={`${item.id} đã đăng tải bài viết (10p)`} size="small">
+          <Card key={item.id} title={
+            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+               <ImageStatus width="26px" height="25px" image={item.avatar} style={{borderRadius: "5px"}}/>
+             <span> {`${item.user_name} đã đăng tải bài viết (10p)`}</span>
+           </div>
+         } size="small">
             <div>
               <p>
                 {isExpanded

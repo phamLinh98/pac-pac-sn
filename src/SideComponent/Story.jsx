@@ -71,8 +71,8 @@ export const AllStory = () => {
             cover={
               <ImageStatus image={item.image} width={150} />
             }
-          >
-            <Meta title={`${item.user_id}`} />
+          > 
+            <Meta title={`${item.user_name}`} />
           </Card>
         ))}
       </div>
