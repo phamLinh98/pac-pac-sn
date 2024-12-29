@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { Avatar, List } from 'antd';
+import { LoadingComponent } from "./LoadingComponent";
 
 export const CommentListInDetailComponent = () => {
   const { listComment, loading } = useSelector(state => state.reduxComment);
@@ -15,10 +16,7 @@ export const CommentListInDetailComponent = () => {
       }}
     >
       {
-        loading && <div>loading...</div>
-      }
-      {
-        !loading && <List
+        loading ? <LoadingComponent /> : <List
           dataSource={listComment}
           renderItem={(item) => (
             <List.Item key={item.id}>
