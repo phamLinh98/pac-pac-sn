@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { Card } from "antd";
-import { TiChevronLeft, TiChevronRight } from "react-icons/ti";
 import { ImageStatus } from "./ImageStatus";
 import { useFacadeStory } from "../reduxs/useFacadeStory";
 const { Meta } = Card;
@@ -45,7 +44,6 @@ export const AllStory = () => {
           borderRadius: "5px",
         }}
       >
-        <TiChevronLeft />
       </button>
 
       <div
@@ -91,7 +89,6 @@ export const AllStory = () => {
           borderRadius: "5px",
         }}
       >
-        <TiChevronRight />
       </button>
     </div>
   );

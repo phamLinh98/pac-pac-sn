@@ -1,12 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { Button, Card, Space } from 'antd';
-import { SlLike } from 'react-icons/sl';
 import { VscShare } from 'react-icons/vsc';
-import { TiChevronLeft, TiChevronRight } from 'react-icons/ti';
 import { ImageStatus } from '../SideComponent/ImageStatus';
 import { useFacadeList } from '../reduxs/useFacadeList';
 import { FriendStatusContentDetailsComponent } from './FriendStatusContentDetailsComponent';
 import { formatTimeStamp } from '../configs/configTimeStamp';
+import { GiChestnutLeaf } from 'react-icons/gi';
 
 export const FriendStatusListComponent = () => {
   // facade cho list
@@ -63,7 +62,9 @@ export const FriendStatusListComponent = () => {
                 >
                   {item.user_name}
                 </a>
-                {` đã đăng tải bài viết (${formatTimeStamp(item.created_at)})`}
+                <span style={{ fontSize: '0.7rem', color: 'gray', paddingLeft:"0.8%" }}>
+                  {`đã đăng tải bài viết(${formatTimeStamp(item.created_at)})`}
+                </span>
               </span>
             </div>
           } size="small">
@@ -102,7 +103,6 @@ export const FriendStatusListComponent = () => {
                     borderRadius: "5px",
                   }}
                 >
-                  <TiChevronLeft />
                 </button>
 
                 {/* Container ảnh */}
@@ -148,7 +148,6 @@ export const FriendStatusListComponent = () => {
                     borderRadius: "5px",
                   }}
                 >
-                  <TiChevronRight />
                 </button>
               </div>
 
@@ -161,8 +160,12 @@ export const FriendStatusListComponent = () => {
                   justifyContent: "flex-end",
                 }}
               >
-                <Button>
-                  <SlLike />
+                <Button style={{
+                  color: "green",
+                  backgroundColor: "white",
+                  border: "1px solid green"
+                }}>
+                  <GiChestnutLeaf />
                   <span>{item.like}</span>Like
                 </Button>
                 <FriendStatusContentDetailsComponent

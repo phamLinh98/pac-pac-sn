@@ -1,13 +1,13 @@
 import { Button, Modal, Space } from 'antd';
 import { useRef, useState } from 'react'; // Import useEffect
-import { FaRegCommentAlt } from 'react-icons/fa';
 import { SlLike } from 'react-icons/sl';
 import { VscShare } from 'react-icons/vsc';
 import { ImageStatus } from '../SideComponent/ImageStatus';
-import { TiChevronLeft, TiChevronRight } from 'react-icons/ti';
 import { CommentListInDetailComponent } from '../SideComponent/CommentListInStatus';
 import { useDispatch } from 'react-redux';
 import { getCommentThunkFunction } from '../reduxs/thunkFunctionComment';
+import { RiChatSmileAiLine } from 'react-icons/ri';
+import { FaCanadianMapleLeaf } from 'react-icons/fa';
 
 export const FriendStatusContentDetailsComponent = ({ comment_count, title, like, shared, image, postId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,13 +49,13 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
     <>
       {/* Before Open Modal */}
       <Button onClick={() => showModal(postId)}>
-        <FaRegCommentAlt />
+      <RiChatSmileAiLine />
         <span>{comment_count}</span>Comment
       </Button>
 
       {/* After Open Modal */}
       <Modal
-        title={<div style={{ textAlign: 'center', width: '100%' }}>Comment this post</div>}
+        title={<div style={{ textAlign: 'center', width: '100%' }}><FaCanadianMapleLeaf /> Bình luận bài viết <FaCanadianMapleLeaf /></div>}
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -91,7 +91,6 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
               borderRadius: '5px',
             }}
           >
-            <TiChevronLeft />
           </button>
 
           {/* Container hình ảnh */}
@@ -136,7 +135,6 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
               borderRadius: '5px',
             }}
           >
-            <TiChevronRight />
           </button>
         </div>
 

@@ -2,6 +2,7 @@
 import { Button, Flex, Image, Modal } from 'antd';
 import { useRef, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
+import { GiMapleLeaf } from 'react-icons/gi';
 export const MyStatusAreaUploadComponent = ({children}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -37,7 +38,7 @@ export const MyStatusAreaUploadComponent = ({children}) => {
       
       {/* After Open Modal */}
       <Modal 
-        title={<div style={{ textAlign: 'center', width: '100%' }}>Post new status</div>}
+        title={<div style={{ textAlign: 'center', width: '100%' }}><GiMapleLeaf /> Đăng bài viết mới <GiMapleLeaf /></div>}
         open={isModalOpen}
         onOk={handleOk} onCancel={handleCancel}
         footer={null}
