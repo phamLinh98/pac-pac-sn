@@ -1,6 +1,5 @@
 import { Button, Modal, Space } from 'antd';
 import { useRef, useState } from 'react'; // Import useEffect
-import { SlLike } from 'react-icons/sl';
 import { VscShare } from 'react-icons/vsc';
 import { ImageStatus } from '../SideComponent/ImageStatus';
 import { CommentListInDetailComponent } from '../SideComponent/CommentListInStatus';
@@ -8,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { getCommentThunkFunction } from '../reduxs/thunkFunctionComment';
 import { RiChatSmileAiLine } from 'react-icons/ri';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import { GiChestnutLeaf } from 'react-icons/gi';
 
 export const FriendStatusContentDetailsComponent = ({ comment_count, title, like, shared, image, postId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,7 +49,7 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
     <>
       {/* Before Open Modal */}
       <Button onClick={() => showModal(postId)}>
-      <RiChatSmileAiLine />
+        <RiChatSmileAiLine />
         <span>{comment_count}</span>Comment
       </Button>
 
@@ -149,8 +149,12 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
             paddingBottom: '5px',
           }}
         >
-          <Button>
-            <SlLike />
+          <Button style={{
+            color: "green",
+            backgroundColor: "white",
+            border: "1px solid green"
+          }}>
+            <GiChestnutLeaf />
             <span>{like}</span>Like
           </Button>
           <Button>
@@ -158,8 +162,8 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
             <span>{shared}</span>Share
           </Button>
         </Space>
-        
-        <CommentListInDetailComponent/>
+
+        <CommentListInDetailComponent />
       </Modal>
     </>
   );
