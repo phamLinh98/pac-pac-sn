@@ -56,7 +56,15 @@ export const FriendStatusListComponent = () => {
           <Card key={item.id} title={
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
               <ImageStatus width="26px" height="25px" image={item.avatar} style={{ borderRadius: "5px" }} />
-              <span> {`${item.user_name} đã đăng tải bài viết (${formatTimeStamp(item.created_at)})`}</span>
+              <span>
+                <a
+                  href="https://ant.design" // Thay đổi URL theo logic của bạn
+                  style={{ textDecoration: 'none', color: 'blue' }} // Optional: bỏ gạch chân và giữ màu chữ
+                >
+                  {item.user_name}
+                </a>
+                {` đã đăng tải bài viết (${formatTimeStamp(item.created_at)})`}
+              </span>
             </div>
           } size="small">
             <div>

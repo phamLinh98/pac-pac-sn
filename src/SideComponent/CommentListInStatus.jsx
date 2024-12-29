@@ -22,7 +22,7 @@ export const CommentListInDetailComponent = () => {
             <List.Item key={item.id}>
               <List.Item.Meta
                 avatar={<Avatar src={item.avatar} />}
-                title={<a href="https://ant.design">{item.user_name}</a>}
+                title={<a href="https://ant.design" style={{ textDecoration: 'none', color: 'blue' }}>{item.user_name}</a>}
                 description={item.content}
               />
               <div>Content</div>
