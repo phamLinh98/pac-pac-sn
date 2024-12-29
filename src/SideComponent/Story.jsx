@@ -2,7 +2,6 @@ import { useRef } from "react";
 import { Card } from "antd";
 import { ImageStatus } from "./ImageStatus";
 import { useFacadeStory } from "../reduxs/useFacadeStory";
-import { EllipsisOutlined } from "@ant-design/icons";
 import { CiHeart } from "react-icons/ci";
 import { FaRegCommentDots } from "react-icons/fa";
 import { BiSolidHide } from "react-icons/bi";
@@ -11,20 +10,6 @@ const { Meta } = Card;
 export const AllStory = () => {
   // Sử dụng ref để truy cập container
   const containerRef = useRef(null);
-  // Cuộn sang trái
-  const handleScrollLeft = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollLeft -= 200;
-    }
-  };
-
-  // Cuộn sang phải
-  const handleScrollRight = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollLeft += 200;
-    }
-  };
-
   const { story, loadingStory } = useFacadeStory();
   return (
     <div
@@ -34,22 +19,6 @@ export const AllStory = () => {
         position: "relative", // Để đặt các nút cuộn bên ngoài container
       }}
     >
-      <button
-        onClick={handleScrollLeft}
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: 0,
-          zIndex: 1,
-          background: "rgba(0, 0, 0, 0.3)",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          borderRadius: "5px",
-        }}
-      >
-      </button>
-
       <div
         ref={containerRef}
         style={{
@@ -60,7 +29,7 @@ export const AllStory = () => {
           scrollbarWidth: "none", // Ẩn thanh cuộn cho Firefox
         }}
       >
-        {story && story.map((item,index) => (
+        {story && story.map((item, index) => (
           <Card
             key={index}
             hoverable
@@ -74,31 +43,15 @@ export const AllStory = () => {
               <ImageStatus image={item.image} width={150} />
             }
             actions={[
-              <CiHeart key="setting" style={{fontSize:"1.5rem", color:"red"}}/>,
-              <FaRegCommentDots key="edit" style={{fontSize:"1.3rem"}}/>,
-              <BiSolidHide key="ellipsis" style={{fontSize:"1.3rem"}}/>,
+              <CiHeart key="setting" style={{ fontSize: "1.5rem", color: "red" }} />,
+              <FaRegCommentDots key="edit" style={{ fontSize: "1.3rem" }} />,
+              <BiSolidHide key="ellipsis" style={{ fontSize: "1.3rem" }} />,
             ]}
-          > 
+          >
             <Meta title={`${item.user_name}`} />
           </Card>
         ))}
       </div>
-
-      <button
-        onClick={handleScrollRight}
-        style={{
-          position: "absolute",
-          top: "50%",
-          right: 0,
-          zIndex: 1,
-          background: "rgba(0, 0, 0, 0.3)",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          borderRadius: "5px",
-        }}
-      >
-      </button>
     </div>
   );
 };

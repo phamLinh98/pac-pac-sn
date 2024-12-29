@@ -18,21 +18,9 @@ export const FriendStatusListComponent = () => {
 
   const containerRefs = useRef([]);
 
-  const handleScrollLeft = (index) => {
-    if (containerRefs.current[index]) {
-      containerRefs.current[index].scrollLeft -= 200;
-    }
-  };
-
-  const handleScrollRight = (index) => {
-    if (containerRefs.current[index]) {
-      containerRefs.current[index].scrollLeft += 200;
-    }
-  };
-
   return (
     <>
-      {loading ? <LoadingComponent/> : <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+      {loading ? <LoadingComponent /> : <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
         {list.map((item, index) => (
           <Card key={item.id} title={
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
@@ -67,23 +55,6 @@ export const FriendStatusListComponent = () => {
               <div
                 style={{ position: "relative", width: "100%", overflowX: "hidden" }}
               >
-                <button
-                  onClick={() => handleScrollLeft(index)}
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: 0,
-                    transform: "translateY(-50%)",
-                    zIndex: 1,
-                    background: "rgba(0, 0, 0, 0.3)",
-                    color: "white",
-                    border: "none",
-                    cursor: "pointer",
-                    borderRadius: "5px",
-                  }}
-                >
-                </button>
-
                 <div
                   ref={containerRefs.current[index]}
                   style={{
@@ -109,23 +80,6 @@ export const FriendStatusListComponent = () => {
                     </div>
                   ))}
                 </div>
-
-                <button
-                  onClick={() => handleScrollRight(index)}
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    right: 0,
-                    transform: "translateY(-50%)",
-                    zIndex: 1,
-                    background: "rgba(0, 0, 0, 0.3)",
-                    color: "white",
-                    border: "none",
-                    cursor: "pointer",
-                    borderRadius: "5px",
-                  }}
-                >
-                </button>
               </div>
 
               <Space
