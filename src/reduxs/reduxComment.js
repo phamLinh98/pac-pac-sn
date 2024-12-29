@@ -12,8 +12,8 @@ export const Comment = createSlice({
             state.error = action.payload;
             state.loading = false;
         },
-        eventLoading: (state) => {
-            state.loading = true;
+        eventLoading: (state, action) => {
+            state.loading = action.payload;
         }
     }
 })

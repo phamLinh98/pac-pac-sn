@@ -6,23 +6,22 @@ import { VscShare } from 'react-icons/vsc';
 import { ImageStatus } from '../SideComponent/ImageStatus';
 import { TiChevronLeft, TiChevronRight } from 'react-icons/ti';
 import { CommentListInDetailComponent } from '../SideComponent/CommentListInStatus';
+import { useDispatch } from 'react-redux';
+import { getCommentThunkFunction } from '../reduxs/thunkFunctionComment';
 
 export const FriendStatusContentDetailsComponent = ({ comment_count, title, like, shared, image, postId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-   const [currentPostId, setCurrentPostId] = useState(postId);  // dùng state currentPostId
-   console.log('currentPostId', currentPostId)
+  const dispatch = useDispatch();
 
-  const showModal = () => {
+  const showModal = (postId) => {
     setIsModalOpen(true);
-    setCurrentPostId(postId);
+    dispatch(getCommentThunkFunction(postId));
   };
   const handleOk = () => {
     setIsModalOpen(false);
-    setCurrentPostId(postId);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
-    setCurrentPostId(postId);
   };
 
   const containerRef = useRef(null);
@@ -49,7 +48,7 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
   return (
     <>
       {/* Before Open Modal */}
-      <Button onClick={showModal}>
+      <Button onClick={() => showModal(postId)}>
         <FaRegCommentAlt />
         <span>{comment_count}</span>Comment
       </Button>
@@ -161,9 +160,8 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
             <span>{shared}</span>Share
           </Button>
         </Space>
-
-        {/* List Component each Status of User */}
-        <CommentListInDetailComponent postIdFromListId={currentPostId}/> {/* truyền currentPostId xuống */}
+        
+        <CommentListInDetailComponent/>
       </Modal>
     </>
   );
