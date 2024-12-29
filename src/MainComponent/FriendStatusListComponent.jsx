@@ -6,52 +6,34 @@ import { useFacadeList } from '../reduxs/useFacadeList';
 import { FriendStatusContentDetailsComponent } from './FriendStatusContentDetailsComponent';
 import { formatTimeStamp } from '../configs/configTimeStamp';
 import { GiChestnutLeaf } from 'react-icons/gi';
+import { LoadingComponent } from '../SideComponent/LoadingComponent';
 
 export const FriendStatusListComponent = () => {
-  // facade cho list
   const { list, loading } = useFacadeList();
-  // Đặt giới hạn ký tự mỗi dòng
   const maxLength = 150;
-
-  // Ẩn bớt hoặc Show hết Title bài viết
   const [isExpanded, setIsExpanded] = useState(false);
   const showAllOrHideTitle = () => {
     setIsExpanded(!isExpanded);
   };
 
-  // Du lieu chua loading ra se show Loading...
-  if (loading) {
-    return <div>Đang tải dữ liệu...</div>;
-  }
-
-  // Sử dụng mảng ref để mỗi item có một ref riêng biệt
   const containerRefs = useRef([]);
 
-  // left button
   const handleScrollLeft = (index) => {
     if (containerRefs.current[index]) {
       containerRefs.current[index].scrollLeft -= 200;
     }
   };
 
-  // right button
   const handleScrollRight = (index) => {
     if (containerRefs.current[index]) {
       containerRefs.current[index].scrollLeft += 200;
     }
   };
 
-  // const sortedLogic = (list) => {
-  //   // Sử dụng slice() để tạo bản sao của mảng
-  //   return [...list].sort((a, b) => b.created_at.localeCompare(a.created_at))
-  // };
-
-  // const sortedList = sortedLogic(list);
-
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-      {list.length > 0 &&
-        list.map((item, index) => (
+    <>
+      {loading ? <LoadingComponent/> : <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+        {list.map((item, index) => (
           <Card key={item.id} title={
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
               <ImageStatus width="26px" height="25px" image={item.avatar} style={{ borderRadius: "5px" }} />
@@ -62,7 +44,7 @@ export const FriendStatusListComponent = () => {
                 >
                   {item.user_name}
                 </a>
-                <span style={{ fontSize: '0.7rem', color: 'gray', paddingLeft:"0.8%" }}>
+                <span style={{ fontSize: '0.7rem', color: 'gray', paddingLeft: "0.8%" }}>
                   {`đã đăng tải bài viết(${formatTimeStamp(item.created_at)})`}
                 </span>
               </span>
@@ -81,10 +63,7 @@ export const FriendStatusListComponent = () => {
                 </span>
               </p>
             </div>
-
-            {/* Flex container for UploadImage */}
             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-              {/* Nút cuộn trái */}
               <div
                 style={{ position: "relative", width: "100%", overflowX: "hidden" }}
               >
@@ -105,9 +84,8 @@ export const FriendStatusListComponent = () => {
                 >
                 </button>
 
-                {/* Container ảnh */}
                 <div
-                  ref={(el) => (containerRefs.current[index] = el)}
+                  ref={containerRefs.current[index]}
                   style={{
                     display: "flex",
                     gap: "5px",
@@ -117,14 +95,14 @@ export const FriendStatusListComponent = () => {
                     msOverflowStyle: "none", // Ẩn thanh cuộn cho IE
                   }}
                 >
-                  {item.content.images.map((image, index) => (
+                  {item.content.images.map((image, imageIndex) => (
                     <div
-                      key={index}
+                      key={imageIndex}
                       style={{
                         display: 'inline-block',
-                        marginRight: "5px", // Để tránh khoảng trống cuối
-                        marginBottom: '5px', // Nếu muốn giữ margin dưới các hình ảnh
-                        padding: 0, // Bỏ padding nếu có
+                        marginRight: "5px",
+                        marginBottom: '5px',
+                        padding: 0,
                       }}
                     >
                       <ImageStatus image={image} width={200} />
@@ -132,7 +110,6 @@ export const FriendStatusListComponent = () => {
                   ))}
                 </div>
 
-                {/* Nút cuộn phải */}
                 <button
                   onClick={() => handleScrollRight(index)}
                   style={{
@@ -151,7 +128,6 @@ export const FriendStatusListComponent = () => {
                 </button>
               </div>
 
-              {/* Các button Like, Share và comment */}
               <Space
                 style={{
                   flex: 1,
@@ -184,6 +160,7 @@ export const FriendStatusListComponent = () => {
             </div>
           </Card>
         ))}
-    </div>
+      </div>}
+    </>
   );
 };
