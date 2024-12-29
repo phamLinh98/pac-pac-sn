@@ -7,6 +7,9 @@ export const useFacadeList = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getListThunkFunction());
+        return () =>{
+            console.log('first')
+        }
     }, [dispatch]);
     return {
         list,

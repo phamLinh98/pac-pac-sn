@@ -6,6 +6,7 @@ import { TiChevronLeft, TiChevronRight } from 'react-icons/ti';
 import { ImageStatus } from '../SideComponent/ImageStatus';
 import { useFacadeList } from '../reduxs/useFacadeList';
 import { FriendStatusContentDetailsComponent } from './FriendStatusContentDetailsComponent';
+import { formatTimeStamp } from '../configs/configTimeStamp';
 
 export const FriendStatusListComponent = () => {
   // facade cho list
@@ -41,16 +42,23 @@ export const FriendStatusListComponent = () => {
     }
   };
 
+  // const sortedLogic = (list) => {
+  //   // Sử dụng slice() để tạo bản sao của mảng
+  //   return [...list].sort((a, b) => b.created_at.localeCompare(a.created_at))
+  // };
+
+  // const sortedList = sortedLogic(list);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
       {list.length > 0 &&
         list.map((item, index) => (
           <Card key={item.id} title={
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-               <ImageStatus width="26px" height="25px" image={item.avatar} style={{borderRadius: "5px"}}/>
-             <span> {`${item.user_name} đã đăng tải bài viết (10p)`}</span>
-           </div>
-         } size="small">
+              <ImageStatus width="26px" height="25px" image={item.avatar} style={{ borderRadius: "5px" }} />
+              <span> {`${item.user_name} đã đăng tải bài viết (${formatTimeStamp(item.created_at)})`}</span>
+            </div>
+          } size="small">
             <div>
               <p>
                 {isExpanded
@@ -155,7 +163,7 @@ export const FriendStatusListComponent = () => {
                   like={item.like}
                   shared={item.shared}
                   image={item.content.images}
-                  postId={item}
+                  postId={item.id}
                 />
                 <Button>
                   <VscShare />

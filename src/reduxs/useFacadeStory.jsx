@@ -7,6 +7,9 @@ export const useFacadeStory = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getStoryThunkFunction());
+        return () => {
+            console.log('first')
+        }
     }, [dispatch])
 
     return {

@@ -1,5 +1,5 @@
-import { Button, Modal, Space, Card } from 'antd';
-import { useRef, useState } from 'react';
+import { Button, Modal, Space } from 'antd';
+import { useRef, useState } from 'react'; // Import useEffect
 import { FaRegCommentAlt } from 'react-icons/fa';
 import { SlLike } from 'react-icons/sl';
 import { VscShare } from 'react-icons/vsc';
@@ -9,14 +9,20 @@ import { CommentListInDetailComponent } from '../SideComponent/CommentListInStat
 
 export const FriendStatusContentDetailsComponent = ({ comment_count, title, like, shared, image, postId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+   const [currentPostId, setCurrentPostId] = useState(postId);  // dùng state currentPostId
+   console.log('currentPostId', currentPostId)
+
   const showModal = () => {
     setIsModalOpen(true);
+    setCurrentPostId(postId);
   };
   const handleOk = () => {
     setIsModalOpen(false);
+    setCurrentPostId(postId);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
+    setCurrentPostId(postId);
   };
 
   const containerRef = useRef(null);
@@ -157,7 +163,7 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
         </Space>
 
         {/* List Component each Status of User */}
-        <CommentListInDetailComponent postIdFromListId = {postId.id}/>
+        <CommentListInDetailComponent postIdFromListId={currentPostId}/> {/* truyền currentPostId xuống */}
       </Modal>
     </>
   );
