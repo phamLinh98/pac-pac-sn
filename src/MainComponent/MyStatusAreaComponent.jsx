@@ -2,7 +2,7 @@ import { Button, Card, Space } from "antd";
 import { BsFillImageFill } from "react-icons/bs";
 import { RiLiveLine } from "react-icons/ri";
 import { MyStatusAreaUploadComponent } from "./MyStatusAreaUploadComponent";
-import { TfiThemifyFavicon } from "react-icons/tfi";
+import { GoStarFill } from "react-icons/go";
 
 // Login User now , bài đăng 
 const loginUser = "Rin";
@@ -18,7 +18,7 @@ export const MyStatusAreaComponent = () => {
         }}
       >
         <MyStatusAreaUploadComponent>
-          <TfiThemifyFavicon />
+          <GoStarFill />
           New Status
         </MyStatusAreaUploadComponent>
         <MyStatusAreaUploadComponent>

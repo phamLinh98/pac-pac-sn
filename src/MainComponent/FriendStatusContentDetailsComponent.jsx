@@ -56,7 +56,16 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
               onClick={handleClick}
               style={{ color: 'blue', cursor: 'pointer' }}
             >
-              {isExpanded ? 'Ẩn bớt' : ' xem tiếp'}{' '}
+              <span>
+                {isExpanded ? (
+                  <>
+                    <br />
+                    ẩn
+                  </>
+                ) : (
+                  "xem tiếp"
+                )}{" "}
+              </span>
             </span>
           </p>
         </div>

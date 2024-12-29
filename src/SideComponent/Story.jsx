@@ -2,9 +2,9 @@ import { useRef } from "react";
 import { Card } from "antd";
 import { ImageStatus } from "./ImageStatus";
 import { useFacadeStory } from "../reduxs/useFacadeStory";
-import { CiHeart } from "react-icons/ci";
-import { FaRegCommentDots } from "react-icons/fa";
-import { BiSolidHide } from "react-icons/bi";
+import { PiHeartbeatBold } from "react-icons/pi";
+import { ImReply } from "react-icons/im";
+import { RiUserUnfollowFill } from "react-icons/ri";
 const { Meta } = Card;
 
 export const AllStory = () => {
@@ -43,9 +43,9 @@ export const AllStory = () => {
               <ImageStatus image={item.image} width={150} />
             }
             actions={[
-              <CiHeart key="setting" style={{ fontSize: "1.5rem", color: "red" }} />,
-              <FaRegCommentDots key="edit" style={{ fontSize: "1.3rem" }} />,
-              <BiSolidHide key="ellipsis" style={{ fontSize: "1.3rem" }} />,
+              <PiHeartbeatBold key="setting" style={{ fontSize: "1.5rem", color: "red" }} />,
+              <ImReply key="edit" style={{ fontSize: "1.3rem" }} />,
+              <RiUserUnfollowFill key="ellipsis" style={{ fontSize: "1.3rem" }} />,
             ]}
           >
             <Meta title={`${item.user_name}`} />

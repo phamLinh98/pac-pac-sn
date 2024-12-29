@@ -7,6 +7,7 @@ import { FriendStatusContentDetailsComponent } from './FriendStatusContentDetail
 import { formatTimeStamp } from '../configs/configTimeStamp';
 import { GiChestnutLeaf } from 'react-icons/gi';
 import { LoadingComponent } from '../SideComponent/LoadingComponent';
+import { NotListComponent } from '../SideComponent/NoListComponent';
 
 export const FriendStatusListComponent = () => {
   const { list, loading } = useFacadeList();
@@ -21,7 +22,7 @@ export const FriendStatusListComponent = () => {
   return (
     <>
       {loading ? <LoadingComponent /> : <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-        {list.map((item, index) => (
+        {list.length <= 0 ? <NotListComponent /> : list.map((item, index) => (
           <Card key={item.id} title={
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
               <ImageStatus width="26px" height="25px" image={item.avatar} style={{ borderRadius: "5px" }} />
@@ -47,7 +48,16 @@ export const FriendStatusListComponent = () => {
                   onClick={showAllOrHideTitle}
                   style={{ color: "blue", cursor: "pointer" }}
                 >
-                  {isExpanded ? "Ẩn bớt" : " xem tiếp"}{" "}
+                  <span>
+                    {isExpanded ? (
+                      <>
+                        <br />
+                        ẩn
+                      </>
+                    ) : (
+                      "xem tiếp"
+                    )}{" "}
+                  </span>
                 </span>
               </p>
             </div>
@@ -66,7 +76,7 @@ export const FriendStatusListComponent = () => {
                     msOverflowStyle: "none", // Ẩn thanh cuộn cho IE
                   }}
                 >
-                  {item.content.images.map((image, imageIndex) => (
+                  {item.content.images.length > 0 && item.content.images.map((image, imageIndex) => (
                     <div
                       key={imageIndex}
                       style={{
