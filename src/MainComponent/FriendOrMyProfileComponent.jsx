@@ -10,7 +10,7 @@ const onChange = (key) => {
 const items = [
   {
     key: '1',
-    label: <span><BsFileEarmarkPost/>Content</span>,
+    label: <span><BsFileEarmarkPost/>NewFeed</span>,
     children: <ProfileComponent/>,
   },
   {
