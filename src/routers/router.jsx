@@ -1,17 +1,29 @@
 import { createBrowserRouter } from "react-router-dom";
 import { LayoutComponent } from "../MainComponent/LayoutComponent";
+import { MainShowStatusAndStory } from "../MainComponent/MainShowStatusAndStory";
+import { FriendOrMyProfileComponent } from "../MainComponent/FriendOrMyProfileComponent";
 
 // Define your routes
 export const router = createBrowserRouter(
   [
     {
       path: "/",
-      element: <LayoutComponent />
+      element: <LayoutComponent />,
+      children: [
+        {
+          index: true, // để hiển thị mặc định
+          element: <MainShowStatusAndStory />,
+        },
+        {
+          path: "/home",
+          element: <MainShowStatusAndStory />,
+        },
+        {
+          path: "/profile",
+          element: <FriendOrMyProfileComponent />
+        }
+      ],
     },
-    {
-      path: "/home",
-      element: <LayoutComponent />
-    }
   ],
   {
     future: {
