@@ -8,6 +8,7 @@ import { formatTimeStamp } from '../configs/configTimeStamp';
 import { GiChestnutLeaf } from 'react-icons/gi';
 import { LoadingComponent } from '../SideComponent/LoadingComponent';
 import { NotListComponent } from '../SideComponent/NoListComponent';
+import { useNavigate } from 'react-router-dom';
 
 export const FriendStatusListComponent = () => {
   const { list, loading } = useFacadeList();
@@ -18,6 +19,11 @@ export const FriendStatusListComponent = () => {
   };
 
   const containerRefs = useRef([]);
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate('/profile');
+  };
 
   return (
     <>
@@ -28,7 +34,7 @@ export const FriendStatusListComponent = () => {
               <ImageStatus width="26px" height="25px" image={item.avatar} style={{ borderRadius: "5px" }} />
               <span>
                 <a
-                  href="https://ant.design" // Thay đổi URL theo logic của bạn
+                  onClick={handleNavigate} // Thay đổi URL theo logic của bạn
                   style={{ textDecoration: 'none', color: 'blue' }} // Optional: bỏ gạch chân và giữ màu chữ
                 >
                   {item.user_name}

@@ -1,15 +1,14 @@
 import { Layout, theme } from "antd";
-import { FaSnowman, FaUserFriends } from "react-icons/fa";
-import { RxAvatar } from "react-icons/rx";
-import { GrGroup, GrNotification } from "react-icons/gr";
+import { FaSnowman } from "react-icons/fa";
+import { GrNotification } from "react-icons/gr";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SiMessenger } from "react-icons/si";
 import { TbBrandGravatar } from "react-icons/tb";
-import { MainShowStatusAndStory } from "./MainShowStatusAndStory";
 import { MenuLeftComponent } from "./MenuLeftComponent";
 import { PrivateAreaComponent } from "./PrivateAreaComponent";
 import { useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 // item for Header Menu
 const headerItem = [
@@ -31,70 +30,15 @@ const headerItem = [
   }
 ];
 
-// items for Left Menu
-const items2 = [
-  {
-    key: "sub1",
-    icon: <RxAvatar />, // Correct usage
-    label: "Home",
-  },
-  {
-    key: "sub2",
-    icon: <FaUserFriends />, // Correct usage
-    label: "Online Friends",
-    children: [
-      {
-        key: 5,
-        label: "Liễu Như Yên",
-      },
-      {
-        key: 6,
-        label: "Liễu Như Yên",
-      },
-      {
-        key: 7,
-        label: "Liễu Như Yên",
-      },
-      {
-        key: 8,
-        label: "Liễu Như Yên",
-      },
-    ],
-  },
-  {
-    key: "sub3",
-    icon: <GrGroup />, // Correct usage
-    label: "Groups",
-    children: [
-      {
-        key: 9,
-        label: "ScriptChat",
-      },
-      {
-        key: 10,
-        label: "ScriptChat",
-      },
-      {
-        key: 11,
-        label: "ScriptChat",
-      },
-      {
-        key: 12,
-        label: "ScriptChat",
-      },
-    ],
-  },
-];
-
 export const LayoutComponent = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
     const [collapsed, setCollapsed] = useState(false);
-      const onToggleMenu = (newValue) => {
+
+    const onToggleMenu = (newValue) => {
           setCollapsed(newValue)
       }
-
   return (
     <Layout style={{ height: "100vh" }}>
       {/* TODO: Solve Header */}
@@ -113,7 +57,7 @@ export const LayoutComponent = () => {
               transition: "width 0.3s",
            }}
           >
-            <MenuLeftComponent items={items2} collapsed={collapsed} />
+            <MenuLeftComponent collapsed={collapsed} />
         </Sider>
 
         <Layout
@@ -133,7 +77,7 @@ export const LayoutComponent = () => {
               background: "none",
             }}
           >
-            <MainShowStatusAndStory collapsed={collapsed} />
+            <Outlet/>
           </Content>
         </Layout>
       </Layout>
