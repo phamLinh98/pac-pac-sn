@@ -1,5 +1,5 @@
-import { Layout,theme } from "antd";
-import { FaUserFriends } from "react-icons/fa";
+import { Layout, theme } from "antd";
+import { FaSnowman, FaUserFriends } from "react-icons/fa";
 import { RxAvatar } from "react-icons/rx";
 import { GrGroup, GrNotification } from "react-icons/gr";
 import { Content } from "antd/es/layout/layout";
@@ -9,21 +9,26 @@ import { TbBrandGravatar } from "react-icons/tb";
 import { MainShowStatusAndStory } from "./MainShowStatusAndStory";
 import { MenuLeftComponent } from "./MenuLeftComponent";
 import { PrivateAreaComponent } from "./PrivateAreaComponent";
+import { useState } from "react";
 
 // item for Header Menu
 const headerItem = [
   {
     key: "1",
-    label: <GrNotification style={{fontSize:"17px"}}/>,
+    label: <GrNotification style={{ fontSize: "17px" }} />,
   },
   {
     key: "2",
-    label: <SiMessenger style={{fontSize:"17px"}}/>,
+    label: <SiMessenger style={{ fontSize: "17px" }} />,
   },
   {
     key: "3",
-    label: <TbBrandGravatar style={{fontSize:"17px"}}/>,
+    label: <TbBrandGravatar style={{ fontSize: "17px" }} />,
   },
+  {
+    key:"4",
+    label:<FaSnowman style={{ fontSize: "17px" }} />
+  }
 ];
 
 // items for Left Menu
@@ -85,33 +90,39 @@ export const LayoutComponent = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+    const [collapsed, setCollapsed] = useState(false);
+      const onToggleMenu = (newValue) => {
+          setCollapsed(newValue)
+      }
 
   return (
     <Layout style={{ height: "100vh" }}>
-
       {/* TODO: Solve Header */}
-      <PrivateAreaComponent items={headerItem}/>
-      
+      <PrivateAreaComponent items={headerItem} onToggleMenu={onToggleMenu} collapsed={collapsed}/>
+
       {/* TODO:Solve Content */}
       <Layout style={{ marginTop: 64 }}>
         <Sider
-          width={200}
-          style={{
-            background: colorBgContainer,
-            position: "fixed",
-            height: "100vh",
-            left: 0,
-            top: 64,
-          }}
-        >
-          <MenuLeftComponent items={items2}/>
+          width={collapsed ? 0 : 200}
+           style={{
+             background: colorBgContainer,
+             position: "fixed",
+             height: "100vh",
+             left: 0,
+             top: 64,
+              transition: "width 0.3s",
+           }}
+          >
+            <MenuLeftComponent items={items2} collapsed={collapsed} />
         </Sider>
+
         <Layout
           style={{
-            marginLeft: 200,
+            marginLeft: collapsed ? 0 : 200,
             padding: "0 24px 24px",
             overflow: "auto",
             height: "calc(100vh - 64px)",
+              transition: "margin-left 0.3s"
           }}
         >
           <Content
@@ -122,11 +133,10 @@ export const LayoutComponent = () => {
               background: "none",
             }}
           >
-            <MainShowStatusAndStory/>
+            <MainShowStatusAndStory collapsed={collapsed} />
           </Content>
         </Layout>
       </Layout>
-
     </Layout>
   );
 };
