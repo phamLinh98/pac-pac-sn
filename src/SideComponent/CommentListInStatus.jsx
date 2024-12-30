@@ -3,10 +3,11 @@ import { Avatar, List } from 'antd';
 import { LoadingComponent } from "./LoadingComponent";
 import { TbMessageReply } from "react-icons/tb";
 import { formatTimeStamp } from "../configs/configTimeStamp";
+import { NotListComponent } from "./NoListComponent";
 
 export const CommentListInDetailComponent = () => {
   const { listComment, loading } = useSelector(state => state.reduxComment);
-
+  
   return (
     <div
       id="scrollableDiv"
@@ -17,8 +18,10 @@ export const CommentListInDetailComponent = () => {
         border: '1px solid rgba(140, 140, 140, 0.35)',
       }}
     >
-      {
-        loading ? <LoadingComponent /> : <List
+      {loading ? (
+        <LoadingComponent />
+      ) : listComment.length === 0 ? <div style={{ paddingTop: "5%" }}><NotListComponent description="Chưa có bình luận" /></div> : (
+        <List
           dataSource={listComment}
           renderItem={(item) => (
             <List.Item key={item.id}>
@@ -40,7 +43,7 @@ export const CommentListInDetailComponent = () => {
             </List.Item>
           )}
         />
-      }
+      )}
     </div>
   );
 };
