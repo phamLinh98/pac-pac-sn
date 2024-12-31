@@ -41,7 +41,7 @@ export const ProfileComponent = () => {
                             alignItems: 'center',
                             padding: '10px',
                         }}>
-                            {listUserById.map((item) => <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
+                            {loading ? <LoadingComponent />:listUserById.map((item) => <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
                                 <Avatar size={64} icon={<UserOutlined />} src={item.avatar}/>
                                 <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>{item.name}</span>
                                 <span style={{ marginLeft: '10px', fontSize: "12px", color: "gray" }}>(128 bạn bè)</span>
