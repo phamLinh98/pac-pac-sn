@@ -6,8 +6,18 @@ import { FiSend } from 'react-icons/fi';
 import { ImageStatus } from '../SideComponent/ImageStatus';
 import { GiChestnutLeaf } from 'react-icons/gi';
 import { VscShare } from 'react-icons/vsc';
+import { MdRemoveRedEye } from 'react-icons/md';
+import { FriendStatusContentDetailsComponent } from './FriendStatusContentDetailsComponent';
+import { LoadingComponent } from '../SideComponent/LoadingComponent';
+import { NotListComponent } from '../SideComponent/NoListComponent';
+import { formatTimeStamp } from '../configs/configTimeStamp';
+import { useFacadeListByUserId } from '../reduxs/useFacadeListByUserId';
+import { useParams } from 'react-router-dom';
 const { Meta } = Card;
 export const ProfileComponent = () => {
+    const userId = useParams();
+    const userIdConverToNumber = +userId.id;
+    const { listUserById, loading } = useFacadeListByUserId(userIdConverToNumber);
     return (
         <>
             <div style={{ width: '100%', height: '5%', position: 'relative' }}>
@@ -31,13 +41,14 @@ export const ProfileComponent = () => {
                             alignItems: 'center',
                             padding: '10px',
                         }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <Avatar size={64} icon={<UserOutlined />} src="https://i.pinimg.com/736x/b4/55/1f/b4551f8d549b7e6f7f63d789fa06fb3b.jpg" />
-                                <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>Phạm Tuấn Linh</span>
-                                <span style={{ marginLeft: '10px', fontSize: "12px", color:"gray" }}>(128 bạn bè)</span>
-                            </div>
+                            {listUserById.map((item) => <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
+                                <Avatar size={64} icon={<UserOutlined />} src={item.avatar}/>
+                                <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>{item.name}</span>
+                                <span style={{ marginLeft: '10px', fontSize: "12px", color: "gray" }}>(128 bạn bè)</span>
+                            </div>)}
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <Button type="primary" style={{ marginRight: '10px' }}><IoMdAdd />Kết Bạn</Button>
+                                <Button type="primary" style={{ marginRight: '10px' }}><MdRemoveRedEye />Follow</Button>
                                 <Button type="dashed"><FiSend />Nhắn Tin</Button>
                             </div>
                         </div>
@@ -46,77 +57,110 @@ export const ProfileComponent = () => {
             </div>
 
             {/* TODO */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "5px", paddingTop: "2%"}}>
-                <Card key={1} title={
-                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                        <ImageStatus width="26px" height="25px" image="https://i.pinimg.com/736x/b4/55/1f/b4551f8d549b7e6f7f63d789fa06fb3b.jpg" style={{ borderRadius: "5px" }} />
-                        <span>
-                            <a
-                                onClick={() => { }} // Thay đổi URL theo logic của bạn
-                                style={{ textDecoration: 'none', color: 'blue' }} // Optional: bỏ gạch chân và giữ màu chữ
-                            >
-                                Pham Tuan Linh
-                            </a>
-                            <span style={{ fontSize: '0.7rem', color: 'gray', paddingLeft: "0.8%" }}>
-                                đã đăng tải bài viết
+            {loading ? <LoadingComponent /> : <div style={{ display: "flex", flexDirection: "column", gap: "5px", paddingTop: "1%" }}>
+                {listUserById.length <= 0 ? <NotListComponent description="Chưa có bài đăng nào" /> : listUserById.map((item, index) => (
+                    <Card key={item.id} title={
+                        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                            <ImageStatus width="26px" height="25px" image={item.avatar} style={{ borderRadius: "5px" }} />
+                            <span>
+                                <a
+                                    //onClick={handleNavigate} // Thay đổi URL theo logic của bạn
+                                    style={{ textDecoration: 'none', color: 'blue' }} // Optional: bỏ gạch chân và giữ màu chữ
+                                >
+                                    {item.name}
+                                </a>
+                                <span style={{ fontSize: '0.7rem', color: 'gray', paddingLeft: "0.8%" }}>
+                                    {`đã đăng tải bài viết(${formatTimeStamp(item.created_at)})`}
+                                </span>
                             </span>
-                        </span>
-                    </div>
-                } size="small">
-                    <div>
-                        Vẻ đẹp người thiếu nữ nằm trong đôi mắt kẻ si tình.
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                        <div
-                            style={{ position: "relative", width: "100%", overflowX: "hidden" }}
-                        >
+                        </div>
+                    } size="small">
+                        <div>
+                            {/* <p>
+                                {isExpanded
+                                    ? item.content.title
+                                    : `${item.content.title.slice(0, maxLength)}...`}{" "}
+                                <span
+                                    onClick={showAllOrHideTitle}
+                                    style={{ color: "blue", cursor: "pointer" }}
+                                >
+                                    <span>
+                                        {isExpanded ? (
+                                            <>
+                                                <br />
+                                                ẩn
+                                            </>
+                                        ) : (
+                                            "xem tiếp"
+                                        )}{" "}
+                                    </span>
+                                </span>
+                            </p> */}
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                             <div
-                                // ref=""
+                                style={{ position: "relative", width: "100%", overflowX: "hidden" }}
+                            >
+                                <div
+                                    // ref={containerRefs.current[index]}
+                                    style={{
+                                        display: "flex",
+                                        gap: "5px",
+                                        overflowX: "auto",
+                                        whiteSpace: "nowrap",
+                                        scrollbarWidth: "none", // Ẩn thanh cuộn cho Firefox
+                                        msOverflowStyle: "none", // Ẩn thanh cuộn cho IE
+                                    }}
+                                >
+                                    {item.content.images.length > 0 && item.content.images.map((image, imageIndex) => (
+                                        <div
+                                            key={imageIndex}
+                                            style={{
+                                                display: 'inline-block',
+                                                marginRight: "5px",
+                                                marginBottom: '5px',
+                                                padding: 0,
+                                            }}
+                                        >
+                                            <ImageStatus image={image} width={200} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <Space
                                 style={{
+                                    flex: 1,
+                                    minWidth: 0,
                                     display: "flex",
-                                    gap: "5px",
-                                    overflowX: "auto",
-                                    whiteSpace: "nowrap",
-                                    scrollbarWidth: "none", // Ẩn thanh cuộn cho Firefox
-                                    msOverflowStyle: "none", // Ẩn thanh cuộn cho IE
+                                    justifyContent: "flex-end",
                                 }}
                             >
-                                {/* Render Image here */}
-                            </div>
+                                <Button style={{
+                                    color: "green",
+                                    backgroundColor: "white",
+                                    border: "1px solid green"
+                                }}>
+                                    <GiChestnutLeaf />
+                                    <span>{item.like}</span>Like
+                                </Button>
+                                <FriendStatusContentDetailsComponent
+                                    comment_count={item.comment}
+                                    title={item.content.title}
+                                    like={item.like}
+                                    shared={item.shared}
+                                    image={item.content.images}
+                                    postId={item.id}
+                                />
+                                <Button>
+                                    <VscShare />
+                                    <span>{item.shared}</span>Share
+                                </Button>
+                            </Space>
                         </div>
-
-                        <Space
-                            style={{
-                                flex: 1,
-                                minWidth: 0,
-                                display: "flex",
-                                justifyContent: "flex-end",
-                            }}
-                        >
-                            <Button style={{
-                                color: "green",
-                                backgroundColor: "white",
-                                border: "1px solid green"
-                            }}>
-                                <GiChestnutLeaf />
-                                <span>100</span>Like
-                            </Button>
-                            {/* <FriendStatusContentDetailsComponent
-                                comment_count="100"
-                                title="Demo"
-                                like="100"
-                                shared="100"
-                                image=""
-                                // postId={item.id}
-                            /> */}
-                            <Button>
-                                <VscShare />
-                                <span>100</span>Share
-                            </Button>
-                        </Space>
-                    </div>
-                </Card>
-            </div>
+                    </Card>
+                ))}
+            </div>}
         </>
     );
 };

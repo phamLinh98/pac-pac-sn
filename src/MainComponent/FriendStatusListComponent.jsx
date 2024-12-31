@@ -21,8 +21,9 @@ export const FriendStatusListComponent = () => {
   const containerRefs = useRef([]);
   const navigate = useNavigate();
 
-  const handleNavigate = () => {
-    navigate('/profile');
+  const handleNavigate = (userId) => {
+    console.log(userId)
+    navigate(`/profile/${userId}`);
   };
 
   return (
@@ -34,7 +35,7 @@ export const FriendStatusListComponent = () => {
               <ImageStatus width="26px" height="25px" image={item.avatar} style={{ borderRadius: "5px" }} />
               <span>
                 <a
-                  onClick={handleNavigate} // Thay đổi URL theo logic của bạn
+                  onClick={()=>handleNavigate(item.user_id)} // Thay đổi URL theo logic của bạn
                   style={{ textDecoration: 'none', color: 'blue' }} // Optional: bỏ gạch chân và giữ màu chữ
                 >
                   {item.user_name}

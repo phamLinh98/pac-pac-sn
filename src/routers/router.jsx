@@ -19,7 +19,7 @@ export const router = createBrowserRouter(
           element: <MainShowStatusAndStory />,
         },
         {
-          path: "/profile",
+          path: "/profile/:id",
           element: <FriendOrMyProfileComponent />
         }
       ],

@@ -9,9 +9,8 @@ import { useNavigate } from "react-router-dom";
 export const CommentListInDetailComponent = () => {
   const { listComment, loading } = useSelector(state => state.reduxComment);
   const navigate = useNavigate();
-
-  const goToProfileUser = () => {
-    navigate('/profile');
+  const goToProfileUser = (userId) => {
+    navigate(`/profile/${userId}`);
   }
 
   return (
@@ -35,7 +34,7 @@ export const CommentListInDetailComponent = () => {
                 avatar={<Avatar src={item.avatar} />}
                 title={
                   <span>
-                    <a  onClick={goToProfileUser} style={{ textDecoration: 'none', color: 'blue' }}>
+                    <a  onClick={() => goToProfileUser(item.user_id)} style={{ textDecoration: 'none', color: 'blue' }}>
                       {item.user_name}
                     </a>
                     <span style={{ fontSize: '0.7rem', color: 'gray' }}>
