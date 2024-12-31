@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Avatar, Button, Card, Image, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { IoMdAdd } from 'react-icons/io';
@@ -18,6 +18,13 @@ export const ProfileComponent = () => {
     const userId = useParams();
     const userIdConverToNumber = +userId.id;
     const { listUserById, loading } = useFacadeListByUserId(userIdConverToNumber);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const showAllOrHideTitle = () => {
+      setIsExpanded(!isExpanded);
+    };
+    const containerRefs = useRef([]);
+    const maxLength = 150;
+
     return (
         <>
             <div style={{ width: '100%', height: '5%', position: 'relative' }}>
@@ -76,7 +83,7 @@ export const ProfileComponent = () => {
                         </div>
                     } size="small">
                         <div>
-                            {/* <p>
+                            <p>
                                 {isExpanded
                                     ? item.content.title
                                     : `${item.content.title.slice(0, maxLength)}...`}{" "}
@@ -95,14 +102,14 @@ export const ProfileComponent = () => {
                                         )}{" "}
                                     </span>
                                 </span>
-                            </p> */}
+                            </p>
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                             <div
                                 style={{ position: "relative", width: "100%", overflowX: "hidden" }}
                             >
                                 <div
-                                    // ref={containerRefs.current[index]}
+                                    ref={containerRefs.current[index]}
                                     style={{
                                         display: "flex",
                                         gap: "5px",

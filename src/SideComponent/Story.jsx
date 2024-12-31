@@ -5,12 +5,17 @@ import { useFacadeStory } from "../reduxs/useFacadeStory";
 import { PiHeartbeatBold } from "react-icons/pi";
 import { ImReply } from "react-icons/im";
 import { RiUserUnfollowFill } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 const { Meta } = Card;
 
 export const AllStory = () => {
   // Sử dụng ref để truy cập container
   const containerRef = useRef(null);
   const { story, loadingStory } = useFacadeStory();
+  const navigate = useNavigate();
+  const moveToProfileUser = (userId) => {
+    navigate(`/profile/${userId}`)
+  }
   return (
     <div
       style={{
@@ -29,7 +34,7 @@ export const AllStory = () => {
           scrollbarWidth: "none", // Ẩn thanh cuộn cho Firefox
         }}
       >
-        {story && story.map((item, index) => (
+        {loadingStory ? <LoadingComponent /> : story.map((item, index) => (
           <Card
             key={index}
             hoverable
@@ -48,7 +53,7 @@ export const AllStory = () => {
               <RiUserUnfollowFill key="ellipsis" style={{ fontSize: "1.3rem" }} />,
             ]}
           >
-            <Meta title={`${item.user_name}`} />
+            <Meta title={`${item.user_name}`} onClick={()=>moveToProfileUser(item.user_id)}/>
           </Card>
         ))}
       </div>

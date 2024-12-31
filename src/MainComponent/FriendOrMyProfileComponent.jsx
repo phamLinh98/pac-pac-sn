@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Layout } from 'antd'; // Import Layout từ antd
 import { FaRegFileImage, FaRegFileVideo } from 'react-icons/fa';
 import { BsFileEarmarkPost } from 'react-icons/bs';
 import { ProfileComponent } from './ProfileComponent';
@@ -25,5 +25,17 @@ export const FriendOrMyProfileComponent = () => {
       children: 'Content of Tab Pane 3',
     },
   ];
-  return <Tabs defaultActiveKey="1" items={items} onChange={onChange} />;
-}
+  return (
+    <div> {/* Bọc Tabs và Footer trong div */}
+      <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+      <Layout.Footer
+        style={{
+          textAlign: "center",
+          marginTop: 20, // Add margin for spacing
+        }}
+      >
+        Linhthusinh ©{new Date().getFullYear()} donate để mình thuê Server ngon hơn nhé ?
+      </Layout.Footer>
+    </div>
+  );
+};
