@@ -24,7 +24,6 @@ export const ProfileComponent = () => {
     };
     const containerRefs = useRef([]);
     const maxLength = 150;
-
     return (
         <>
             <div style={{ width: '100%', height: '5%', position: 'relative' }}>
@@ -51,7 +50,7 @@ export const ProfileComponent = () => {
                             {loading ? <LoadingComponent paddingTop='0'/>:listUserById.map((item) => <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
                                 <Avatar size={64} icon={<UserOutlined />} src={item.avatar}/>
                                 <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>{item.name}</span>
-                                <span style={{ marginLeft: '10px', fontSize: "12px", color: "gray" }}>(128 bạn bè)</span>
+                                <span style={{ marginLeft: '10px', fontSize: "12px", color: "gray" }}>({item.friends} bạn bè)</span>
                             </div>)}
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <Button type="primary" style={{ marginRight: '10px' }}><IoMdAdd />Kết Bạn</Button>
