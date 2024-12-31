@@ -32,7 +32,7 @@ export const ProfileComponent = () => {
                             padding: '10px',
                         }}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <Avatar size="large" icon={<UserOutlined />} src="https://i.pinimg.com/736x/b4/55/1f/b4551f8d549b7e6f7f63d789fa06fb3b.jpg" />
+                                <Avatar size={64} icon={<UserOutlined />} src="https://i.pinimg.com/736x/b4/55/1f/b4551f8d549b7e6f7f63d789fa06fb3b.jpg" />
                                 <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>Phạm Tuấn Linh</span>
                                 <span style={{ marginLeft: '10px', fontSize: "12px", color:"gray" }}>(128 bạn bè)</span>
                             </div>
@@ -46,7 +46,7 @@ export const ProfileComponent = () => {
             </div>
 
             {/* TODO */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "5px", paddingTop: "2%" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "5px", paddingTop: "2%"}}>
                 <Card key={1} title={
                     <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                         <ImageStatus width="26px" height="25px" image="https://i.pinimg.com/736x/b4/55/1f/b4551f8d549b7e6f7f63d789fa06fb3b.jpg" style={{ borderRadius: "5px" }} />
@@ -64,7 +64,7 @@ export const ProfileComponent = () => {
                     </div>
                 } size="small">
                     <div>
-                        Demo
+                        Vẻ đẹp người thiếu nữ nằm trong đôi mắt kẻ si tình.
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                         <div
