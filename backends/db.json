@@ -1,175 +1,130 @@
 {
     "list": [
         {
-            "id": "1",
-            "user_id": "123",
+            "id": 1,
+            "user_id": 123,
             "content": {
-                "title": "Hom nay la thu may",
+                "title": "Bai Viet 1",
                 "images": [
-                    "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
-                    "https://i.pinimg.com/736x/f2/b9/3c/f2b93c00dbe9f6cd761d6e48d2b6141d.jpg",
-                    "https://i.pinimg.com/736x/94/8d/b4/948db4d850c19147444aa1280fb8a5a4.jpg",
-                    "https://i.pinimg.com/736x/6a/c5/6c/6ac56c9e41b598dd26d8304f5353b96a.jpg",
-                    "https://i.pinimg.com/736x/a3/1f/05/a31f05288811fffe86f7427fbe12bd47.jpg",
-                    "https://i.pinimg.com/736x/00/b5/4a/00b54ada669c26101f15dafad3f13be4.jpg",
-                    "https://i.pinimg.com/736x/00/b5/4a/00b54ada669c26101f15dafad3f13be4.jpg"
+                    "https://i.pinimg.com/736x/68/7c/fc/687cfcdcbf3090923a508d0bb069633e.jpg",
+                    "https://i.pinimg.com/736x/68/7c/fc/687cfcdcbf3090923a508d0bb069633e.jpg",
+                    "https://i.pinimg.com/736x/68/7c/fc/687cfcdcbf3090923a508d0bb069633e.jpg",
+                    "https://i.pinimg.com/736x/68/7c/fc/687cfcdcbf3090923a508d0bb069633e.jpg",
+                    "https://i.pinimg.com/736x/68/7c/fc/687cfcdcbf3090923a508d0bb069633e.jpg",
+                    "https://i.pinimg.com/736x/68/7c/fc/687cfcdcbf3090923a508d0bb069633e.jpg",
+                    "https://i.pinimg.com/736x/68/7c/fc/687cfcdcbf3090923a508d0bb069633e.jpg"
                 ]
             },
+            "comment": 3,
             "like": 100,
-            "shared": 100,
-            "comment": 12,
-            "created_at": "2024-12-21T10:30:00Z",
-            "updated_at": "2024-12-21T10:30:00Z"
+            "created_at": "2024-12-23T04:18:45.000Z",
+            "user_name": "Le Kang In",
+            "avatar": "https://i.pinimg.com/736x/f2/a9/31/f2a9310be7d13bb02ffbb0bf3445a8b4.jpg"
         },
         {
-            "id": "2",
-            "user_id": "234",
+            "id": 2,
+            "user_id": 234,
             "content": {
-                "title": "Troi hom nay that dep",
+                "title": "Bai Viet 2",
                 "images": [
-                    "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
-                    "https://i.pinimg.com/736x/f2/b9/3c/f2b93c00dbe9f6cd761d6e48d2b6141d.jpg",
-                    "https://i.pinimg.com/736x/94/8d/b4/948db4d850c19147444aa1280fb8a5a4.jpg",
-                    "https://i.pinimg.com/736x/6a/c5/6c/6ac56c9e41b598dd26d8304f5353b96a.jpg",
-                    "https://i.pinimg.com/736x/a3/1f/05/a31f05288811fffe86f7427fbe12bd47.jpg",
-                    "https://i.pinimg.com/736x/00/b5/4a/00b54ada669c26101f15dafad3f13be4.jpg",
-                    "https://i.pinimg.com/736x/00/b5/4a/00b54ada669c26101f15dafad3f13be4.jpg",
-                    "https://i.pinimg.com/736x/00/b5/4a/00b54ada669c26101f15dafad3f13be4.jpg"
+                    "https://i.pinimg.com/736x/cf/59/31/cf59317d0d29c688b29bba5869e39210.jpg",
+                    "https://i.pinimg.com/736x/cf/59/31/cf59317d0d29c688b29bba5869e39210.jpg",
+                    "https://i.pinimg.com/736x/cf/59/31/cf59317d0d29c688b29bba5869e39210.jpg",
+                    "https://i.pinimg.com/736x/cf/59/31/cf59317d0d29c688b29bba5869e39210.jpg",
+                    "https://i.pinimg.com/736x/cf/59/31/cf59317d0d29c688b29bba5869e39210.jpg",
+                    "https://i.pinimg.com/736x/cf/59/31/cf59317d0d29c688b29bba5869e39210.jpg",
+                    "https://i.pinimg.com/736x/cf/59/31/cf59317d0d29c688b29bba5869e39210.jpg"
                 ]
             },
-            "like": 300,
-            "shared": 1,
-            "comment": 20,
-            "created_at": "2024-12-21T10:30:00Z",
-            "updated_at": "2024-12-21T10:30:00Z"
+            "comment": 0,
+            "like": 50,
+            "created_at": "2024-12-15T10:30:18.000Z",
+            "user_name": "Izuka Namiho",
+            "avatar": "https://i.pinimg.com/736x/01/5d/85/015d856a0db9a6b16bc44267a7ad5ad7.jpg"
         }
     ],
     "user": [
         {
-            "id": "123",
-            "name": "John Doe",
+            "id": 123,
+            "name": "Le Kang In",
             "email": "johndoe@example.com",
-            "avatar": "",
+            "avatar": "https://i.pinimg.com/736x/f2/a9/31/f2a9310be7d13bb02ffbb0bf3445a8b4.jpg",
             "password": "hashed_password_123",
-            "created_at": "2024-12-21T10:00:00Z",
-            "updated_at": "2024-12-21T10:00:00Z"
+            "created_at": "2024-12-21T10:00:00.000Z",
+            "updated_at": "2024-12-21T10:00:00.000Z",
+            "namecode": "LeKangIn",
+            "friends": 50
         },
         {
-            "id": "234",
-            "name": "Jane Smith",
+            "id": 234,
+            "name": "Izuka Namiho",
             "email": "janesmith@example.com",
-            "avatar": "",
+            "avatar": "https://i.pinimg.com/736x/01/5d/85/015d856a0db9a6b16bc44267a7ad5ad7.jpg",
             "password": "hashed_password_456",
-            "created_at": "2024-12-21T10:10:00Z",
-            "updated_at": "2024-12-21T10:10:00Z"
+            "created_at": "2024-12-21T10:10:00.000Z",
+            "updated_at": "2024-12-21T10:10:00.000Z",
+            "namecode": "IzukaNamiho",
+            "friends": 27
         },
         {
-            "id": "345",
-            "name": "Alice Nguyen",
+            "id": 345,
+            "name": "Luis Valahois",
             "email": "alicenguyen@example.com",
-            "avatar": "",
+            "avatar": "https://i.pinimg.com/736x/13/24/69/132469da6c0f0bf56e5ab1a9d18ad3b1.jpg",
             "password": "hashed_password_789",
-            "created_at": "2024-12-21T10:20:00Z",
-            "updated_at": "2024-12-21T10:20:00Z"
+            "created_at": "2024-12-21T10:20:00.000Z",
+            "updated_at": "2024-12-21T10:20:00.000Z",
+            "namecode": "LuisValahois",
+            "friends": 140
         }
     ],
     "comment": [
         {
-            "id": "1",
-            "post_id": "1",
+            "id": 2,
+            "post_id": 1,
+            "content": "Cảm ơn bạn đã chia sẻ!",
+            "user_id": 234,
+            "replies": null,
+            "created_at": "2024-12-21T11:00:00.000Z",
+            "updated_at": "2024-12-21T11:00:14.000Z"
+        },
+        {
+            "id": 1,
+            "post_id": 1,
             "content": "Bài viết rất hay!",
-            "user_id": "123",
-            "created_at": "2024-12-21T10:30:00Z",
-            "updated_at": "2024-12-21T10:30:00Z",
-            "replies": [
-                {
-                    "id": "1",
-                    "comment_id": "1",
-                    "content": "Cảm ơn bạn nhé!",
-                    "user_id": "124",
-                    "created_at": "2024-12-21T10:40:00Z",
-                    "updated_at": "2024-12-21T10:40:00Z"
-                },
-                {
-                    "id": "2",
-                    "comment_id": "1",
-                    "content": "Đồng ý, bài viết rất hữu ích!",
-                    "user_id": "125",
-                    "created_at": "2024-12-21T11:00:00Z",
-                    "updated_at": "2024-12-21T11:00:00Z"
-                }
-            ]
+            "user_id": 123,
+            "replies": null,
+            "created_at": "2024-12-21T11:00:00.000Z",
+            "updated_at": "2024-12-21T11:00:15.000Z"
         },
         {
-            "id": "2",
-            "post_id": "1",
-            "content": "Cảm ơn bạn đã chia sẻ!",
-            "user_id": "124",
-            "created_at": "2024-12-21T11:00:00Z",
-            "updated_at": "2024-12-21T11:00:00Z",
-            "replies": []
-        },
-        {
-            "id": "3",
-            "post_id": "2",
-            "content": "Cảm ơn bạn đã chia sẻ!",
-            "user_id": "124",
-            "created_at": "2024-12-21T11:00:00Z",
-            "updated_at": "2024-12-21T11:00:00Z",
-            "replies": []
-        },
-        {
-            "id": "3",
-            "post_id": "2",
-            "content": "Cảm ơn bạn đã chia sẻ!",
-            "user_id": "124",
-            "created_at": "2024-12-21T11:00:00Z",
-            "updated_at": "2024-12-21T11:00:00Z",
-            "replies": []
+            "id": 3,
+            "post_id": 1,
+            "content": "Không thú vị",
+            "user_id": 234,
+            "replies": null,
+            "created_at": "2024-12-29T15:00:00.000Z",
+            "updated_at": "2024-12-29T15:00:00.000Z"
         }
     ],
     "story": [
         {
-            "id": "1",
-            "user_id": "123",
-            "image": "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
-            "created_at": "2024-12-21T10:30:00Z",
-            "updated_at": "2024-12-21T10:30:00Z"
+            "id": 1,
+            "user_id": 234,
+            "image": "https://i.pinimg.com/736x/98/f3/b3/98f3b3b024055dfc10a2c5249db05a8d.jpg",
+            "created_at": "2024-12-21T10:30:00.000Z",
+            "updated_at": "2024-12-21T10:30:00.000Z",
+            "user_name": "Izuka Namiho",
+            "avatar": "https://i.pinimg.com/736x/01/5d/85/015d856a0db9a6b16bc44267a7ad5ad7.jpg"
         },
         {
-            "id": "1",
-            "user_id": "234",
-            "image": "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
-            "created_at": "2024-12-21T10:30:00Z",
-            "updated_at": "2024-12-21T10:30:00Z"
-        },
-        {
-            "id": "2",
-            "user_id": "345",
-            "image": "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
-            "created_at": "2024-12-21T10:30:00Z",
-            "updated_at": "2024-12-21T10:30:00Z"
-        },
-        {
-            "id": "3",
-            "user_id": "456",
-            "image": "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
-            "created_at": "2024-12-21T10:30:00Z",
-            "updated_at": "2024-12-21T10:30:00Z"
-        },
-        {
-            "id": "4",
-            "user_id": "789",
-            "image": "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
-            "created_at": "2024-12-21T10:30:00Z",
-            "updated_at": "2024-12-21T10:30:00Z"
-        },
-        {
-            "id": "5",
-            "user_id": "000",
-            "image": "https://i.pinimg.com/736x/06/8c/41/068c41956bbe1bf9bc051f5222fa6429.jpg",
-            "created_at": "2024-12-21T10:30:00Z",
-            "updated_at": "2024-12-21T10:30:00Z"
+            "id": 2,
+            "user_id": 123,
+            "image": "https://i.pinimg.com/736x/6d/fe/5f/6dfe5f05d2d5f186ad8a769360bc96a7.jpg",
+            "created_at": "2024-12-21T10:30:00.000Z",
+            "updated_at": "2024-12-21T10:30:00.000Z",
+            "user_name": "Le Kang In",
+            "avatar": "https://i.pinimg.com/736x/f2/a9/31/f2a9310be7d13bb02ffbb0bf3445a8b4.jpg"
         }
     ]
 }
