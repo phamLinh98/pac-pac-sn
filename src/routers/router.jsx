@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { LayoutComponent } from "../MainComponent/LayoutComponent";
 import { MainShowStatusAndStory } from "../MainComponent/MainShowStatusAndStory";
 import { FriendOrMyProfileComponent } from "../MainComponent/FriendOrMyProfileComponent";
+import { LoginComponent } from "../MainComponent/LoginComponent";
 
 // Define your routes
 export const router = createBrowserRouter(
@@ -21,6 +22,9 @@ export const router = createBrowserRouter(
         {
           path: "/profile/:id",
           element: <FriendOrMyProfileComponent />
+        }, {
+          path: "/login",
+          element: <LoginComponent/>
         }
       ],
     },
