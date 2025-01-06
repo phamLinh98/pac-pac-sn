@@ -18,6 +18,8 @@ export const FriendStatusListComponent = () => {
     setIsExpanded(!isExpanded);
   };
 
+  console.log('list', list)
+
   const containerRefs = useRef([]);
   const navigate = useNavigate();
 
@@ -108,9 +110,9 @@ export const FriendStatusListComponent = () => {
                 }}
               >
                 <Button style={{
-                  color: "green",
+                  color: "red",
                   backgroundColor: "white",
-                  border: "1px solid green"
+                  border: "1px solid red"
                 }}>
                   <GiChestnutLeaf />
                   <span>{item.like}</span>Like

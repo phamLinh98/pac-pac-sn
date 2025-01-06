@@ -20,8 +20,8 @@ export const LayoutComponent = () => {
   }
 
   const navigate = useNavigate();
-  const moveToProfile = () => {
-    navigate('/profile');
+  const moveToProfile = (userId) => {
+    navigate(`/profile/${userId}`);
   }
 
   const headerItem = [
@@ -46,7 +46,7 @@ export const LayoutComponent = () => {
           Phạm Tuấn Linh
         </span>
       </div>),
-      onClick:moveToProfile
+      onClick: () => moveToProfile(456)
     }
   ];
 

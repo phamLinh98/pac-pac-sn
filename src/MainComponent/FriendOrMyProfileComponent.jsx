@@ -34,7 +34,7 @@ export const FriendOrMyProfileComponent = () => {
           marginTop: 20, // Add margin for spacing
         }}
       >
-        Linhthusinh ©{new Date().getFullYear()} donate để mình thuê Server ngon hơn nhé ?
+        Linhthusinh ©{new Date().getFullYear()}
       </Layout.Footer>
     </div>
   );

@@ -112,9 +112,9 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
           }}
         >
           <Button style={{
-            color: "green",
+            color: "red",
             backgroundColor: "white",
-            border: "1px solid green"
+            border: "1px solid red"
           }}>
             <GiChestnutLeaf />
             <span>{like}</span>Like

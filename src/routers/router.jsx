@@ -22,12 +22,13 @@ export const router = createBrowserRouter(
         {
           path: "/profile/:id",
           element: <FriendOrMyProfileComponent />
-        }, {
-          path: "/login",
-          element: <LoginComponent/>
         }
       ],
     },
+    {
+      path: "/login",
+      element: <LoginComponent />
+    }
   ],
   {
     future: {

@@ -25,7 +25,7 @@ export const CommentListInDetailComponent = () => {
     >
       {loading ? (
         <LoadingComponent />
-      ) : listComment.length === 0 ? <div style={{ paddingTop: "5%" }}><NotListComponent description="Chưa có bình luận" /></div> : (
+      ) : listComment.length === 0 ? <div style={{ paddingTop: "5%" }}><NotListComponent description="Bài viết chưa có bình luận" /></div> : (
         <List
           dataSource={listComment}
           renderItem={(item) => (
