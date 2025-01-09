@@ -30,11 +30,11 @@ export const LoginComponent = () => {
                     >
                         <Form.Item
                             name="username"
-                            rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập email!' }]}
                         >
                             <Input
                                 prefix={<UserOutlined className="site-form-item-icon" />}
-                                placeholder="Tên đăng nhập"
+                                placeholder="Email đăng nhập"
                                 style={{ borderRadius: '4px' }}
                             />
                         </Form.Item>
