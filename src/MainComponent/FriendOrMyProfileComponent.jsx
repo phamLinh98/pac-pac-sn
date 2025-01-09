@@ -17,7 +17,7 @@ export const FriendOrMyProfileComponent = () => {
     {
       key: '2',
       label: <span><FaRegFileImage />Image</span>,
-      children: 'Content of Tab Pane 2',
+      children: 'Thư mục ảnh của A',
     },
     {
       key: '3',
