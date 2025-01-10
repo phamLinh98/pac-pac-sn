@@ -3,16 +3,17 @@ import { LayoutComponent } from "../MainComponent/LayoutComponent";
 import { MainShowStatusAndStory } from "../MainComponent/MainShowStatusAndStory";
 import { FriendOrMyProfileComponent } from "../MainComponent/FriendOrMyProfileComponent";
 import { LoginComponent } from "../MainComponent/LoginComponent";
+import AuthGuard from "../MainComponent/ProtectedRouteComponent";
 
 // Define your routes
 export const router = createBrowserRouter(
   [
     {
       path: "/",
-      element: <LayoutComponent />,
+      element: <AuthGuard> <LayoutComponent /> </AuthGuard>,
       children: [
         {
-          index: true, // để hiển thị mặc định
+          index: true,
           element: <MainShowStatusAndStory />,
         },
         {
@@ -32,11 +33,11 @@ export const router = createBrowserRouter(
   ],
   {
     future: {
-      v7_relativeSplatPath: true, // Enables relative paths in nested routes
-      v7_fetcherPersist: true,   // Retains fetcher state during navigation
-      v7_normalizeFormMethod: true, // Normalizes form methods (e.g., POST or GET)
-      v7_partialHydration: true, // Supports partial hydration for server-side rendering
-      v7_skipActionErrorRevalidation: true, // Prevents revalidation when action errors occur
+      v7_relativeSplatPath: true,
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_partialHydration: true,
+      v7_skipActionErrorRevalidation: true,
     },
   }
 );

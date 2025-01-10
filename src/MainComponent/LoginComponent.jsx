@@ -1,11 +1,20 @@
 import React from 'react';
-import { Form, Input, Button, Card, Row, Col } from 'antd';
+import { Form, Input, Button, Card, Row, Col, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { loginByEmailAndPassword } from '../api/restApiConfig';
 
 export const LoginComponent = () => {
-    const onFinish = (values) => {
-        console.log('Received values of form: ', values);
-        // Xử lý đăng nhập tại đây
+    const navigate = useNavigate();
+    const onFinish = async (values) => {
+        try {
+            await loginByEmailAndPassword(values.email, values.password);
+            console.log('login thanh cong');
+            navigate('/home');
+        } catch (error) {
+            console.error(error);
+            message.error(`Đăng nhập thất bại: ${error.message}`);
+        }
     };
 
     return (
@@ -18,7 +27,7 @@ export const LoginComponent = () => {
                 >
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                         <img
-                            src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZveq.png"
+                            src="https://i.pinimg.com/736x/e7/23/37/e7233741efa8cc3971e5964cffbcbdcb.jpg"
                             alt="Logo"
                             style={{ width: '100px', height: 'auto' }}
                         />
@@ -29,13 +38,14 @@ export const LoginComponent = () => {
                         onFinish={onFinish}
                     >
                         <Form.Item
-                            name="username"
+                            name="email"
                             rules={[{ required: true, message: 'Vui lòng nhập email!' }]}
                         >
                             <Input
                                 prefix={<UserOutlined className="site-form-item-icon" />}
                                 placeholder="Email đăng nhập"
                                 style={{ borderRadius: '4px' }}
+                                autoComplete="email"
                             />
                         </Form.Item>
 
@@ -48,15 +58,17 @@ export const LoginComponent = () => {
                                 type="password"
                                 placeholder="Mật khẩu"
                                 style={{ borderRadius: '4px' }}
+                                autoComplete="current-password"
                             />
                         </Form.Item>
+
 
                         <Form.Item>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                                 <Button
                                     type="primary"
                                     htmlType="submit"
-                                    style={{ width: '100%', borderRadius: '4px', marginRight: '5px' }} // Thêm marginRight 5px
+                                    style={{ width: '100%', borderRadius: '4px', marginRight: '5px' }}
                                 >
                                     Login Password
                                 </Button>
