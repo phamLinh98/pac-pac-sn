@@ -10,7 +10,7 @@ export const LoginComponent = () => {
         try {
             await loginByEmailAndPassword(values.email, values.password);
             console.log('login thanh cong');
-            navigate('/home');
+            navigate("/home");
         } catch (error) {
             console.error(error);
             message.error(`Đăng nhập thất bại: ${error.message}`);

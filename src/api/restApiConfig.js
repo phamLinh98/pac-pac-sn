@@ -34,7 +34,9 @@ export const loginByEmailAndPassword = async (email, password) => {
             const errorData = await response.json();
             throw new Error(errorData.error || "Đã xảy ra lỗi khi đăng nhập"); // sửa message thành error
         }
-       return true; // Trả về true nếu thành công
+        const responseData = await response.json();
+        localStorage.setItem('accessToken', responseData.token);
+        return true;
     } catch (error) {
         console.error("Error in loginByEmailAndPassword:", error);
         throw error;

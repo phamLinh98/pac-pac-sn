@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 import { LoadingComponent } from "../SideComponent/LoadingComponent";
 
 const AuthGuard = ({ children }) => {
@@ -8,13 +7,14 @@ const AuthGuard = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const accessToken = Cookies.get("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
+    // verify
     if (!accessToken) {
       navigate("/login");
     } else {
       setIsLoading(false);
     }
-  }, [navigate]);
+  },[navigate]);
 
   if (isLoading) {
     return <div><LoadingComponent/></div>;
