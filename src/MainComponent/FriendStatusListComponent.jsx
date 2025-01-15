@@ -17,9 +17,7 @@ export const FriendStatusListComponent = () => {
   const showAllOrHideTitle = () => {
     setIsExpanded(!isExpanded);
   };
-
-  console.log('list', list)
-
+  
   const containerRefs = useRef([]);
   const navigate = useNavigate();
 

@@ -7,7 +7,8 @@ export const getApi = async (route) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-      }
+      },
+      credentials: 'include',
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status:${response.status}`);
