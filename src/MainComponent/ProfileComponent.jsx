@@ -11,8 +11,8 @@ import { FriendStatusContentDetailsComponent } from './FriendStatusContentDetail
 import { LoadingComponent } from '../SideComponent/LoadingComponent';
 import { NotListComponent } from '../SideComponent/NoListComponent';
 import { formatTimeStamp } from '../configs/configTimeStamp';
-import { useFacadeListByUserId } from '../reduxs/useFacadeListByUserId';
 import { useParams } from 'react-router-dom';
+import { useFacadeListByUserId } from '../reduxs/useFacadeListByUserId';
 const { Meta } = Card;
 export const ProfileComponent = () => {
     const userId = useParams();

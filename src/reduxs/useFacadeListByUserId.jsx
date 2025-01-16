@@ -6,8 +6,8 @@ export const useFacadeListByUserId = (userId) => {
     const { listUserById, error, loading } = useSelector(state => state.reduxListByUserId);
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(getListByUserIdThunk(userId));
-    }, [dispatch, userId, getListByUserIdThunk]);
+        dispatch(getListByUserIdThunk(userId))
+    }, [userId, dispatch, getListByUserIdThunk]);
     return {
         listUserById,
         error,
