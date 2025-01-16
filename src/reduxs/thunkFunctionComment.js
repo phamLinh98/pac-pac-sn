@@ -1,4 +1,4 @@
-import { getApi } from "../api/restApiConfig.js";
+import { getApi } from "../api/restApiConfig";
 import { getCommentStatus, eventLoading, logError } from "./reduxComment";
 
 // Redux thunk cho list status 

@@ -1,4 +1,4 @@
-import { getApi } from "../api/restApiConfig.js";
+import { getApi } from "../api/restApiConfig";
 import { eventLoading, getListByUserId, logError } from "./reduxListByUserId";
 
 // Redux thunk cho list status 
