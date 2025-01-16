@@ -27,7 +27,7 @@ export const loginByEmailAndPassword = async (email, password) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            credentials: 'include', //Quan trọng để gửi cookie
+            credentials: 'include',
             body: JSON.stringify({ email, password }),
         });
 
