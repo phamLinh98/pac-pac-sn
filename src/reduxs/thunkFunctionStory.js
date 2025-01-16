@@ -1,4 +1,4 @@
-import { getApi } from "../api/restApiConfig";
+import { getApi } from "../api/restApiConfig.js";
 import { logError } from "./reduxListStatus";
 import { getStory } from "./reduxStory";
 

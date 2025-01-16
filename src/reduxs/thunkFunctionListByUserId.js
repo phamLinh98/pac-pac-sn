@@ -1,4 +1,4 @@
-import { getApi } from "../api/restApiConfig";
+import { getApi } from "../api/restApiConfig.js";
 import { eventLoading, getListByUserId, logError } from "./reduxListByUserId";
 
 // Redux thunk cho list status 
@@ -12,7 +12,7 @@ export const getListByUserIdThunk = (userId) => {
             dispatch(eventLoading(false));
 
         } catch (error) {
-            dispatch(logError(error))
+            dispatch(logError(error.message))
         }
     }
 };

@@ -6,6 +6,7 @@ import { PiHeartbeatBold } from "react-icons/pi";
 import { ImReply } from "react-icons/im";
 import { RiUserUnfollowFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { LoadingComponent } from "./LoadingComponent";
 const { Meta } = Card;
 
 export const AllStory = () => {

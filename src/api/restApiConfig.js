@@ -15,7 +15,7 @@ export const getApi = async (route) => {
     }
     return response;
   } catch (error) {
-    console.log('error', error)
+    console.log('error', error.message);
   }
 }
 
