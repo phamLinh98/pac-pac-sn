@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, Card, Row, Col, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -6,10 +6,16 @@ import { loginByEmailAndPassword } from '../api/restApiConfig';
 
 export const LoginComponent = () => {
     const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+            navigate('/home');
+        }
+    }, [navigate]);
+
     const onFinish = async (values) => {
         try {
             await loginByEmailAndPassword(values.email, values.password);
-            console.log('login thanh cong');
             navigate("/home");
         } catch (error) {
             console.error(error);
