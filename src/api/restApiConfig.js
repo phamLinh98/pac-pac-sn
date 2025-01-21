@@ -11,7 +11,12 @@ export const getApi = async (route) => {
       credentials: 'include',
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! status:${response.status}`);
+      if (response.status === 401) {
+        // Nếu là lỗi 401, ném một lỗi đặc biệt
+        throw new Error("Unauthorized: 401");
+      }
+      const errorData = await response.json();
+      console.log('123',errorData);
     }
     return response;
   } catch (error) {
@@ -33,14 +38,32 @@ export const loginByEmailAndPassword = async (email, password) => {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error || "Đã xảy ra lỗi khi đăng nhập"); // sửa message thành error
+            console.log('123',errorData);
         }
         const responseData = await response.json();
         localStorage.setItem('accessToken', responseData.token);
         return true;
     } catch (error) {
-        console.error("Error in loginByEmailAndPassword:", error);
-        throw error;
+        console.log(error.message);
     }
 };
+
+export const refeshTokenWhenExpired = async (route) => {
+  try {
+    const url = `${envConfig.host}${route}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status:${response.status}`);
+    }
+    return response;
+  } catch (error) {
+    console.log('error', error.message);
+  }
+}
 

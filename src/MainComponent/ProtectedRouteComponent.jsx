@@ -7,17 +7,27 @@ const AuthGuard = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    // verify
-    if (!accessToken) {
-      navigate("/login");
-    } else {
-      setIsLoading(false);
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      // verify
+      if (!accessToken) {
+        navigate("/login");
+      } else {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log('Opps');
     }
-  },[navigate]);
+  }, [navigate]);
+
+  useEffect(() => {
+    if (errorStatus === 401) {
+      navigate("/hehe"); // TODO
+    }
+  }, [errorStatus, navigate]);
 
   if (isLoading) {
-    return <div><LoadingComponent/></div>;
+    return <div><LoadingComponent /></div>;
   }
 
   return <>{children}</>;

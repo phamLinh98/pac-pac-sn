@@ -7,7 +7,6 @@ import { MenuLeftComponent } from "./MenuLeftComponent";
 import { PrivateAreaComponent } from "./PrivateAreaComponent";
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { UserOutlined } from "@ant-design/icons";
 
 export const LayoutComponent = () => {
   const {
@@ -24,14 +23,31 @@ export const LayoutComponent = () => {
     navigate(`/profile/${userId}`);
   }
 
+ const getLastWord = (str) => {
+    if (!str || typeof str !== "string") return null; // Kiểm tra chuỗi đầu vào
+    const words = str.trim().split(/\s+/); // Tách chuỗi thành các từ
+    return words[words.length - 1] || null; // Lấy từ cuối cùng
+  };
+
+  const data = getLastWord('Pham Tuan Linh');
   const headerItem = [
     {
       key: "1",
-      label: <GrNotification style={{ fontSize: "17px" }} />,
+      label: <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <GrNotification style={{ fontSize: "17px" }} />
+        <span style={{ fontSize: "16px", color: "white" }}>
+          Notification
+        </span>
+      </div>
     },
     {
       key: "2",
-      label: <SiMessenger style={{ fontSize: "17px" }} />,
+      label: <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <SiMessenger style={{ fontSize: "17px" }} />
+        <span style={{ fontSize: "16px", color: "white" }}>
+          Messager
+        </span>
+      </div>
     },
     {
       key: "3",
@@ -39,15 +55,14 @@ export const LayoutComponent = () => {
         <Avatar
           src="https://i.pinimg.com/736x/f2/a9/31/f2a9310be7d13bb02ffbb0bf3445a8b4.jpg"
           size="large"
-          icon={<UserOutlined />}
           style={{ fontSize: "17px", color: "white" }}
         />
         <span style={{ fontSize: "16px", color: "white" }}>
-          Phạm Tuấn Linh
+          {data}
         </span>
       </div>),
       onClick: () => moveToProfile(456)
-    }
+    },
   ];
 
   return (

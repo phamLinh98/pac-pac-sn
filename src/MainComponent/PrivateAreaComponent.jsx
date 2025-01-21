@@ -4,11 +4,11 @@ import { IoMenu } from "react-icons/io5";
 const { Header } = Layout;
 
 export const PrivateAreaComponent = ({ items, onToggleMenu, collapsed }) => {
-    const [localCollapsed, setLocalCollapsed] = useState(collapsed);
+  const [localCollapsed, setLocalCollapsed] = useState(collapsed);
     const toggleCollapsed = () => {
         setLocalCollapsed(!localCollapsed);
         onToggleMenu(!localCollapsed)
-    };
+  };
   return (
     <Header
       style={{
@@ -30,7 +30,7 @@ export const PrivateAreaComponent = ({ items, onToggleMenu, collapsed }) => {
             defaultSelectedKeys={["3"]}
             items={items}
              style={{
-                 minWidth: 0,
+                minWidth: 0,
              }}
          />
        </div>

@@ -1,0 +1,1 @@
+//TODO: get info localstorage
