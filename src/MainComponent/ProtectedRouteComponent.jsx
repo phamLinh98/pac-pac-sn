@@ -20,11 +20,7 @@ const AuthGuard = ({ children }) => {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    if (errorStatus === 401) {
-      navigate("/hehe"); // TODO
-    }
-  }, [errorStatus, navigate]);
+
 
   if (isLoading) {
     return <div><LoadingComponent /></div>;

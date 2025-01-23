@@ -12,11 +12,19 @@ export const getApi = async (route) => {
     });
     if (!response.ok) {
       if (response.status === 401) {
-        // Nếu là lỗi 401, ném một lỗi đặc biệt
-        throw new Error("Unauthorized: 401");
+        try {
+          await fetch(`${envConfig.host}/refesh-token`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: 'include',
+          });
+        } catch(error) {
+          console.log('loi tum lum',error);
+        }
       }
-      const errorData = await response.json();
-      console.log('123',errorData);
+      await response.json();
     }
     return response;
   } catch (error) {
@@ -25,30 +33,48 @@ export const getApi = async (route) => {
 }
 
 export const loginByEmailAndPassword = async (email, password) => {
-    try {
-        const url = `${envConfig.host}/login`;
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: 'include',
-            body: JSON.stringify({ email, password }),
-        });
+  try {
+    const url = `${envConfig.host}/login`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: 'include',
+      body: JSON.stringify({ email, password }),
+    });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.log('123',errorData);
-        }
-        const responseData = await response.json();
-        localStorage.setItem('accessToken', responseData.token);
-        return true;
-    } catch (error) {
-        console.log(error.message);
+    if (!response.ok) {
+      await response.json();
     }
+    const responseData = await response.json();
+    localStorage.setItem('accessToken', responseData.token);
+    return true;
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 export const refeshTokenWhenExpired = async (route) => {
+  try {
+    const url = `${envConfig.host}${route}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status:${response.status}`);
+    }
+    return response;
+  } catch (error) {
+    console.log('error', error.message);
+  }
+}
+
+export const logoutClearToken = async (route) => {
   try {
     const url = `${envConfig.host}${route}`;
     const response = await fetch(url, {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Menu } from "antd";
 import { RxAvatar } from "react-icons/rx";
 import { FaUserFriends } from "react-icons/fa";
-import { GrGroup } from "react-icons/gr";
+import { GrGroup, GrLogout } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 
 export const MenuLeftComponent = ({ collapsed }) => {
@@ -13,6 +13,12 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const backToMenu = () => {
     navigate('/home')
   }
+
+  const logoutClearToken = () => {
+    localStorage.removeItem('accessToken');
+    navigate('/login');
+  }
+  
   const items2 = [
     {
       key: "sub1",
@@ -66,6 +72,12 @@ export const MenuLeftComponent = ({ collapsed }) => {
         },
       ],
     },
+    {
+      key: "sub4",
+      icon: <GrLogout />, // Correct usage
+      label: "Logout",
+      onClick:logoutClearToken
+    }
   ];
 
   const handleOpenChange = (keys) => {

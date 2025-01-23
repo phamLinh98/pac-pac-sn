@@ -1,11 +1,11 @@
-import { Avatar, Layout, theme } from "antd";
+import { Avatar, Layout, Popconfirm, theme, Button } from "antd";
 import { GrNotification } from "react-icons/gr";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { SiMessenger } from "react-icons/si";
 import { MenuLeftComponent } from "./MenuLeftComponent";
 import { PrivateAreaComponent } from "./PrivateAreaComponent";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 export const LayoutComponent = () => {
@@ -13,6 +13,9 @@ export const LayoutComponent = () => {
     token: { colorBgContainer },
   } = theme.useToken();
   const [collapsed, setCollapsed] = useState(false);
+  const [isPopconfirmVisible, setPopconfirmVisible] = useState(false);
+  const avatarRef = useRef(null);
+  const [isPopupShow, setIsPopupShow] = useState(false);
 
   const onToggleMenu = (newValue) => {
     setCollapsed(newValue)
@@ -23,10 +26,10 @@ export const LayoutComponent = () => {
     navigate(`/profile/${userId}`);
   }
 
- const getLastWord = (str) => {
-    if (!str || typeof str !== "string") return null; // Kiểm tra chuỗi đầu vào
-    const words = str.trim().split(/\s+/); // Tách chuỗi thành các từ
-    return words[words.length - 1] || null; // Lấy từ cuối cùng
+  const getLastWord = (str) => {
+    if (!str || typeof str !== "string") return null;
+    const words = str.trim().split(/\s+/);
+    return words[words.length - 1] || null;
   };
 
   const data = getLastWord('Pham Tuan Linh');
@@ -51,26 +54,39 @@ export const LayoutComponent = () => {
     },
     {
       key: "3",
-      label: (<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <Avatar
-          src="https://i.pinimg.com/736x/f2/a9/31/f2a9310be7d13bb02ffbb0bf3445a8b4.jpg"
-          size="large"
-          style={{ fontSize: "17px", color: "white" }}
-        />
-        <span style={{ fontSize: "16px", color: "white" }}>
-          {data}
-        </span>
-      </div>),
+      label: (
+        <div
+          style={{ display: "flex", alignItems: "center", gap: "8px" }}
+          ref={avatarRef} // Gán ref cho div chứa avatar
+          onClick={() => setPopconfirmVisible(true)} // Bật Popconfirm
+        >
+          <Avatar
+            src="https://i.pinimg.com/736x/f2/a9/31/f2a9310be7d13bb02ffbb0bf3445a8b4.jpg"
+            size="large"
+            style={{ fontSize: "17px", color: "white" }}
+          />
+          <span style={{ fontSize: "16px", color: "white" }}>{data}</span>
+        </div>
+      ),
+      //onClick: () => setIsPopupShow(pre => !pre)
       onClick: () => moveToProfile(456)
     },
   ];
+  const handleConfirm = () => {
+    setPopconfirmVisible(false);
+    console.log("Confirmed");
+    // Xử lý khi người dùng nhấn Yes
+  };
+
+  const handleCancel = () => {
+    setPopconfirmVisible(false);
+    console.log("Cancel");
+    // Xử lý khi người dùng nhấn No
+  };
 
   return (
     <Layout style={{ height: "100vh" }}>
-      {/* TODO: Solve Header */}
       <PrivateAreaComponent items={headerItem} onToggleMenu={onToggleMenu} collapsed={collapsed} />
-
-      {/* TODO:Solve Content */}
       <Layout style={{ marginTop: 64 }}>
         <Sider
           width={collapsed ? 0 : 200}
@@ -106,6 +122,19 @@ export const LayoutComponent = () => {
             <Outlet />
           </Content>
         </Layout>
+        {isPopupShow ? <Popconfirm
+          title="Thông tin cá nhân"
+          description="Are you sure to delete this task?"
+          open={isPopconfirmVisible}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+          // okText="Yes"
+          // cancelText="No"
+          trigger="click"
+          placement="bottom"
+          getPopupContainer={() => avatarRef.current} // Sử dụng ref để set container
+        >
+        </Popconfirm> : ''}
       </Layout>
     </Layout>
   );
