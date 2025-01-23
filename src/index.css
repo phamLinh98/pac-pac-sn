@@ -3,3 +3,10 @@ html {
   margin: 0;
   padding: 0;
 }
+
+body,
+#root {
+  /* #root là container mặc định của React */
+  min-width: 637px;
+  min-height: 600px;
+}

@@ -21,14 +21,14 @@ export const getApi = async (route) => {
             credentials: 'include',
           });
         } catch(error) {
-          console.log('loi tum lum',error);
+          console.log(error);
         }
       }
       await response.json();
     }
     return response;
   } catch (error) {
-    console.log('error', error.message);
+    console.log(error);
   }
 }
 

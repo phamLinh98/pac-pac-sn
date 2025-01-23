@@ -54,7 +54,7 @@ export const AllStory = () => {
               <RiUserUnfollowFill key="ellipsis" style={{ fontSize: "1.3rem" }} />,
             ]}
           >
-            <Meta title={`${item.user_name}`} onClick={()=>moveToProfileUser(item.user_id)}/>
+            <Meta title={`${item.user_name}`} onClick={()=>moveToProfileUser(item.user_id)} style={{textAlign: "center"}}/>
           </Card>
         ))}
       </div>
