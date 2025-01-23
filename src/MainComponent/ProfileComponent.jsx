@@ -132,7 +132,7 @@ export const ProfileComponent = () => {
                                                     padding: 0,
                                                 }}
                                             >
-                                                <ImageStatus image={image} width={200} />
+                                                <ImageStatus image={image} width={150} height={250}/>
                                             </div>
                                         ))}
                                     </div>
