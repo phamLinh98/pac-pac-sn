@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Menu } from "antd";
+import { Menu, Switch } from "antd";
 import { RxAvatar } from "react-icons/rx";
 import { FaUserFriends } from "react-icons/fa";
 import { GrGroup, GrLogout } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import { IoSettingsOutline } from "react-icons/io5";
 
 export const MenuLeftComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
@@ -18,13 +19,13 @@ export const MenuLeftComponent = ({ collapsed }) => {
     localStorage.removeItem('accessToken');
     navigate('/login');
   }
-  
+
   const items2 = [
     {
       key: "sub1",
-      icon: <RxAvatar/>, // Correct usage
+      icon: <RxAvatar />, // Correct usage
       label: "Home",
-      onClick:backToMenu
+      onClick: backToMenu
     },
     {
       key: "sub2",
@@ -74,27 +75,46 @@ export const MenuLeftComponent = ({ collapsed }) => {
     },
     {
       key: "sub4",
-      icon: <GrLogout />, // Correct usage
+      icon: <IoSettingsOutline />,
+      label: "Setting",
+      children: [
+        {
+          key: 1,
+          label: <>
+            <Switch checkedChildren="Black" unCheckedChildren="White" defaultChecked />
+          </>,
+        },
+        {
+          key: 2,
+          label: <>
+            Language
+          </>,
+        },
+      ]
+    },
+    {
+      key: "sub5",
+      icon: <GrLogout />,
       label: "Logout",
-      onClick:logoutClearToken
-    }
+      onClick: logoutClearToken
+    },
   ];
 
   const handleOpenChange = (keys) => {
     setOpenKeys(keys);
   };
 
-    const handleMenuClick = (e) => {
-        setSelectedKeys([e.key]);
-    };
+  const handleMenuClick = (e) => {
+    setSelectedKeys([e.key]);
+  };
 
-    useEffect(() => {
-        if(collapsed){
-            setOpenKeys([]);
-        } else {
-            setOpenKeys(["sub1"])
-        }
-    }, [collapsed]);
+  useEffect(() => {
+    if (collapsed) {
+      setOpenKeys([]);
+    } else {
+      setOpenKeys(["sub1"])
+    }
+  }, [collapsed]);
 
   return (
     <Menu
