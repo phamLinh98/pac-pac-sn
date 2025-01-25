@@ -13,7 +13,9 @@ import { NotListComponent } from '../SideComponent/NoListComponent';
 import { formatTimeStamp } from '../configs/configTimeStamp';
 import { useParams } from 'react-router-dom';
 import { useFacadeListByUserId } from '../reduxs/useFacadeListByUserId';
+
 const { Meta } = Card;
+
 export const ProfileComponent = () => {
     const userId = useParams();
     const userIdConverToNumber = +userId.id;
@@ -24,7 +26,6 @@ export const ProfileComponent = () => {
     };
     const containerRefs = useRef([]);
     const maxLength = 150;
-
     const isEmptyObject = (obj) =>
         obj && typeof obj === 'object' && Object.keys(obj).length === 0;
 

@@ -1,4 +1,4 @@
-import { Avatar, Layout, Popconfirm, theme, Button, Switch } from "antd";
+import { Avatar, Layout, theme } from "antd";
 import { GrNotification } from "react-icons/gr";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
@@ -7,32 +7,43 @@ import { MenuLeftComponent } from "./MenuLeftComponent";
 import { PrivateAreaComponent } from "./PrivateAreaComponent";
 import { useState, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 
 export const LayoutComponent = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  
   const [collapsed, setCollapsed] = useState(false);
-  const [isPopconfirmVisible, setPopconfirmVisible] = useState(false);
   const avatarRef = useRef(null);
-  const [isPopupShow, setIsPopupShow] = useState(false);
 
+  // Toggle function to open/close left menu
   const onToggleMenu = (newValue) => {
     setCollapsed(newValue)
   }
 
+  // Navigate to profile 
   const navigate = useNavigate();
   const moveToProfile = (userId) => {
     navigate(`/profile/${userId}`);
   }
 
+  //Get user info saved from localstorage and decode user
+  const getUserFromLocalStorage = localStorage.getItem('accessToken');
+  const getData = decodeJwt(getUserFromLocalStorage);
+  const { id, name, avatar } = getData;
+
+  // Function Show name just FamilyName Name > Name
   const getLastWord = (str) => {
     if (!str || typeof str !== "string") return null;
     const words = str.trim().split(/\s+/);
     return words[words.length - 1] || null;
   };
+  
+  // Call getLastWord function and give to dataNameFromObject
+  const dataNameFromObject = getLastWord(name);
 
-  const data = getLastWord('Pham Tuan Linh');
+  // List icon and function in top menu(notification, profile, message)
   const headerItem = [
     {
       key: "1",
@@ -61,28 +72,17 @@ export const LayoutComponent = () => {
           onClick={() => setPopconfirmVisible(true)} // Bật Popconfirm
         >
           <Avatar
-            src="https://i.pinimg.com/736x/d0/04/d2/d004d280e88e4aa37d51384ed15169c7.jpg"
+            src={avatar}
             size="large"
             style={{ fontSize: "17px", color: "white" }}
           />
-          <span style={{ fontSize: "16px", color: "white" }}>{data}</span>
+          <span style={{ fontSize: "16px", color: "white" }}>{dataNameFromObject}</span>
         </div>
       ),
       //onClick: () => setIsPopupShow(pre => !pre)
-      onClick: () => moveToProfile(456)
+      onClick: () => moveToProfile(id)
     },
   ];
-  const handleConfirm = () => {
-    setPopconfirmVisible(false);
-    console.log("Confirmed");
-    // Xử lý khi người dùng nhấn Yes
-  };
-
-  const handleCancel = () => {
-    setPopconfirmVisible(false);
-    console.log("Cancel");
-    // Xử lý khi người dùng nhấn No
-  };
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -122,19 +122,6 @@ export const LayoutComponent = () => {
             <Outlet />
           </Content>
         </Layout>
-        {isPopupShow ? <Popconfirm
-          title="Thông tin cá nhân"
-          description="Are you sure to delete this task?"
-          open={isPopconfirmVisible}
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-          // okText="Yes"
-          // cancelText="No"
-          trigger="click"
-          placement="bottom"
-          getPopupContainer={() => avatarRef.current} // Sử dụng ref để set container
-        >
-        </Popconfirm> : ''}
       </Layout>
     </Layout>
   );
