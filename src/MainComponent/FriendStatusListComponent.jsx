@@ -17,6 +17,8 @@ export const FriendStatusListComponent = () => {
   const showAllOrHideTitle = () => {
     setIsExpanded(!isExpanded);
   };
+
+  console.log('list', list)
   
   const containerRefs = useRef([]);
   const navigate = useNavigate();
@@ -108,11 +110,11 @@ export const FriendStatusListComponent = () => {
                 }}
               >
                 <Button style={{
-                  color: "red",
+                  color: item.likestatus ? 'red' : '#FFFFF',
                   backgroundColor: "white",
-                  border: "1px solid red"
+                  border: `1px solid ${item.likestatus ? 'red' : '#FFFFF'}`
                 }}>
-                  <GiChestnutLeaf />
+                  <GiChestnutLeaf style={{color:item.likestatus ? 'red' : '#FFFFF'}}/>
                   <span>{item.like}</span>Like
                 </Button>
                 <FriendStatusContentDetailsComponent
@@ -122,6 +124,7 @@ export const FriendStatusListComponent = () => {
                   shared={item.shared}
                   image={item.content.images}
                   postId={item.id}
+                  likeStatus={item.likestatus}
                 />
                 <Button>
                   <VscShare />

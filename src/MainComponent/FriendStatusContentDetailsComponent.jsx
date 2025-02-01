@@ -9,7 +9,7 @@ import { RiChatSmileAiLine } from 'react-icons/ri';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { GiChestnutLeaf } from 'react-icons/gi';
 
-export const FriendStatusContentDetailsComponent = ({ comment_count, title, like, shared, image, postId }) => {
+export const FriendStatusContentDetailsComponent = ({ likeStatus,comment_count, title, like, shared, image, postId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
 
@@ -112,11 +112,11 @@ export const FriendStatusContentDetailsComponent = ({ comment_count, title, like
           }}
         >
           <Button style={{
-            color: "red",
+            color: likeStatus ? 'red' : '#FFFFF',
             backgroundColor: "white",
-            border: "1px solid red"
+            border: `1px solid ${likeStatus ? 'red' : '#FFFFF'}`
           }}>
-            <GiChestnutLeaf />
+            <GiChestnutLeaf style={{color:likeStatus ? 'red' : '#FFFFF'}}/>
             <span>{like}</span>Like
           </Button>
           <Button>

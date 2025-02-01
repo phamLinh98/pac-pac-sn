@@ -33,7 +33,6 @@ export const ProfileComponent = () => {
     const getUserFromLocalStorage = localStorage.getItem('accessToken');
     const getData = decodeJwt(getUserFromLocalStorage);
     const { id } = getData;
-    console.log('listUserById', listUserById)
 
     return (
         <>
@@ -188,9 +187,9 @@ export const ProfileComponent = () => {
                                     }}
                                 >
                                     <Button style={{
-                                        color: "red",
+                                        color: item.likestatus ? 'red' : '#FFFFF',
                                         backgroundColor: "white",
-                                        border: "1px solid red"
+                                        border: `1px solid ${item.likestatus? 'red' : '#FFFFF'}`
                                     }}>
                                         <GiChestnutLeaf />
                                         <span>{item.like}</span>Like
