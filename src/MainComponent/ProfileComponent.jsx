@@ -13,6 +13,7 @@ import { NotListComponent } from '../SideComponent/NoListComponent';
 import { formatTimeStamp } from '../configs/configTimeStamp';
 import { useParams } from 'react-router-dom';
 import { useFacadeListByUserId } from '../reduxs/useFacadeListByUserId';
+import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo.js';
 
 const { Meta } = Card;
 
@@ -29,41 +30,80 @@ export const ProfileComponent = () => {
     const isEmptyObject = (obj) =>
         obj && typeof obj === 'object' && Object.keys(obj).length === 0;
 
+    const getUserFromLocalStorage = localStorage.getItem('accessToken');
+    const getData = decodeJwt(getUserFromLocalStorage);
+    const { id } = getData;
+    console.log('listUserById', listUserById)
+
     return (
         <>
             <div style={{ width: '100%', height: '5%', position: 'relative' }}>
                 <Card
                     hoverable
-                    style={{
-                        width: "100%",
-                        height: "5%",
-                    }}
-                    cover={<Image
-                        style={{ height: "230px", objectFit: "cover" }} // Tùy chỉnh chiều cao và cách hiển thị ảnh
-                        alt="example"
-                        src="https://i.pinimg.com/originals/a0/5c/53/a05c534a95aa48c6423f65d34db97996.gif"
-                        preview={true} // Bật tính năng preview
-                    />}
+                    style={{ width: "100%", height: "5%" }}
+                    cover={
+                        <Image
+                            style={{ height: "230px", objectFit: "cover" }}
+                            alt="example"
+                            src="https://i.pinimg.com/originals/a0/5c/53/a05c534a95aa48c6423f65d34db97996.gif"
+                            preview={true}
+                        />
+                    }
                 >
-                    <Meta title={
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '10px',
-                        }}>
-                            {loading ? <LoadingComponent paddingTop='0' /> : listUserById.map((item) => <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
-                                <Avatar size={64} icon={<UserOutlined />} src={item.avatar} />
-                                <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>{item.name}</span>
-                                <span style={{ marginLeft: '10px', fontSize: "12px", color: "gray" }}>({item.friends} bạn bè)</span>
-                            </div>)}
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <Button type="primary" style={{ marginRight: '10px' }}><IoMdAdd />Kết Bạn</Button>
-                                <Button type="primary" style={{ marginRight: '10px' }}><MdRemoveRedEye />Follow</Button>
-                                <Button type="dashed"><FiSend />Nhắn Tin</Button>
+                    <Meta
+                        title={
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '10px',
+                            }}>
+                                {loading ? (
+                                    <LoadingComponent paddingTop='0' />
+                                ) : (
+                                    listUserById.map((item) => (
+                                        <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
+                                            <Avatar size={64} icon={<UserOutlined />} src={item.avatar} />
+                                            <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>
+                                                {item.name}
+                                            </span>
+                                            <span style={{ marginLeft: '10px', fontSize: "12px", color: "gray" }}>
+                                                ({item.friends} bạn bè)
+                                            </span>
+                                        </div>
+                                    ))
+                                )}
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    {listUserById.map((item) => (
+                                        <React.Fragment key={item.id}>
+                                            {item.user_id !== id && ( // Điều kiện hiển thị nút
+                                                <>
+                                                    <Button
+                                                        type="primary"
+                                                        style={{ marginRight: '10px' }}
+                                                        icon={<IoMdAdd />} // Đưa icon vào prop icon
+                                                    >
+                                                        Kết Bạn
+                                                    </Button>
+                                                    <Button
+                                                        type="primary"
+                                                        style={{ marginRight: '10px' }}
+                                                        icon={<MdRemoveRedEye />}
+                                                    >
+                                                        Follow
+                                                    </Button>
+                                                    <Button type="dashed" icon={<FiSend />}>
+                                                        Nhắn Tin
+                                                    </Button>
+                                                </>
+                                            )}
+                                        </React.Fragment>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    } description="" />
+                        }
+                        description=""
+                    />
                 </Card>
             </div>
 
@@ -133,7 +173,7 @@ export const ProfileComponent = () => {
                                                     padding: 0,
                                                 }}
                                             >
-                                                <ImageStatus image={image} width={150} height={250}/>
+                                                <ImageStatus image={image} width={150} height={250} />
                                             </div>
                                         ))}
                                     </div>
