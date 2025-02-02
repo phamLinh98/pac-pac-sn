@@ -9,6 +9,6 @@ export const getStoryThunkFunction = () => async (dispatch) => {
         const response = await data.json();
         dispatch(getStory(response));
     } catch (error) {
-        dispatch(logError(error));
+        dispatch(logError('Loi truy van story'));
     }
 }
