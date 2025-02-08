@@ -14,6 +14,7 @@ import { formatTimeStamp } from '../configs/configTimeStamp';
 import { useParams } from 'react-router-dom';
 import { useFacadeListByUserId } from '../reduxs/useFacadeListByUserId';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo.js';
+import { MyStatusAreaComponent } from './MyStatusAreaComponent.jsx';
 
 const { Meta } = Card;
 
@@ -121,7 +122,9 @@ export const ProfileComponent = () => {
                     />
                 </Card>
             </div>
-
+            <div style={{ paddingTop: '1%' }}>
+                <MyStatusAreaComponent />
+            </div>
             {/* TODO123 */}
             {loading ? <LoadingComponent /> : <div style={{ display: "flex", flexDirection: "column", gap: "5px", paddingTop: "1%" }}>
                 {listUserById.length > 0 ? listUserById.map((item, index) => {

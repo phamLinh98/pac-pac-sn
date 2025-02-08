@@ -3,12 +3,15 @@ import { BsFillImageFill } from "react-icons/bs";
 import { RiLiveLine } from "react-icons/ri";
 import { MyStatusAreaUploadComponent } from "./MyStatusAreaUploadComponent";
 import { GoStarFill } from "react-icons/go";
+import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 
-// Login User now , bài đăng 
-const loginUser = "Rin";
 export const MyStatusAreaComponent = () => {
+  const getUserFromLocalStorage = localStorage.getItem('accessToken');
+  const getData = decodeJwt(getUserFromLocalStorage);
+  const {name} = getData;
+
   return (
-    <Card title={`${loginUser} ơi nay bạn có tin gì mới không ?`} size="small">
+    <Card title={`${name} ơi , bạn có thể đăng bài viết ở đây nha !`} size="small">
       <Space
         style={{
           flex: 1,
