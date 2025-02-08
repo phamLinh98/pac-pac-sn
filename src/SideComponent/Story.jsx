@@ -46,7 +46,7 @@ export const AllStory = () => {
               marginBottom: "5px"
             }}
             cover={
-              <ImageStatus image={item.image} width={150} height={250}/>
+              <ImageStatus image={item.image} width={150} height={250} active={false}/>
             }
             actions={[
               <PiHeartbeatBold key="setting" style={{ fontSize: "1.5rem", color: "red" }} />,

@@ -19,7 +19,7 @@ export const FriendStatusListComponent = () => {
   };
 
   console.log('list', list)
-  
+
   const containerRefs = useRef([]);
   const navigate = useNavigate();
 
@@ -34,10 +34,18 @@ export const FriendStatusListComponent = () => {
         {list.length <= 0 ? <NotListComponent /> : list.map((item, index) => (
           <Card key={item.id} title={
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <ImageStatus width="26px" height="25px" image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} style={{ borderRadius: "5px" }} />
+              <ImageStatus active = {true} width="26px" height="25px" image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} style={{
+                borderRadius: '5px',   /* Giữ border-radius ban đầu */
+                border: '3px solid #0000FF', /* Màu xanh đậm */
+                boxSizing: 'border-box', /* Đảm bảo kích thước không bị ảnh hưởng bởi border */
+                overflow: 'hidden',     /* Cắt bỏ phần border thừa nếu có */
+                display: 'flex',       /* Để căn giữa nếu cần thiết */
+                alignItems: 'center',   /* Căn giữa dọc */
+                justifyContent: 'center',/* Căn giữa ngang */
+              }} />
               <span>
                 <a
-                  onClick={()=>handleNavigate(item.user_id)} // Thay đổi URL theo logic của bạn
+                  onClick={() => handleNavigate(item.user_id)} // Thay đổi URL theo logic của bạn
                   style={{ textDecoration: 'none', color: 'blue' }} // Optional: bỏ gạch chân và giữ màu chữ
                 >
                   {item.user_name}
@@ -95,7 +103,7 @@ export const FriendStatusListComponent = () => {
                         padding: 0,
                       }}
                     >
-                      <ImageStatus image={image ? image : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} width={150} height={250}/>
+                      <ImageStatus image={image ? image : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} width={150} height={250} />
                     </div>
                   ))}
                 </div>
@@ -114,7 +122,7 @@ export const FriendStatusListComponent = () => {
                   backgroundColor: "white",
                   border: `1px solid ${item.likestatus ? 'red' : '#FFFFF'}`
                 }}>
-                  <GiChestnutLeaf style={{color:item.likestatus ? 'red' : '#FFFFF'}}/>
+                  <GiChestnutLeaf style={{ color: item.likestatus ? 'red' : '#FFFFF' }} />
                   <span>{item.like}</span>Like
                 </Button>
                 <FriendStatusContentDetailsComponent

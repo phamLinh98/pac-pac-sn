@@ -3,7 +3,7 @@ import { Avatar, Button, Card, Image, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { IoMdAdd } from 'react-icons/io';
 import { FiSend } from 'react-icons/fi';
-import { ImageStatus } from '../SideComponent/ImageStatus';
+import { ImageStatus, ImageStatusAvatar } from '../SideComponent/ImageStatus';
 import { GiChestnutLeaf } from 'react-icons/gi';
 import { VscShare } from 'react-icons/vsc';
 import { MdRemoveRedEye } from 'react-icons/md';
@@ -62,12 +62,28 @@ export const ProfileComponent = () => {
                                 ) : (
                                     listUserById.map((item) => (
                                         <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
-                                            <Avatar size={64} icon={<UserOutlined />} src={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} />
+                                            <ImageStatusAvatar
+                                                active={true}
+                                                size={64} // Cần thiết để Avatar hoạt động đúng kích thước
+                                                icon={<UserOutlined />}
+                                                image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'}
+                                                style={{
+                                                    width: '64px',
+                                                    height: '64px',
+                                                    border: '5px solid #0000FF',
+                                                    borderRadius: '50%',
+                                                    boxSizing: 'border-box',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    overflow: 'hidden',
+                                                }}
+                                            />
                                             <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>
                                                 {item.name}
                                             </span>
                                             <span style={{ marginLeft: '10px', fontSize: "12px", color: "gray" }}>
-                                                ({item.friends} bạn bè)
+                                                ({item.friends} bạn bè) đang online
                                             </span>
                                         </div>
                                     ))
@@ -112,7 +128,23 @@ export const ProfileComponent = () => {
                     return !isEmptyObject(item.content) ? (
                         <Card key={item.id} title={
                             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                <ImageStatus width="26px" height="25px" image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} style={{ borderRadius: "5px" }} />
+                                <ImageStatus
+                                    active={true}
+                                    width="26px"
+                                    height="25px"
+                                    image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'}
+                                    style={{
+                                        width: '26px',         /* Đảm bảo width khớp với kích thước ảnh */
+                                        height: '25px',        /* Đảm bảo height khớp với kích thước ảnh */
+                                        borderRadius: '5px',   /* Giữ border-radius ban đầu */
+                                        border: '3px solid #0000FF', /* Màu xanh đậm */
+                                        boxSizing: 'border-box', /* Đảm bảo kích thước không bị ảnh hưởng bởi border */
+                                        overflow: 'hidden',     /* Cắt bỏ phần border thừa nếu có */
+                                        display: 'flex',       /* Để căn giữa nếu cần thiết */
+                                        alignItems: 'center',   /* Căn giữa dọc */
+                                        justifyContent: 'center',/* Căn giữa ngang */
+                                    }}
+                                />
                                 <span>
                                     <a
                                         style={{ textDecoration: 'none', color: 'blue' }} // Optional: bỏ gạch chân và giữ màu chữ
@@ -172,7 +204,7 @@ export const ProfileComponent = () => {
                                                     padding: 0,
                                                 }}
                                             >
-                                                <ImageStatus image={image ? image : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} width={150} height={250} />
+                                                <ImageStatus image={image ? image : ''} width={150} height={250} />
                                             </div>
                                         ))}
                                     </div>
@@ -189,7 +221,7 @@ export const ProfileComponent = () => {
                                     <Button style={{
                                         color: item.likestatus ? 'red' : '#FFFFF',
                                         backgroundColor: "white",
-                                        border: `1px solid ${item.likestatus? 'red' : '#FFFFF'}`
+                                        border: `1px solid ${item.likestatus ? 'red' : '#FFFFF'}`
                                     }}>
                                         <GiChestnutLeaf />
                                         <span>{item.like}</span>Like

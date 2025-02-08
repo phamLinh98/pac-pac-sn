@@ -94,7 +94,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus,comment_count, 
                   padding: 0, // Bỏ padding nếu có
                 }}
               >
-                <ImageStatus image={img ? img : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} width={150} />
+                <ImageStatus image={img ? img : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} width={150}/>
               </div>
             ))}
           </div>

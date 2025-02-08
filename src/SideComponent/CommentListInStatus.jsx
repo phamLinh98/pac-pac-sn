@@ -5,6 +5,7 @@ import { TbMessageReply } from "react-icons/tb";
 import { formatTimeStamp } from "../configs/configTimeStamp";
 import { NotListComponent } from "./NoListComponent";
 import { useNavigate } from "react-router-dom";
+import { ImageStatus } from "./ImageStatus";
 
 export const CommentListInDetailComponent = () => {
   const { listComment, loading } = useSelector(state => state.reduxComment);
@@ -31,10 +32,22 @@ export const CommentListInDetailComponent = () => {
           renderItem={(item) => (
             <List.Item key={item.id}>
               <List.Item.Meta
-                avatar={<Avatar src={item.avatar} />}
+                avatar={<ImageStatus image={item.avatar} 
+                active={true}
+                style={{
+                  width: '26px',         /* Đảm bảo width khớp với kích thước ảnh */
+                  height: '25px',        /* Đảm bảo height khớp với kích thước ảnh */
+                  borderRadius: '5px',   /* Giữ border-radius ban đầu */
+                  border: '3px solid #0000FF', /* Màu xanh đậm */
+                  boxSizing: 'border-box', /* Đảm bảo kích thước không bị ảnh hưởng bởi border */
+                  overflow: 'hidden',     /* Cắt bỏ phần border thừa nếu có */
+                  display: 'flex',       /* Để căn giữa nếu cần thiết */
+                  alignItems: 'center',   /* Căn giữa dọc */
+                  justifyContent: 'center',/* Căn giữa ngang */
+                }} />}
                 title={
                   <span>
-                    <a  onClick={() => goToProfileUser(item.user_id)} style={{ textDecoration: 'none', color: 'blue' }}>
+                    <a onClick={() => goToProfileUser(item.user_id)} style={{ textDecoration: 'none', color: 'blue' }}>
                       {item.user_name}
                     </a>
                     <span style={{ fontSize: '0.7rem', color: 'gray' }}>
