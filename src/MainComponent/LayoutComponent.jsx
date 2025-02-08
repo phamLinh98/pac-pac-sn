@@ -69,7 +69,6 @@ export const LayoutComponent = () => {
         <div
           style={{ display: "flex", alignItems: "center", gap: "8px" }}
           ref={avatarRef} // Gán ref cho div chứa avatar
-          onClick={() => setPopconfirmVisible(true)} // Bật Popconfirm
         >
           <Avatar
             src={avatar ? avatar : 'https://i.pinimg.com/736x/13/7b/ae/137bae39718b4e4ee171435e15ec7c9c.jpg'}

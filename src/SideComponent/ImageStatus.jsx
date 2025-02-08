@@ -1,8 +1,6 @@
 import { Image } from "antd";
 
 export const ImageStatus = ({ image, width, height, style, active }) => {
-  console.log("Giá trị của active:", active); // Gỡ lỗi
-
   return (
     <div style={{
       position: 'relative',
@@ -38,8 +36,6 @@ export const ImageStatus = ({ image, width, height, style, active }) => {
 };
 
 export const ImageStatusAvatar = ({ image, width, height, style, active }) => {
-  console.log("Giá trị của active:", active); // Gỡ lỗi
-
   return (
     <div style={{
       position: 'relative',

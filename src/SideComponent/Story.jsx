@@ -7,6 +7,7 @@ import { ImReply } from "react-icons/im";
 import { RiUserUnfollowFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { LoadingComponent } from "./LoadingComponent";
+import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 const { Meta } = Card;
 
 export const AllStory = () => {
@@ -17,6 +18,10 @@ export const AllStory = () => {
   const moveToProfileUser = (userId) => {
     navigate(`/profile/${userId}`)
   }
+  const getUserFromLocalStorage = localStorage.getItem('accessToken');
+  const getData = decodeJwt(getUserFromLocalStorage);
+  const { id } = getData;
+
   return (
     <div
       style={{
@@ -35,28 +40,30 @@ export const AllStory = () => {
           scrollbarWidth: "none", // Ẩn thanh cuộn cho Firefox
         }}
       >
-        {loadingStory ? <LoadingComponent /> : story.map((item, index) => (
-          <Card
-            key={index}
-            hoverable
-            style={{
-              width: 150,
-              display: "inline-block",
-              marginRight: "5px",
-              marginBottom: "5px"
-            }}
-            cover={
-              <ImageStatus image={item.image} width={150} height={250} active={false}/>
-            }
-            actions={[
-              <PiHeartbeatBold key="setting" style={{ fontSize: "1.5rem", color: "red" }} />,
-              <ImReply key="edit" style={{ fontSize: "1.3rem" }} />,
-              <RiUserUnfollowFill key="ellipsis" style={{ fontSize: "1.3rem" }} />,
-            ]}
-          >
-            <Meta title={`${item.user_name}`} onClick={()=>moveToProfileUser(item.user_id)} style={{textAlign: "center"}}/>
-          </Card>
-        ))}
+        <div style={{ display: 'flex' }}> {/* Container Flexbox */}
+          {loadingStory ? <LoadingComponent /> : story.map((item, index) => (
+            <Card
+              key={index}
+              hoverable
+              style={{
+                width: 150,
+                marginRight: "5px",
+                marginBottom: "5px",
+                order: item.user_id === id ? -1 : 0, // Đặt item có user_id === id từ localstorage lên đầu
+              }}
+              cover={
+                <ImageStatus image={item.image} width={150} height={250} active={false} />
+              }
+              actions={[
+                <PiHeartbeatBold key="setting" style={{ fontSize: "1.5rem", color: "red" }} />,
+                <ImReply key="edit" style={{ fontSize: "1.3rem" }} />,
+                <RiUserUnfollowFill key="ellipsis" style={{ fontSize: "1.3rem" }} />,
+              ]}
+            >
+              <Meta title={id !== item.user_id ? `${item.user_name}` : 'Bạn'} onClick={() => moveToProfileUser(item.user_id)} style={{ textAlign: "center" }} />
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
