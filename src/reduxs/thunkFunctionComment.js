@@ -11,8 +11,7 @@ export const getCommentThunkFunction = (listId) => {
             dispatch(getCommentStatus(response));
             dispatch(eventLoading(false));
         } catch (error) {
-            dispatch(logError(error));
-            dispatch(eventLoading(false));
+            console.log('error', error)
         }
     }
 };

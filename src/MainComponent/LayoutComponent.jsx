@@ -72,7 +72,7 @@ export const LayoutComponent = () => {
           onClick={() => setPopconfirmVisible(true)} // Bật Popconfirm
         >
           <Avatar
-            src={avatar}
+            src={avatar ? avatar : 'https://i.pinimg.com/736x/13/7b/ae/137bae39718b4e4ee171435e15ec7c9c.jpg'}
             size="large"
             style={{ fontSize: "17px", color: "white" }}
           />

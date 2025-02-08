@@ -13,7 +13,7 @@ export const getListThunkFunction = () => {
             dispatch(eventLoading(false));
 
         } catch (error) {
-            dispatch(logError(error))
+            console.log('error', error);
         }
     }
 };

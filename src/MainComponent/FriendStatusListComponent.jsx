@@ -34,7 +34,7 @@ export const FriendStatusListComponent = () => {
         {list.length <= 0 ? <NotListComponent /> : list.map((item, index) => (
           <Card key={item.id} title={
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <ImageStatus width="26px" height="25px" image={item.avatar} style={{ borderRadius: "5px" }} />
+              <ImageStatus width="26px" height="25px" image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} style={{ borderRadius: "5px" }} />
               <span>
                 <a
                   onClick={()=>handleNavigate(item.user_id)} // Thay đổi URL theo logic của bạn
@@ -95,7 +95,7 @@ export const FriendStatusListComponent = () => {
                         padding: 0,
                       }}
                     >
-                      <ImageStatus image={image} width={150} height={250}/>
+                      <ImageStatus image={image ? image : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} width={150} height={250}/>
                     </div>
                   ))}
                 </div>
@@ -122,7 +122,7 @@ export const FriendStatusListComponent = () => {
                   title={item.content.title}
                   like={item.like}
                   shared={item.shared}
-                  image={item.content.images}
+                  image={item.content.images ? item.content.images : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'}
                   postId={item.id}
                   likeStatus={item.likestatus}
                 />

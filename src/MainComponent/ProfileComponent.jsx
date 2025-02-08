@@ -62,7 +62,7 @@ export const ProfileComponent = () => {
                                 ) : (
                                     listUserById.map((item) => (
                                         <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
-                                            <Avatar size={64} icon={<UserOutlined />} src={item.avatar} />
+                                            <Avatar size={64} icon={<UserOutlined />} src={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} />
                                             <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>
                                                 {item.name}
                                             </span>
@@ -112,7 +112,7 @@ export const ProfileComponent = () => {
                     return !isEmptyObject(item.content) ? (
                         <Card key={item.id} title={
                             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                <ImageStatus width="26px" height="25px" image={item.avatar} style={{ borderRadius: "5px" }} />
+                                <ImageStatus width="26px" height="25px" image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} style={{ borderRadius: "5px" }} />
                                 <span>
                                     <a
                                         style={{ textDecoration: 'none', color: 'blue' }} // Optional: bỏ gạch chân và giữ màu chữ
@@ -172,7 +172,7 @@ export const ProfileComponent = () => {
                                                     padding: 0,
                                                 }}
                                             >
-                                                <ImageStatus image={image} width={150} height={250} />
+                                                <ImageStatus image={image ? image : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} width={150} height={250} />
                                             </div>
                                         ))}
                                     </div>
