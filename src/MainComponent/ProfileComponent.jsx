@@ -57,7 +57,7 @@ export const ProfileComponent = () => {
                                 padding: '10px',
                             }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    {listUserById &&
+                                    {loading ? <LoadingComponent/> :
                                         listUserById.slice(0, 1).map((item) => (
                                             <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
                                                 <ImageStatusAvatar
