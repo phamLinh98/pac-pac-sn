@@ -57,60 +57,70 @@ export const ProfileComponent = () => {
                                 padding: '10px',
                             }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <ImageStatusAvatar
-                                        active={true}
-                                        size={64} // Cần thiết để Avatar hoạt động đúng kích thước
-                                        icon={<UserOutlined />}
-                                        image={avatar ? avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'}
-                                        style={{
-                                            width: '64px',
-                                            height: '64px',
-                                            border: '5px solid #0000FF',
-                                            borderRadius: '50%',
-                                            boxSizing: 'border-box',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            overflow: 'hidden',
-                                        }}
-                                    />
-                                    <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>
-                                        {name}
-                                    </span>
-                                    <span style={{ marginLeft: '10px', fontSize: "12px", color: "gray" }}>
-                                        ({friends} bạn bè) đang online
-                                    </span>
+                                    {loading ? (
+                                        <LoadingComponent paddingTop='0' />
+                                    ) : (
+                                        listUserById.slice(0, 1).map((item) => (
+                                            <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
+                                                <ImageStatusAvatar
+                                                    active={true}
+                                                    size={64} // Cần thiết để Avatar hoạt động đúng kích thước
+                                                    icon={<UserOutlined />}
+                                                    image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'}
+                                                    style={{
+                                                        width: '64px',
+                                                        height: '64px',
+                                                        border: '5px solid #0000FF',
+                                                        borderRadius: '50%',
+                                                        boxSizing: 'border-box',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        overflow: 'hidden',
+                                                    }}
+                                                />
+                                                <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: "16px" }}>
+                                                    {item.name}
+                                                </span>
+                                                <span style={{ marginLeft: '10px', fontSize: "12px", color: "gray" }}>
+                                                    ({item.friends} bạn bè) đang online
+                                                </span>
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
                                 <div style={{
                                     display: 'flex',
                                     justifyContent: 'center',  // Căn giữa theo chiều ngang
                                     alignItems: 'center',      // Căn giữa theo chiều dọc
                                 }}>
-                                    {loading ? <LoadingComponent paddingTop='0' /> : (listUserById.map((item) => (
-                                        <React.Fragment key={item.id}>
-                                            {item.user_id !== id && ( // Điều kiện hiển thị nút
-                                                <>
-                                                    <Button
-                                                        type="primary"
-                                                        style={{ marginRight: '10px' }}
-                                                        icon={<IoMdAdd />} // Đưa icon vào prop icon
-                                                    >
-                                                        Kết Bạn
-                                                    </Button>
-                                                    <Button
-                                                        type="primary"
-                                                        style={{ marginRight: '10px' }}
-                                                        icon={<MdRemoveRedEye />}
-                                                    >
-                                                        Follow
-                                                    </Button>
-                                                    <Button type="dashed" icon={<FiSend />}>
-                                                        Nhắn Tin
-                                                    </Button>
-                                                </>
-                                            )}
-                                        </React.Fragment>
-                                    )))}
+                                    {loading ? <LoadingComponent paddingTop='0' /> : (
+                                        listUserById.slice(0, 1).map((item) => ( // Chỉ lấy phần tử đầu tiên
+                                            <React.Fragment key={item.id}>
+                                                {item.user_id !== id && ( // Điều kiện hiển thị nút
+                                                    <>
+                                                        <Button
+                                                            type="primary"
+                                                            style={{ marginRight: '10px' }}
+                                                            icon={<IoMdAdd />} // Đưa icon vào prop icon
+                                                        >
+                                                            Kết Bạn
+                                                        </Button>
+                                                        <Button
+                                                            type="primary"
+                                                            style={{ marginRight: '10px' }}
+                                                            icon={<MdRemoveRedEye />}
+                                                        >
+                                                            Follow
+                                                        </Button>
+                                                        <Button type="dashed" icon={<FiSend />}>
+                                                            Nhắn Tin
+                                                        </Button>
+                                                    </>
+                                                )}
+                                            </React.Fragment>
+                                        ))
+                                    )}
                                 </div>
                             </div>
                         }
