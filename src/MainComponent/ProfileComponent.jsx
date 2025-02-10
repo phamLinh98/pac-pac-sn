@@ -57,9 +57,7 @@ export const ProfileComponent = () => {
                                 padding: '10px',
                             }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    {loading ? (
-                                        <LoadingComponent paddingTop='0' />
-                                    ) : (
+                                    {listUserById &&
                                         listUserById.slice(0, 1).map((item) => (
                                             <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
                                                 <ImageStatusAvatar
@@ -87,14 +85,14 @@ export const ProfileComponent = () => {
                                                 </span>
                                             </div>
                                         ))
-                                    )}
+                                    }
                                 </div>
                                 <div style={{
                                     display: 'flex',
                                     justifyContent: 'center',  // Căn giữa theo chiều ngang
                                     alignItems: 'center',      // Căn giữa theo chiều dọc
                                 }}>
-                                    {loading ? <LoadingComponent paddingTop='0' /> : (
+                                    {listUserById && (
                                         listUserById.slice(0, 1).map((item) => ( // Chỉ lấy phần tử đầu tiên
                                             <React.Fragment key={item.id}>
                                                 {item.user_id !== id && ( // Điều kiện hiển thị nút
