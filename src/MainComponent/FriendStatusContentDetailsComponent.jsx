@@ -26,7 +26,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus,comment_count, 
 
   const containerRef = useRef(null);
   // Đặt giới hạn ký tự mỗi dòng
-  const maxLength = 200;
+  const maxLength = 15;
   const [isExpanded, setIsExpanded] = useState(false);
   const handleClick = () => {
     setIsExpanded(!isExpanded);

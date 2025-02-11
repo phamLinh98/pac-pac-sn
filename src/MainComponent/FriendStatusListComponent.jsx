@@ -13,7 +13,7 @@ import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
 
 export const FriendStatusListComponent = () => {
   const { list, loading } = useFacadeList();
-  const maxLength = 150;
+  const maxLength = 15;
   const [isExpanded, setIsExpanded] = useState(false);
   const showAllOrHideTitle = () => {
     setIsExpanded(!isExpanded);

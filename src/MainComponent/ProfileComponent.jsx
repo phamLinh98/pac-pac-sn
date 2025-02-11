@@ -27,7 +27,7 @@ export const ProfileComponent = () => {
         setIsExpanded(!isExpanded);
     };
     const containerRefs = useRef([]);
-    const maxLength = 150;
+    const maxLength = 15;
     const isEmptyObject = (obj) =>
         obj && typeof obj === 'object' && Object.keys(obj).length === 0;
     const getUserFromLocalStorage = localStorage.getItem('accessToken');
