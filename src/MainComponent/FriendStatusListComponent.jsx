@@ -37,7 +37,7 @@ export const FriendStatusListComponent = () => {
         {list.length <= 0 ? <NotListComponent /> : list.map((item, index) => (
           <Card key={item.id} title={
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <ImageStatus active = {true} width="26px" height="25px" image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} style={{
+              <ImageStatus active={true} width="26px" height="25px" image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} style={{
                 borderRadius: '5px',   /* Giữ border-radius ban đầu */
                 border: '3px solid #0000FF', /* Màu xanh đậm */
                 boxSizing: 'border-box', /* Đảm bảo kích thước không bị ảnh hưởng bởi border */
@@ -51,14 +51,14 @@ export const FriendStatusListComponent = () => {
                   onClick={() => handleNavigate(item.user_id)} // Thay đổi URL theo logic của bạn
                   style={{ textDecoration: 'none', color: 'blue' }} // Optional: bỏ gạch chân và giữ màu chữ
                 >
-                  {item.user_id !== id ? item.user_name : 'Bạn' }
+                  {item.user_id !== id ? item.user_name : 'Bạn'}
                 </a>
                 <span style={{ fontSize: '0.7rem', color: 'gray', paddingLeft: "0.8%" }}>
                   {`đã đăng tải bài viết(${formatTimeStamp(item.created_at)})`}
                 </span>
               </span>
             </div>
-          } size="small" style={{order: item.user_id === id ? -1 : 0,}}>
+          } size="small" style={{ order: item.user_id === id ? -1 : 0, }}>
             <div>
               <p>
                 {isExpanded
@@ -96,19 +96,29 @@ export const FriendStatusListComponent = () => {
                     msOverflowStyle: "none", // Ẩn thanh cuộn cho IE
                   }}
                 >
-                  {item.content.images.length > 0 && item.content.images.map((image, imageIndex) => (
-                    <div
-                      key={imageIndex}
-                      style={{
-                        display: 'inline-block',
-                        marginRight: "5px",
-                        marginBottom: '5px',
-                        padding: 0,
-                      }}
-                    >
-                      <ImageStatus image={image ? image : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} width={150} height={250} />
-                    </div>
-                  ))}
+                  {item.content.images?.length > 0
+                    ? item.content.images.map((image, imageIndex) => (
+                      <div
+                        key={imageIndex}
+                        style={{
+                          display: 'inline-block',
+                          marginRight: "5px",
+                          marginBottom: '5px',
+                          padding: 0,
+                        }}
+                      >
+                        <ImageStatus
+                          image={
+                            image
+                              ? image
+                              : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'
+                          }
+                          width={150}
+                          height={250}
+                        />
+                      </div>
+                    ))
+                    : []}
                 </div>
               </div>
 

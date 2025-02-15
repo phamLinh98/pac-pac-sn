@@ -9,7 +9,7 @@ import { RiChatSmileAiLine } from 'react-icons/ri';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { GiChestnutLeaf } from 'react-icons/gi';
 
-export const FriendStatusContentDetailsComponent = ({ likeStatus,comment_count, title, like, shared, image, postId }) => {
+export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count, title, like, shared, image, postId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
 
@@ -50,24 +50,24 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus,comment_count, 
       >
         {/* Tiêu đề */}
         <div>
-          <p>
+        <p>
             {isExpanded ? title : `${title.slice(0, maxLength)}...`}{' '}
-            <span
+    <span
               onClick={handleClick}
               style={{ color: 'blue', cursor: 'pointer' }}
-            >
-              <span>
-                {isExpanded ? (
-                  <>
-                    <br />
-                    ẩn
-                  </>
-                ) : (
-                  "xem tiếp"
-                )}{" "}
-              </span>
-            </span>
-          </p>
+    >
+      <span>
+        {isExpanded ? (
+          <>
+            <br />
+            ẩn
+          </>
+        ) : (
+          "xem tiếp"
+        )}{" "}
+      </span>
+    </span>
+</p>
         </div>
 
         {/* Hình ảnh với logic cuộn */}
@@ -84,19 +84,30 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus,comment_count, 
               msOverflowStyle: 'none',
             }}
           >
-            {image.map((img, index) => (
-              <div
-                key={index}
-                style={{
-                  display: 'inline-block',
-                  marginRight: "5px", // Để tránh khoảng trống cuối
-                  marginBottom: '5px', // Nếu muốn giữ margin dưới các hình ảnh
-                  padding: 0, // Bỏ padding nếu có
-                }}
-              >
-                <ImageStatus image={img ? img : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} width={150}/>
-              </div>
-            ))}
+            {Array.isArray(image) ? (
+              image.length > 0 ? (
+                image.map((img, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: 'inline-block',
+                      marginRight: "5px",
+                      marginBottom: '5px',
+                      padding: 0,
+                    }}
+                  >
+                    <ImageStatus
+                      image={
+                        img
+                          ? img
+                          : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'
+                      }
+                      width={150}
+                    />
+                  </div>
+                ))
+              ) : [] // Or [] if you prefer to render nothing
+            ) : []} 
           </div>
         </div>
 
@@ -116,7 +127,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus,comment_count, 
             backgroundColor: "white",
             border: `1px solid ${likeStatus ? 'red' : '#FFFFF'}`
           }}>
-            <GiChestnutLeaf style={{color:likeStatus ? 'red' : '#FFFFF'}}/>
+            <GiChestnutLeaf style={{ color: likeStatus ? 'red' : '#FFFFF' }} />
             <span>{like}</span>Like
           </Button>
           <Button>
