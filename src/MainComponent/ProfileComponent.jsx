@@ -166,7 +166,7 @@ export const ProfileComponent = () => {
                         } size="small">
                             <div>
                                 <p>
-                                    {isExpanded
+                                    {/* {isExpanded
                                         ? item.content.title
                                         : `${item.content.title.slice(0, maxLength)}...`}{" "}
                                     <span
@@ -183,7 +183,8 @@ export const ProfileComponent = () => {
                                                 "xem tiếp"
                                             )}{" "}
                                         </span>
-                                    </span>
+                                    </span> */}
+                                    {item.content.title}
                                 </p>
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
