@@ -32,7 +32,7 @@ export const ProfileComponent = () => {
         obj && typeof obj === 'object' && Object.keys(obj).length === 0;
     const getUserFromLocalStorage = localStorage.getItem('accessToken');
     const getData = decodeJwt(getUserFromLocalStorage);
-    const { id, name, friends, avatar } = getData;
+    const { id, name, friends, avatar, background} = getData;
     return (
         <>
             <div style={{ width: '100%', height: '5%', position: 'relative' }}>
@@ -43,7 +43,7 @@ export const ProfileComponent = () => {
                         <Image
                             style={{ height: "230px", objectFit: "cover" }}
                             alt="example"
-                            src="https://i.pinimg.com/originals/a0/5c/53/a05c534a95aa48c6423f65d34db97996.gif"
+                            src={background}
                             preview={true}
                         />
                     }

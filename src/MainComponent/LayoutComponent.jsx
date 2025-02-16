@@ -8,7 +8,7 @@ import { PrivateAreaComponent } from "./PrivateAreaComponent";
 import { useState, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaPhotoVideo } from "react-icons/fa";
 import { PiGameController } from "react-icons/pi";
 import { MenuRightComponent } from "./MenuRightComponent";
 import { IoMdPersonAdd } from "react-icons/io";
@@ -49,7 +49,7 @@ export const LayoutComponent = () => {
       label: <PiGameController style={{ fontSize: "17px" }} />
     }, {
       key: "5",
-      label: <SiGooglemarketingplatform style={{ fontSize: "17px" }} />
+      label: <FaPhotoVideo style={{ fontSize: "17px" }} />
     },
     {
       key:"6",
