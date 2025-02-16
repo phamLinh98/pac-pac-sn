@@ -1,14 +1,14 @@
-import { Button, Layout, Menu } from "antd";
+import { Button, Input, Layout, Menu } from "antd";
 import React, { useState } from "react";
 import { IoMenu } from "react-icons/io5";
 const { Header } = Layout;
 
 export const PrivateAreaComponent = ({ items, onToggleMenu, collapsed }) => {
   const [localCollapsed, setLocalCollapsed] = useState(collapsed);
-    const toggleCollapsed = () => {
-        setLocalCollapsed(!localCollapsed);
-        onToggleMenu(!localCollapsed)
-  };
+  // const toggleCollapsed = () => {
+  //   setLocalCollapsed(!localCollapsed);
+  //   onToggleMenu(!localCollapsed)
+  // };
   return (
     <Header
       style={{
@@ -20,20 +20,22 @@ export const PrivateAreaComponent = ({ items, onToggleMenu, collapsed }) => {
         padding: "0 24px"
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-        <Button onClick={toggleCollapsed}>
-            {localCollapsed ? <IoMenu/> :<IoMenu/>}
-        </Button>
+      {/* <Button>
+        {localCollapsed ? <IoMenu /> : <IoMenu />}
+      </Button> */}
+      <Input placeholder="Search User" style={{width:"15%"}}/>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}> {/* Thay đổi ở đây */}
         <Menu
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={["3"]}
-            items={items}
-             style={{
-                minWidth: 0,
-             }}
-         />
-       </div>
+          theme="dark"
+          mode="horizontal"
+          // defaultSelectedKeys={["1"]}
+          items={items}
+          style={{
+            minWidth: 0,
+            alignItems: 'center'
+          }}
+        />
+      </div>
     </Header>
   );
 };

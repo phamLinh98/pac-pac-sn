@@ -64,7 +64,7 @@ export const ProfileComponent = () => {
                                                     active={true}
                                                     size={64} // Cần thiết để Avatar hoạt động đúng kích thước
                                                     icon={<UserOutlined />}
-                                                    image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'}
+                                                    image={avatar ? avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'}
                                                     style={{
                                                         width: '64px',
                                                         height: '64px',
@@ -212,7 +212,7 @@ export const ProfileComponent = () => {
                                                     padding: 0,
                                                 }}
                                             >
-                                                <ImageStatus image={image ? image : ''} width={150} height={250} />
+                                                <ImageStatus image={image ? image : ''} width={150} height={250} preview={true}/>
                                             </div>
                                         ))}
                                     </div>

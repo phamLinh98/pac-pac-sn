@@ -8,7 +8,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { ImageStatus } from "../SideComponent/ImageStatus";
 
-export const MenuLeftComponent = ({ collapsed }) => {
+export const MenuRightComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
   const [selectedKeys, setSelectedKeys] = useState(["1"]);
   const navigate = useNavigate();
@@ -29,60 +29,49 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const items2 = [
     {
       key: "sub1",
-      icon: (
-        <ImageStatus
-          image={avatar ? avatar : ''}
-          width={30}
-          height={30}
-          style={{
-            borderRadius: '100%',
-            marginTop: '8px',
-            marginRight: '10px',
-          }}
-          preview={false}
-        />
-      ),
-      label: (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <p style={{ margin: '0 0 0 5px' }}>{name}</p>
-        </div>
-      ),
-      onClick: () => moveToProfile(id)
+      icon: <FaUserFriends />, // Correct usage
+      label: "Online Friends",
+      children: [
+        {
+          key: 5,
+          label: "Liễu Như Yên",
+        },
+        {
+          key: 6,
+          label: "Liễu Như Yên",
+        },
+        {
+          key: 7,
+          label: "Liễu Như Yên",
+        },
+        {
+          key: 8,
+          label: "Liễu Như Yên",
+        },
+      ],
     },
     {
       key: "sub2",
-      icon: <FaUserFriends />, // Correct usage
-      label: "Friends",
-    },
-    {
-      key: "sub3",
       icon: <GrGroup />, // Correct usage
       label: "Groups",
-    },
-    {
-      key: "sub4",
-      icon: <IoSettingsOutline />,
-      label: "Setting",
       children: [
         {
-          key: 1,
-          label: <>
-            <Switch checkedChildren="Black" unCheckedChildren="White" defaultChecked />
-          </>,
+          key: 9,
+          label: "ScriptChat",
         },
         {
-          key: 2,
-          label: <>
-            Language
-          </>,
+          key: 10,
+          label: "ScriptChat",
         },
-      ]
-    },
-    {
-      key: "sub5",
-      icon: <GrLogout />,
-      label: "Logout",
-      onClick: logoutClearToken
+        {
+          key: 11,
+          label: "ScriptChat",
+        },
+        {
+          key: 12,
+          label: "ScriptChat",
+        },
+      ],
     },
   ];
 

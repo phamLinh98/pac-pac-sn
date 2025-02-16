@@ -7,6 +7,6 @@ html {
 body,
 #root {
   /* #root là container mặc định của React */
-  min-width: 637px;
-  min-height: 600px;
+  min-width: 866px;
+  /* min-height: 600px; */
 }
