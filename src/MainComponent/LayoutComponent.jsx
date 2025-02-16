@@ -47,21 +47,11 @@ export const LayoutComponent = () => {
   const headerItem = [
     {
       key: "1",
-      label: <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <GrNotification style={{ fontSize: "17px" }} />
-        <span style={{ fontSize: "16px", color: "white" }}>
-          Notification
-        </span>
-      </div>
+      label: <GrNotification style={{ fontSize: "17px" }} />
     },
     {
       key: "2",
-      label: <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <SiMessenger style={{ fontSize: "17px" }} />
-        <span style={{ fontSize: "16px", color: "white" }}>
-          Messager
-        </span>
-      </div>
+      label: <SiMessenger style={{ fontSize: "17px" }} />
     },
     {
       key: "3",

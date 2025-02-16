@@ -61,7 +61,8 @@ export const FriendStatusListComponent = () => {
           } size="small" style={{ order: item.user_id === id ? -1 : 0, }}>
             <div>
               <p>
-                {isExpanded
+                {item.content.title}
+                {/* {isExpandedNo
                   ? item.content.title
                   : `${item.content.title.slice(0, maxLength)}...`}{" "}
                 <span
@@ -78,7 +79,7 @@ export const FriendStatusListComponent = () => {
                       "xem tiếp"
                     )}{" "}
                   </span>
-                </span>
+                </span> */}
               </p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>

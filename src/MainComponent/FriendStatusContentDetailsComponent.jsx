@@ -51,7 +51,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
         {/* Tiêu đề */}
         <div>
         <p>
-            {isExpanded ? title : `${title.slice(0, maxLength)}...`}{' '}
+            {/* {isExpanded ? title : `${title.slice(0, maxLength)}...`}{' '}
     <span
               onClick={handleClick}
               style={{ color: 'blue', cursor: 'pointer' }}
@@ -66,7 +66,8 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
           "xem tiếp"
         )}{" "}
       </span>
-    </span>
+    </span> */}
+    {title}
 </p>
         </div>
 
