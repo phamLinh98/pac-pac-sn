@@ -1,6 +1,6 @@
 import { Image } from "antd";
 
-export const ImageStatus = ({ image, width, height, style, active }) => {
+export const ImageStatus = ({ image, width, height, style, active, preview }) => {
   return (
     <div style={{
       position: 'relative',
@@ -15,6 +15,7 @@ export const ImageStatus = ({ image, width, height, style, active }) => {
           ...style, // Giữ style ban đầu
           display: 'block', // Đảm bảo không có khoảng trắng thừa
         }}
+        preview={preview}
       />
       {active === true ? ( // So sánh nghiêm ngặt với true
         <span

@@ -53,24 +53,24 @@ export const LayoutComponent = () => {
       key: "2",
       label: <SiMessenger style={{ fontSize: "17px" }} />
     },
-    {
-      key: "3",
-      label: (
-        <div
-          style={{ display: "flex", alignItems: "center", gap: "8px" }}
-          ref={avatarRef} // Gán ref cho div chứa avatar
-        >
-          <Avatar
-            src={avatar ? avatar : 'https://i.pinimg.com/736x/13/7b/ae/137bae39718b4e4ee171435e15ec7c9c.jpg'}
-            size="large"
-            style={{ fontSize: "17px", color: "white" }}
-          />
-          <span style={{ fontSize: "16px", color: "white" }}>{dataNameFromObject}</span>
-        </div>
-      ),
-      //onClick: () => setIsPopupShow(pre => !pre)
-      onClick: () => moveToProfile(id)
-    },
+    // {
+    //   key: "3",
+    //   label: (
+    //     <div
+    //       style={{ display: "flex", alignItems: "center", gap: "8px" }}
+    //       ref={avatarRef} // Gán ref cho div chứa avatar
+    //     >
+    //       <Avatar
+    //         src={avatar ? avatar : 'https://i.pinimg.com/736x/13/7b/ae/137bae39718b4e4ee171435e15ec7c9c.jpg'}
+    //         size="large"
+    //         style={{ fontSize: "17px", color: "white" }}
+    //       />
+    //       <span style={{ fontSize: "16px", color: "white" }}>{dataNameFromObject}</span>
+    //     </div>
+    //   ),
+    //   //onClick: () => setIsPopupShow(pre => !pre)
+    //   onClick: () => moveToProfile(id)
+    // },
   ];
 
   return (

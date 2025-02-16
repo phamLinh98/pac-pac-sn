@@ -5,6 +5,8 @@ import { FaUserFriends } from "react-icons/fa";
 import { GrGroup, GrLogout } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
+import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
+import { ImageStatus } from "../SideComponent/ImageStatus";
 
 export const MenuLeftComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
@@ -20,15 +22,45 @@ export const MenuLeftComponent = ({ collapsed }) => {
     navigate('/login');
   }
 
+  const getUserFromLocalStorage = localStorage.getItem('accessToken');
+  const getData = decodeJwt(getUserFromLocalStorage);
+  const { id, name, avatar } = getData;
+
+  const moveToProfile = (userId) => {
+    navigate(`/profile/${userId}`);
+  }
+
   const items2 = [
     {
       key: "sub1",
+      icon: (
+        <ImageStatus
+          image={avatar ? avatar : ''}
+          width={30}
+          height={30}
+          style={{
+            borderRadius: '100%',
+            marginTop: '8px',
+            marginRight: '10px',
+          }}
+          preview={false}
+        />
+      ),
+      label: (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <p style={{ margin: '0 0 0 5px' }}>{name}</p>
+        </div>
+      ),
+      onClick: () => moveToProfile(id)
+    },
+    {
+      key: "sub2",
       icon: <RxAvatar />, // Correct usage
       label: "Home",
       onClick: backToMenu
     },
     {
-      key: "sub2",
+      key: "sub3",
       icon: <FaUserFriends />, // Correct usage
       label: "Online Friends",
       children: [
@@ -51,7 +83,7 @@ export const MenuLeftComponent = ({ collapsed }) => {
       ],
     },
     {
-      key: "sub3",
+      key: "sub4",
       icon: <GrGroup />, // Correct usage
       label: "Groups",
       children: [
@@ -74,7 +106,7 @@ export const MenuLeftComponent = ({ collapsed }) => {
       ],
     },
     {
-      key: "sub4",
+      key: "sub5",
       icon: <IoSettingsOutline />,
       label: "Setting",
       children: [
@@ -93,7 +125,7 @@ export const MenuLeftComponent = ({ collapsed }) => {
       ]
     },
     {
-      key: "sub5",
+      key: "sub6",
       icon: <GrLogout />,
       label: "Logout",
       onClick: logoutClearToken
