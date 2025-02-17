@@ -7,24 +7,20 @@ import { useNavigate } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { ImageStatus } from "../SideComponent/ImageStatus";
+import { useFacadeFriendListOnline } from "../reduxs/useFacadeFriendListOnline";
 
 export const MenuRightComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
   const [selectedKeys, setSelectedKeys] = useState(["1"]);
   const navigate = useNavigate();
 
-  const logoutClearToken = () => {
-    localStorage.removeItem('accessToken');
-    navigate('/login');
-  }
-
   const getUserFromLocalStorage = localStorage.getItem('accessToken');
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id, name, avatar } = getData;
+  console.log('id', id)
 
-  const moveToProfile = (userId) => {
-    navigate(`/profile/${userId}`);
-  }
+  const {listFriendListOnline, error, loading} = useFacadeFriendListOnline(567);
+  console.log('listFriendListOnline', listFriendListOnline);
 
   const items2 = [
     {
