@@ -2,7 +2,7 @@ import { getApi } from "../api/restApiConfig";
 import {getFriendListOnline} from './reduxFriendListOnline';
 
 // Redux thunk cho list status 
-export const getFriendListOnlineThunk = (userId) => {
+export const getThunkFriendList = (userId) => {
     return async (dispatch) => {
         try {
             const data = await getApi(`/user/${userId}`);

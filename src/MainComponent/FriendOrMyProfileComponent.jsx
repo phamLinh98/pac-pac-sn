@@ -28,14 +28,6 @@ export const FriendOrMyProfileComponent = () => {
   return (
     <div> {/* Bọc Tabs và Footer trong div */}
       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-      <Layout.Footer
-        style={{
-          textAlign: "center",
-          marginTop: 20, // Add margin for spacing
-        }}
-      >
-        Linhthusinh ©{new Date().getFullYear()}
-      </Layout.Footer>
     </div>
   );
 };

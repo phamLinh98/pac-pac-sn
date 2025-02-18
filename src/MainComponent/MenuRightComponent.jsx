@@ -8,6 +8,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { ImageStatus, ImageStatusAvatar } from "../SideComponent/ImageStatus";
 import { useFacadeFriendListOnline } from "../reduxs/useFacadeFriendListOnline";
+import { LoadingComponent } from "../SideComponent/LoadingComponent";
 
 export const MenuRightComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
@@ -16,75 +17,35 @@ export const MenuRightComponent = ({ collapsed }) => {
 
   const getUserFromLocalStorage = localStorage.getItem('accessToken');
   const getData = decodeJwt(getUserFromLocalStorage);
-  const { id, name, avatar } = getData;
-  console.log('getData', getData)
+  const { id } = getData;
   const idToNumber = +id;
-  const {listFriendListOnline, error, loading} = useFacadeFriendListOnline(idToNumber);
-  console.log('listFriendListOnline', listFriendListOnline);
+  const { listFriendListOnline, error, loading } = useFacadeFriendListOnline(idToNumber);
 
   const items2 = [
     {
       key: "sub1",
       icon: <FaUserFriends />, // Correct usage
       label: "Online Friends",
-      children: [
-        {
-          key: 1,
-          label: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <ImageStatusAvatar
-                image="https://i.pinimg.com/736x/8e/72/3a/8e723a1f58efc02a33d6e37669297df6.jpg" // Replace with the actual URL of your image
-                style={{ marginTop:"45%",marginRight: '8px', width: '20px', height: '20px', borderRadius:'100%' }} // Adjust size and spacing
-                active={true}
-                preview={false}
-              />
-              <span>Liễu Như Yên</span>
-            </div>
-          ),
+      children: listFriendListOnline.map(friend => ({  // Map over the friend list
+        key: friend.id.toString(), // Use friend.id as the key (converted to string)
+        label: (
+          <div
+            style={{ display: 'flex', alignItems: 'center' }}
+            key={friend.id.toString()} // Add key to the div
+          >
+            <ImageStatusAvatar
+              image={friend.avatar} // Use friend.avatar as the image source
+              style={{ marginTop: '45%', marginRight: '8px', width: '20px', height: '20px', borderRadius: '100%' }}
+              active={true}
+              preview={false}
+            />
+            <span>{friend.name}</span> {/* Use friend.name as the text */}
+          </div>
+        ),
+        onClick: () => {
+          navigate(`/profile/${friend.id}`);
         },
-        {
-          key: 2,
-          label: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <ImageStatusAvatar
-                image="https://i.pinimg.com/736x/8e/72/3a/8e723a1f58efc02a33d6e37669297df6.jpg" // Replace with the actual URL of your image
-                style={{ marginTop:"45%",marginRight: '8px', width: '20px', height: '20px', borderRadius:'100%' }} // Adjust size and spacing
-                active={true}
-                preview={false}
-              />
-              <span>Liễu Như Yên</span>
-            </div>
-          ),
-        },
-        {
-          key: 3,
-          label: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <ImageStatusAvatar
-                image="https://i.pinimg.com/736x/8e/72/3a/8e723a1f58efc02a33d6e37669297df6.jpg" // Replace with the actual URL of your image
-                style={{ marginTop:"45%",marginRight: '8px', width: '20px', height: '20px', borderRadius:'100%' }} // Adjust size and spacing
-                active={true}
-                preview={false}
-              />
-              <span>Liễu Như Yên</span>
-            </div>
-          ),
-        },
-        {
-          key: 4,
-          label: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <ImageStatusAvatar
-                image="https://i.pinimg.com/736x/8e/72/3a/8e723a1f58efc02a33d6e37669297df6.jpg" // Replace with the actual URL of your image
-                style={{ marginTop:"45%",marginRight: '8px', width: '20px', height: '20px', borderRadius:'100%' }} // Adjust size and spacing
-                active={true}
-                preview={false}
-              />
-              <span>Liễu Như Yên</span>
-            </div>
-          ),
-        },
-      ],
+      }))
     },
     {
       key: "sub2",

@@ -3,7 +3,7 @@ import reduxList from '../reduxs/reduxListStatus';
 import reduxStory from '../reduxs/reduxStory';
 import reduxComment from '../reduxs/reduxComment';
 import reduxListByUserId from '../reduxs/reduxListByUserId';
-import reduxFriendListOnline from '../reduxs/reduxFriendListOnline';
+import reduxFriends from '../reduxs/reduxFriendListOnline';
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +11,6 @@ export const store = configureStore({
         reduxListByUserId: reduxListByUserId,
         reduxStory: reduxStory ,// store for story
         reduxComment: reduxComment, // // store for story
-        reduxFriendListOnline: reduxFriendListOnline
+        reduxFriends: reduxFriends // store for friend
     }
 })

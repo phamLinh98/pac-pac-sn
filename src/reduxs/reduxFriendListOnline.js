@@ -2,10 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const FriendListOnline = createSlice({
     name: "FriendListOnline",
-    initialState: { friendListOnline: [], error: '', loading: false },
+    initialState: { listFriendListOnline: [], error: '', loading: false },  // Changed name here
     reducers: {
         getFriendListOnline: (state, action) => {
-            state.friendListOnline = action.payload;
+            state.listFriendListOnline = action.payload; // Use the new name here
             state.loading = false;
         },
         logError: (state, action) => {

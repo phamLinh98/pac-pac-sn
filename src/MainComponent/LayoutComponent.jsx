@@ -52,8 +52,8 @@ export const LayoutComponent = () => {
       label: <FaPhotoVideo style={{ fontSize: "17px" }} />
     },
     {
-      key:"6",
-      label:<IoMdPersonAdd style={{fontSize:"17px"}} />
+      key: "6",
+      label: <IoMdPersonAdd style={{ fontSize: "17px" }} />
     }
   ];
 
@@ -80,20 +80,22 @@ export const LayoutComponent = () => {
         {/* Content */}
         <Layout
           style={{
-            marginLeft: collapsed ? 0 : 200, // Dịch chuyển content khi left Sider collapse
-            marginRight: collapsed ? 0 : 200, // Dịch chuyển content khi right Sider collapse
+            marginLeft: collapsed ? 0 : 200,
+            marginRight: collapsed ? 0 : 200,
             padding: "0 24px 24px",
-            overflow: "auto",
-            height: "calc(100vh - 64px)", // Chiều cao trừ header
+            height: "calc(100vh - 64px)", // Viewport height minus header
             transition: "margin-left 0.3s, margin-right 0.3s",
+            display: "flex",            // Enable flexbox for Layout
+            flexDirection: "column",     // Arrange children vertically
           }}
         >
           <Content
             style={{
               padding: 0,
               margin: 0,
-              minHeight: "100%",
               background: "none",
+              flex: 1,                // Allow Content to grow and take up remaining space
+              //overflow: "auto",        // Enable scrolling for Content only
             }}
           >
             <Outlet />
@@ -113,7 +115,7 @@ export const LayoutComponent = () => {
             zIndex: 2, // Đảm bảo Sider không bị che bởi content
           }}
         >
-          <MenuRightComponent/>
+          <MenuRightComponent />
         </Sider>
       </Layout>
     </Layout>

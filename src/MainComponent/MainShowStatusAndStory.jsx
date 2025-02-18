@@ -2,9 +2,10 @@ import { Space, Layout } from "antd";
 import { MyStatusAreaComponent } from "./MyStatusAreaComponent";
 import { FriendStatusListComponent } from "./FriendStatusListComponent";
 import { AllStory } from "../SideComponent/Story";
+import { useState } from "react";
 
 export const MainShowStatusAndStory = () => {
-
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <Space
       direction="vertical"
@@ -26,10 +27,13 @@ export const MainShowStatusAndStory = () => {
       <Layout.Footer
         style={{
           textAlign: "center",
-          marginTop: 20, // Add margin for spacing
+          paddingTop:'20',
+          position: "fixed",      // Fix the footer's position          // Stick it to the bottom
+          backgroundColor: 'white', // Or whatever background you want
+          zIndex: 1, // Ensure it's above the content
         }}
       >
-        Linhthusinh ©{new Date().getFullYear()}
+        Raccoon ©{new Date().getFullYear()}
       </Layout.Footer>
     </Space>
   );
