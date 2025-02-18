@@ -22,19 +22,6 @@ export const MainShowStatusAndStory = () => {
 
       {/* Friend Status */}
       <FriendStatusListComponent />
-
-      {/* Footer */}
-      <Layout.Footer
-        style={{
-          textAlign: "center",
-          paddingTop:'20',
-          position: "fixed",      // Fix the footer's position          // Stick it to the bottom
-          backgroundColor: 'white', // Or whatever background you want
-          zIndex: 1, // Ensure it's above the content
-        }}
-      >
-        Raccoon ©{new Date().getFullYear()}
-      </Layout.Footer>
     </Space>
   );
 };
