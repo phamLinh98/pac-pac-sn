@@ -36,7 +36,7 @@ export const ImageStatus = ({ image, width, height, style, active, preview }) =>
   );
 };
 
-export const ImageStatusAvatar = ({ image, width, height, style, active }) => {
+export const ImageStatusAvatar = ({ image, width, height, style, active, preview}) => {
   return (
     <div style={{
       position: 'relative',
@@ -47,6 +47,7 @@ export const ImageStatusAvatar = ({ image, width, height, style, active }) => {
         width={width}
         height={height}
         src={image}
+        preview={preview}
         style={{
           ...style, // Giữ style ban đầu
           display: 'block', // Đảm bảo không có khoảng trắng thừa

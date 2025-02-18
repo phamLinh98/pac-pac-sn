@@ -6,7 +6,7 @@ import { GrGroup, GrLogout } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
-import { ImageStatus } from "../SideComponent/ImageStatus";
+import { ImageStatus, ImageStatusAvatar } from "../SideComponent/ImageStatus";
 import { useFacadeFriendListOnline } from "../reduxs/useFacadeFriendListOnline";
 
 export const MenuRightComponent = ({ collapsed }) => {
@@ -17,9 +17,9 @@ export const MenuRightComponent = ({ collapsed }) => {
   const getUserFromLocalStorage = localStorage.getItem('accessToken');
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id, name, avatar } = getData;
-  console.log('id', id)
-
-  const {listFriendListOnline, error, loading} = useFacadeFriendListOnline(567);
+  console.log('getData', getData)
+  const idToNumber = +id;
+  const {listFriendListOnline, error, loading} = useFacadeFriendListOnline(idToNumber);
   console.log('listFriendListOnline', listFriendListOnline);
 
   const items2 = [
@@ -29,20 +29,60 @@ export const MenuRightComponent = ({ collapsed }) => {
       label: "Online Friends",
       children: [
         {
-          key: 5,
-          label: "Liễu Như Yên",
+          key: 1,
+          label: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <ImageStatusAvatar
+                image="https://i.pinimg.com/736x/8e/72/3a/8e723a1f58efc02a33d6e37669297df6.jpg" // Replace with the actual URL of your image
+                style={{ marginTop:"45%",marginRight: '8px', width: '20px', height: '20px', borderRadius:'100%' }} // Adjust size and spacing
+                active={true}
+                preview={false}
+              />
+              <span>Liễu Như Yên</span>
+            </div>
+          ),
         },
         {
-          key: 6,
-          label: "Liễu Như Yên",
+          key: 2,
+          label: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <ImageStatusAvatar
+                image="https://i.pinimg.com/736x/8e/72/3a/8e723a1f58efc02a33d6e37669297df6.jpg" // Replace with the actual URL of your image
+                style={{ marginTop:"45%",marginRight: '8px', width: '20px', height: '20px', borderRadius:'100%' }} // Adjust size and spacing
+                active={true}
+                preview={false}
+              />
+              <span>Liễu Như Yên</span>
+            </div>
+          ),
         },
         {
-          key: 7,
-          label: "Liễu Như Yên",
+          key: 3,
+          label: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <ImageStatusAvatar
+                image="https://i.pinimg.com/736x/8e/72/3a/8e723a1f58efc02a33d6e37669297df6.jpg" // Replace with the actual URL of your image
+                style={{ marginTop:"45%",marginRight: '8px', width: '20px', height: '20px', borderRadius:'100%' }} // Adjust size and spacing
+                active={true}
+                preview={false}
+              />
+              <span>Liễu Như Yên</span>
+            </div>
+          ),
         },
         {
-          key: 8,
-          label: "Liễu Như Yên",
+          key: 4,
+          label: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <ImageStatusAvatar
+                image="https://i.pinimg.com/736x/8e/72/3a/8e723a1f58efc02a33d6e37669297df6.jpg" // Replace with the actual URL of your image
+                style={{ marginTop:"45%",marginRight: '8px', width: '20px', height: '20px', borderRadius:'100%' }} // Adjust size and spacing
+                active={true}
+                preview={false}
+              />
+              <span>Liễu Như Yên</span>
+            </div>
+          ),
         },
       ],
     },

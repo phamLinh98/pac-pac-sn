@@ -27,15 +27,15 @@ export const LoginComponent = () => {
         <Row justify="center" align="middle" style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
             <Col xs={20} sm={16} md={12} lg={8}>
                 <Card
-                    title="Đăng Nhập"
+                    title={<p style={{ textAlign: 'center' }}>Đăng Nhập</p>}
                     bordered={false}
                     style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)' }}
                 >
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                         <img
-                            src="https://i.pinimg.com/736x/e7/23/37/e7233741efa8cc3971e5964cffbcbdcb.jpg"
+                            src="https://i.pinimg.com/736x/40/5d/61/405d61bd97581fe4ef00cefd686aa6a3.jpg"
                             alt="Logo"
-                            style={{ width: '100px', height: 'auto' }}
+                            style={{ width: '100px', height: 'auto', borderRadius: '100%' }}
                         />
                     </div>
                     <Form
