@@ -43,7 +43,7 @@ export const ProfileComponent = () => {
                         <Image
                             style={{ height: "230px", objectFit: "cover" }}
                             alt="example"
-                            src={background}
+                            src={'https://i.pinimg.com/1200x/80/7f/bd/807fbd1b0342fe62bc600f8ad7aa4860.jpg'}
                             preview={true}
                         />
                     }
