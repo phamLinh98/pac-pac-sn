@@ -62,24 +62,6 @@ export const FriendStatusListComponent = () => {
             <div>
               <p>
                 {item.content.title}
-                {/* {isExpandedNo
-                  ? item.content.title
-                  : `${item.content.title.slice(0, maxLength)}...`}{" "}
-                <span
-                  onClick={showAllOrHideTitle}
-                  style={{ color: "blue", cursor: "pointer" }}
-                >
-                  <span>
-                    {isExpanded ? (
-                      <>
-                        <br />
-                        ẩn
-                      </>
-                    ) : (
-                      "xem tiếp"
-                    )}{" "}
-                  </span>
-                </span> */}
               </p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
