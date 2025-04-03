@@ -5,10 +5,6 @@ const { Header } = Layout;
 
 export const PrivateAreaComponent = ({ items, onToggleMenu, collapsed }) => {
   const [localCollapsed, setLocalCollapsed] = useState(collapsed);
-  // const toggleCollapsed = () => {
-  //   setLocalCollapsed(!localCollapsed);
-  //   onToggleMenu(!localCollapsed)
-  // };
   return (
     <Header
       style={{
@@ -20,15 +16,11 @@ export const PrivateAreaComponent = ({ items, onToggleMenu, collapsed }) => {
         padding: "0 24px"
       }}
     >
-      {/* <Button>
-        {localCollapsed ? <IoMenu /> : <IoMenu />}
-      </Button> */}
       <Input placeholder="Search User" style={{width:"15%"}}/>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}> {/* Thay đổi ở đây */}
         <Menu
           theme="dark"
           mode="horizontal"
-          // defaultSelectedKeys={["1"]}
           items={items}
           style={{
             minWidth: 0,

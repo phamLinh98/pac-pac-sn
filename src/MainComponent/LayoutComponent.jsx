@@ -19,10 +19,6 @@ export const LayoutComponent = () => {
   } = theme.useToken();
 
   const [collapsed, setCollapsed] = useState(false);
-  // Toggle function to open/close left menu
-  // const onToggleMenu = (newValue) => {
-  //   setCollapsed(newValue)
-  // }
 
   // Navigate to profile 
   const navigate = useNavigate();

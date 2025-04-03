@@ -22,6 +22,7 @@ export const ProfileComponent = () => {
     const userId = useParams();
     const userIdConverToNumber = +userId.id;
     const { listUserById, loading } = useFacadeListByUserId(userIdConverToNumber);
+    console.log('listUserById', listUserById);
     const [isExpanded, setIsExpanded] = useState(false);
     const showAllOrHideTitle = () => {
         setIsExpanded(!isExpanded);
@@ -166,24 +167,6 @@ export const ProfileComponent = () => {
                         } size="small">
                             <div>
                                 <p>
-                                    {/* {isExpanded
-                                        ? item.content.title
-                                        : `${item.content.title.slice(0, maxLength)}...`}{" "}
-                                    <span
-                                        onClick={showAllOrHideTitle}
-                                        style={{ color: "blue", cursor: "pointer" }}
-                                    >
-                                        <span>
-                                            {isExpanded ? (
-                                                <>
-                                                    <br />
-                                                    ẩn
-                                                </>
-                                            ) : (
-                                                "xem tiếp"
-                                            )}{" "}
-                                        </span>
-                                    </span> */}
                                     {item.content.title}
                                 </p>
                             </div>
