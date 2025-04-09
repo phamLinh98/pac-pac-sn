@@ -5,7 +5,6 @@ import { useFacadeFriendListOnline } from "../reduxs/useFacadeFriendListOnline";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { LoadingComponent } from "../SideComponent/LoadingComponent";
 import { useNavigate } from "react-router-dom";
-import { ImageStatus } from "../SideComponent/ImageStatus";
 
 export const ListFriendEachAccount = () => {
     const getUserFromLocalStorage = localStorage.getItem('accessToken');
