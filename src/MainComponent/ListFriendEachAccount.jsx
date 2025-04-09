@@ -55,7 +55,6 @@ export const ListFriendEachAccount = () => {
                         style={{ width: "100%" }}
                     >
                         <p style={{ margin: 0 }}>200 bạn chung</p>
-                        <p style={{ margin: 0 }}>Hải Dương</p>
                     </Card>
                 </Col>
             ))}

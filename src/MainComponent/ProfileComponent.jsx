@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Avatar, Button, Card, Image, Space } from 'antd';
+import { Button, Card, Image, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { IoMdAdd } from 'react-icons/io';
+import { IoIosPersonAdd } from 'react-icons/io';
 import { FiSend } from 'react-icons/fi';
 import { ImageStatus, ImageStatusAvatar } from '../SideComponent/ImageStatus';
 import { GiChestnutLeaf } from 'react-icons/gi';
@@ -15,6 +15,7 @@ import { useParams } from 'react-router-dom';
 import { useFacadeListByUserId } from '../reduxs/useFacadeListByUserId';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo.js';
 import { MyStatusAreaComponent } from './MyStatusAreaComponent.jsx';
+import { BsSendPlus } from 'react-icons/bs';
 
 const { Meta } = Card;
 
@@ -36,9 +37,14 @@ export const ProfileComponent = () => {
     const { id, name, friends, avatar, background } = getData;
 
     const [addFriend, setAddFriend] = useState(false);
+    const [isFollow, setIsFollow] = useState(false);
 
     const clickToAddFriend = () => {
         setAddFriend(!addFriend);
+    }
+
+    const clickToFollow = () => {
+        setIsFollow(!isFollow);
     }
 
     return (
@@ -108,17 +114,18 @@ export const ProfileComponent = () => {
                                                         <Button
                                                             type="primary"
                                                             style={{ marginRight: '10px' }}
-                                                            icon={<IoMdAdd />} // Đưa icon vào prop icon
+                                                            icon={!addFriend ? <IoIosPersonAdd /> : <BsSendPlus />} // Đưa icon vào prop icon
                                                             onClick={() => clickToAddFriend()}
                                                         >
-                                                            {addFriend ? 'Đã gửi lời mời kết bạn' : 'Kết bạn'}
+                                                            {addFriend ? 'Đã gửi lời mời' : 'Kết bạn'}
                                                         </Button>
                                                         <Button
                                                             type="primary"
                                                             style={{ marginRight: '10px' }}
                                                             icon={<MdRemoveRedEye />}
+                                                            onClick={() => clickToFollow()}
                                                         >
-                                                            Follow
+                                                            {isFollow ? 'Đã theo dõi' : 'Theo dõi'}
                                                         </Button>
                                                         <Button type="dashed" icon={<FiSend />}>
                                                             Nhắn Tin
