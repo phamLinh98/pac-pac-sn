@@ -33,7 +33,14 @@ export const ProfileComponent = () => {
         obj && typeof obj === 'object' && Object.keys(obj).length === 0;
     const getUserFromLocalStorage = localStorage.getItem('accessToken');
     const getData = decodeJwt(getUserFromLocalStorage);
-    const { id, name, friends, avatar, background} = getData;
+    const { id, name, friends, avatar, background } = getData;
+
+    const [addFriend, setAddFriend] = useState(false);
+
+    const clickToAddFriend = () => {
+        setAddFriend(!addFriend);
+    }
+
     return (
         <>
             <div style={{ width: '100%', height: '5%', position: 'relative' }}>
@@ -58,7 +65,7 @@ export const ProfileComponent = () => {
                                 padding: '10px',
                             }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    {loading ? <LoadingComponent/> :
+                                    {loading ? <LoadingComponent /> :
                                         listUserById.slice(0, 1).map((item) => (
                                             <div key={item.id} style={{ display: 'flex', alignItems: 'center' }}>
                                                 <ImageStatusAvatar
@@ -102,8 +109,9 @@ export const ProfileComponent = () => {
                                                             type="primary"
                                                             style={{ marginRight: '10px' }}
                                                             icon={<IoMdAdd />} // Đưa icon vào prop icon
+                                                            onClick={() => clickToAddFriend()}
                                                         >
-                                                            Kết Bạn
+                                                            {addFriend ? 'Đã gửi lời mời kết bạn' : 'Kết bạn'}
                                                         </Button>
                                                         <Button
                                                             type="primary"
@@ -195,7 +203,7 @@ export const ProfileComponent = () => {
                                                     padding: 0,
                                                 }}
                                             >
-                                                <ImageStatus image={image ? image : ''} width={150} height={250} preview={true}/>
+                                                <ImageStatus image={image ? image : ''} width={150} height={250} preview={true} />
                                             </div>
                                         ))}
                                     </div>
