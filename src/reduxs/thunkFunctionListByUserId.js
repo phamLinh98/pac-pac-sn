@@ -9,10 +9,11 @@ export const getListByUserIdThunk = (userId) => {
             const data = await getApi(`/list/${userId}`);
             const response = await data.json();
             dispatch(getListByUserId(response));
-            dispatch(eventLoading(false));
-
         } catch (error) {
-            dispatch(logError(error.message))
+            console.log('error', error);
+            dispatch(logError(error.message || 'Không thể tải dữ liệu người dùng'));
+        } finally {
+            dispatch(eventLoading(false));
         }
     }
 };

@@ -10,10 +10,11 @@ export const getListThunkFunction = () => {
             const data = await getApi('/list');
             const response = await data.json();
             dispatch(getListStatus(response));
-            dispatch(eventLoading(false));
-
         } catch (error) {
             console.log('error', error);
+            dispatch(logError(error.message || 'Không thể tải dữ liệu'));
+        } finally {
+            dispatch(eventLoading(false));
         }
     }
 };

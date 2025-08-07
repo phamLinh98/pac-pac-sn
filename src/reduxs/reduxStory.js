@@ -12,8 +12,8 @@ export const Story = createSlice({
             state.errorStory = action.payload;
             state.loadingStory = false;
         },
-        eventLoading: (state) => {
-            state.loadingStory = true;
+        eventLoading: (state, action) => {
+            state.loadingStory = action.payload;
         }
     }
 })

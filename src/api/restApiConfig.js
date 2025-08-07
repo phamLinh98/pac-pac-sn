@@ -3,32 +3,50 @@ import { envConfig } from "../configs/envConfig";
 export const getApi = async (route) => {
   try {
     const url = `${envConfig.host}${route}`;
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: 'include',
     });
+    
     if (!response.ok) {
       if (response.status === 401) {
         try {
-          await fetch(`${envConfig.host}/refesh-token`, {
+          const refreshResponse = await fetch(`${envConfig.host}/refesh-token`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
             credentials: 'include',
           });
+          
+          if (refreshResponse.ok) {
+            // Thực hiện lại request ban đầu sau khi refresh token thành công
+            response = await fetch(url, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: 'include',
+            });
+          } else {
+            throw new Error('Refresh token failed');
+          }
         } catch(error) {
-          console.log(error);
+          console.log('Refresh token error:', error);
+          throw error;
         }
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Request failed');
       }
-      await response.json();
     }
     return response;
   } catch (error) {
-    console.log(error);
+    console.log('API error:', error);
+    throw error;
   }
 }
 

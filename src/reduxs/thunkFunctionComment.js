@@ -9,9 +9,11 @@ export const getCommentThunkFunction = (listId) => {
             const data = await getApi(`/comment/${listId}`);
             const response = await data.json();
             dispatch(getCommentStatus(response));
-            dispatch(eventLoading(false));
         } catch (error) {
-            console.log('error', error)
+            console.log('error', error);
+            dispatch(logError(error.message || 'Không thể tải bình luận'));
+        } finally {
+            dispatch(eventLoading(false));
         }
     }
 };
