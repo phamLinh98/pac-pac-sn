@@ -7,7 +7,7 @@ export const getStoryThunkFunction = () => async (dispatch) => {
     try {
         const data = await getApi('/story')
         const response = await data.json();
-        dispatch(getStory(response));
+        dispatch(getStory(response)); // { type: name.reducers["getStory"], payload: response });
     } catch (error) {
         dispatch(logError('Loi truy van story'));
     }

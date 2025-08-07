@@ -5,7 +5,7 @@ export const Story = createSlice({
     initialState: { story: [], errorStory: '', loadingStory: false },
     reducers: {
         getStory: (state, action) => {
-            state.story = action.payload;
+            state.story = action.payload;//123
             state.loadingStory = false;
         },
         logError: (state, action) => {
