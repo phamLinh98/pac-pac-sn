@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { Button, Card, Space } from 'antd';
 import { VscShare } from 'react-icons/vsc';
 import { ImageStatus } from '../SideComponent/ImageStatus';
@@ -13,12 +13,6 @@ import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
 
 export const FriendStatusListComponent = () => {
   const { list, loading } = useFacadeList();
-  const maxLength = 15;
-  const [isExpanded, setIsExpanded] = useState(false);
-  const showAllOrHideTitle = () => {
-    setIsExpanded(!isExpanded);
-  };
-
   const containerRefs = useRef([]);
   const navigate = useNavigate();
 
@@ -34,7 +28,7 @@ export const FriendStatusListComponent = () => {
   return (
     <>
       {loading ? <LoadingComponent /> : <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-        {list.length <= 0 ? <NotListComponent /> : list.map((item, index) => (
+        {list.length == 0 ? <NotListComponent /> : list.map((item, index) => (
           <Card key={item.id} title={
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
               <ImageStatus active={true} width="26px" height="25px" image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} style={{
