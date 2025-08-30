@@ -7,7 +7,7 @@ import { loginByEmailAndPassword } from '../api/restApiConfig';
 export const LoginComponent = () => {
     const navigate = useNavigate();
     useEffect(() => {
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('allow-login');
         if (token) {
             navigate('/home');
         }

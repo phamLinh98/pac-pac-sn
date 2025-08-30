@@ -15,7 +15,7 @@ export const MenuRightComponent = ({ collapsed }) => {
   const [selectedKeys, setSelectedKeys] = useState(["1"]);
   const navigate = useNavigate();
 
-  const getUserFromLocalStorage = localStorage.getItem('accessToken');
+  const getUserFromLocalStorage = localStorage.getItem('allow-login');
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id } = getData;
   const idToNumber = +id;

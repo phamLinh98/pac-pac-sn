@@ -14,11 +14,11 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const navigate = useNavigate();
 
   const logoutClearToken = () => {
-    localStorage.removeItem('accessToken');
+    localStorage.removeItem('allow-login');
     navigate('/login');
   }
 
-  const getUserFromLocalStorage = localStorage.getItem('accessToken');
+  const getUserFromLocalStorage = localStorage.getItem('allow-login');
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id, name, avatar } = getData;
 

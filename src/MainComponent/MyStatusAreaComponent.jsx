@@ -6,7 +6,7 @@ import { GoStarFill } from "react-icons/go";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 
 export const MyStatusAreaComponent = () => {
-  const getUserFromLocalStorage = localStorage.getItem('accessToken');
+  const getUserFromLocalStorage = localStorage.getItem('allow-login');
   const getData = decodeJwt(getUserFromLocalStorage);
   const {name} = getData;
 

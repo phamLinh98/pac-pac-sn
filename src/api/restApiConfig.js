@@ -12,7 +12,7 @@ export const getApi = async (route) => {
     });
     
     if (!response.ok) {
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 402) {
         try {
           const refreshResponse = await fetch(`${envConfig.host}/refesh-token`, {
             method: "GET",
@@ -66,7 +66,7 @@ export const loginByEmailAndPassword = async (email, password) => {
       await response.json();
     }
     const responseData = await response.json();
-    localStorage.setItem('accessToken', responseData.token);
+    localStorage.setItem('allow-login', responseData.token);
     return true;
   } catch (error) {
     console.log(error.message);
@@ -76,19 +76,43 @@ export const loginByEmailAndPassword = async (email, password) => {
 export const refeshTokenWhenExpired = async (route) => {
   try {
     const url = `${envConfig.host}${route}`;
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: 'include',
     });
+    
     if (!response.ok) {
-      throw new Error(`HTTP error! status:${response.status}`);
+      if (response.status === 402) {
+        const refreshResponse = await fetch(`${envConfig.host}/refesh-token`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+        });
+        if (refreshResponse.ok) {
+          // Thực hiện lại request ban đầu sau khi refresh token thành công
+          response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: 'include',
+          });
+        } else {
+          throw new Error('Refresh token failed');
+        }
+      } else {
+        throw new Error(`HTTP error! status:${response.status}`);
+      }
     }
     return response;
   } catch (error) {
     console.log('error', error.message);
+    throw error;
   }
 }
 

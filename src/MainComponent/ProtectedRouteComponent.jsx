@@ -8,7 +8,7 @@ const AuthGuard = ({ children }) => {
 
   useEffect(() => {
     try {
-      const accessToken = localStorage.getItem("accessToken");
+      const accessToken = localStorage.getItem("allow-login");
       // verify
       if (!accessToken) {
         navigate("/login");

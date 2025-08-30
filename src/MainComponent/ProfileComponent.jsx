@@ -32,7 +32,7 @@ export const ProfileComponent = () => {
     const maxLength = 15;
     const isEmptyObject = (obj) =>
         obj && typeof obj === 'object' && Object.keys(obj).length === 0;
-    const getUserFromLocalStorage = localStorage.getItem('accessToken');
+    const getUserFromLocalStorage = localStorage.getItem('allow-login');
     const getData = decodeJwt(getUserFromLocalStorage);
     const { id, name, friends, avatar, background } = getData;
 

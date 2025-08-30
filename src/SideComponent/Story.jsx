@@ -18,7 +18,7 @@ export const AllStory = () => {
   const moveToProfileUser = (userId) => {
     navigate(`/profile/${userId}`)
   }
-  const getUserFromLocalStorage = localStorage.getItem('accessToken');
+  const getUserFromLocalStorage = localStorage.getItem('allow-login');
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id } = getData;
 

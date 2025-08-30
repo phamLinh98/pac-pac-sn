@@ -7,7 +7,7 @@ import { LoadingComponent } from "../SideComponent/LoadingComponent";
 import { useNavigate } from "react-router-dom";
 
 export const ListFriendEachAccount = () => {
-    const getUserFromLocalStorage = localStorage.getItem('accessToken');
+    const getUserFromLocalStorage = localStorage.getItem('allow-login');
     const getData = decodeJwt(getUserFromLocalStorage);
     const { id } = getData;
     const idToNumber = +id;
