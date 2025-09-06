@@ -19,7 +19,6 @@ export const FriendStatusListComponent = () => {
   const { list, loading } = useFacadeList(idToNumber);
   const containerRefs = useRef([]);
   const navigate = useNavigate();
-
   const handleNavigate = (userId) => {
     navigate(`/profile/${userId}`);
   };
