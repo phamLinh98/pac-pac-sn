@@ -1,5 +1,4 @@
-import React from 'react';
-import { Tabs, Layout } from 'antd'; // Import Layout từ antd
+import { Tabs } from 'antd'; // Import Layout từ antd
 import { FaRegFileImage, FaRegFileVideo, FaUserFriends } from 'react-icons/fa';
 import { BsFileEarmarkPost } from 'react-icons/bs';
 import { ProfileComponent } from './ProfileComponent';

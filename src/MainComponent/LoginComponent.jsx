@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Form, Input, Button, Card, Row, Col, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -79,11 +79,23 @@ export const LoginComponent = () => {
                                     Login Password
                                 </Button>
                                 <Button
-                                    type="primary"
-                                    htmlType="submit"
-                                    style={{ width: '100%', borderRadius: '4px' }}
+                                    type="default"
+                                    style={{ 
+                                        width: '100%', 
+                                        borderRadius: '4px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '8px',
+                                        border: '1px solid #dadce0'
+                                    }}
                                 >
-                                    Login SSO
+                                    <img 
+                                        src="https://developers.google.com/identity/images/g-logo.png" 
+                                        alt="Google" 
+                                        style={{ width: '18px', height: '18px' }}
+                                    />
+                                    Login Google
                                 </Button>
                             </div>
                         </Form.Item>
