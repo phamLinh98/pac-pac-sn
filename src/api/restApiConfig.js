@@ -1,3 +1,4 @@
+
 import { envConfig } from "../configs/envConfig";
 
 export const getApi = async (route) => {
@@ -132,6 +133,55 @@ export const logoutClearToken = async (route) => {
     return response;
   } catch (error) {
     console.log('error', error.message);
+  }
+}
+
+export const updateUserImageApi = async (avatarURL,id) => {
+  try {
+    const url = `${envConfig.host}/user/${id}`;  
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        avatar: avatarURL
+      }),
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status:${response.status}`);
+    }
+    return response;
+  } catch (error) {
+    console.log('error', error.message);
+    throw error;
+  }
+}
+
+
+export const createNewUser = async (info) => {
+  try {
+    const url = `${envConfig.host}/register`;  
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name:info.name,
+        email:info.email,
+        password:info.password
+      }),
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status:${response.status}`);
+    }
+    return response;
+  } catch (error) {
+    console.log('error', error.message);
+    throw error;
   }
 }
 

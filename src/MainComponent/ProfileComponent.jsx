@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, {useRef, useState } from "react";
 import { Button, Card, Image, Space } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { IoIosPersonAdd } from "react-icons/io";
@@ -16,6 +16,7 @@ import { useFacadeListByUserId } from "../reduxs/useFacadeListByUserId";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo.js";
 import { MyStatusAreaComponent } from "./MyStatusAreaComponent.jsx";
 import { BsSendPlus } from "react-icons/bs";
+import { ModalComponent } from "../SideComponent/ModalComponent.jsx";
 
 const { Meta } = Card;
 
@@ -30,6 +31,8 @@ export const ProfileComponent = () => {
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id } = getData;
 
+  const idToNumber = +id;
+
   const [addFriend, setAddFriend] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
 
@@ -39,6 +42,14 @@ export const ProfileComponent = () => {
 
   const clickToFollow = () => {
     setIsFollow(!isFollow);
+  };
+
+  const [open, setOpen] = useState(false);
+  const showModal = () => {
+    setOpen(true);
+  };
+  const hideModal = () => {
+    setOpen(false);
   };
 
   return (
@@ -124,8 +135,9 @@ export const ProfileComponent = () => {
                               marginLeft: "5px",
                             }}
                           >
-                            <Button>Thay avatar</Button>
+                            <Button onClick={showModal}>Thay avatar</Button>
                             <Button>Thay ảnh bìa</Button>
+                            <ModalComponent open={open} hideModal={hideModal} id={idToNumber} />
                           </div>
                         ) : (
                           ""

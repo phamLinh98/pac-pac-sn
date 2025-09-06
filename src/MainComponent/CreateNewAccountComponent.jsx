@@ -21,6 +21,7 @@ import {
   message,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { createNewUser } from '../api/restApiConfig';
 
 const { Title, Text } = Typography;
 
@@ -64,12 +65,35 @@ export const CreateNewAccountComponent = () => {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      message.success('🎉 Tài khoản đã được tạo thành công!');
-      console.log('Form values:', values);
-    } catch {
-      message.error('Có lỗi xảy ra, vui lòng thử lại!');
+      const userInfo = {
+        name: values.fullName,
+        email: values.email,
+        password: values.password
+      };
+      
+      const response = await createNewUser(userInfo);
+      
+      if (response && response.ok) {
+        message.success('🎉 Tài khoản đã được tạo thành công!');
+        // Reset form sau khi tạo thành công
+        form.resetFields();
+        setPasswordStrength(0);
+        // Chuyển hướng về trang login sau khi tạo tài khoản thành công
+        setTimeout(() => {
+          navigate('/login');
+        }, 1500);
+      } else {
+        // Xử lý lỗi từ server
+        const errorData = await response.json();
+        message.error(errorData.message || 'Có lỗi xảy ra khi tạo tài khoản, vui lòng thử lại!');
+      }
+    } catch (error) {
+      console.error('Error creating account:', error);
+      if (error.message.includes('email')) {
+        message.error('Email đã được sử dụng, vui lòng chọn email khác!');
+      } else {
+        message.error('Có lỗi xảy ra, vui lòng kiểm tra kết nối mạng và thử lại!');
+      }
     } finally {
       setLoading(false);
     }
@@ -129,9 +153,11 @@ export const CreateNewAccountComponent = () => {
         >
           <Form.Item
             name="fullName"
+            label="Họ và tên"
             rules={[
               { required: true, message: 'Vui lòng nhập họ và tên!' },
-              { min: 2, message: 'Tên phải có ít nhất 2 ký tự!' }
+              { min: 2, message: 'Tên phải có ít nhất 2 ký tự!' },
+              { max: 50, message: 'Tên không được quá 50 ký tự!' }
             ]}
           >
             <Input
@@ -143,9 +169,11 @@ export const CreateNewAccountComponent = () => {
 
           <Form.Item
             name="email"
+            label="Email"
             rules={[
               { required: true, message: 'Vui lòng nhập email!' },
-              { type: 'email', message: 'Email không hợp lệ!' }
+              { type: 'email', message: 'Email không hợp lệ!' },
+              { max: 100, message: 'Email không được quá 100 ký tự!' }
             ]}
           >
             <Input
@@ -156,9 +184,11 @@ export const CreateNewAccountComponent = () => {
           </Form.Item>
           <Form.Item
             name="password"
+            label="Mật khẩu"
             rules={[
               { required: true, message: 'Vui lòng nhập mật khẩu!' },
-              { min: 8, message: 'Mật khẩu phải có ít nhất 8 ký tự!' }
+              { min: 8, message: 'Mật khẩu phải có ít nhất 8 ký tự!' },
+              { max: 50, message: 'Mật khẩu không được quá 50 ký tự!' }
             ]}
           >
             <Input.Password
