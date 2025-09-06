@@ -22,6 +22,9 @@ export const LoginComponent = () => {
             message.error(`Đăng nhập thất bại: ${error.message}`);
         }
     };
+    const goToRegister = () => {
+        navigate('/register'); 
+    }
 
     return (
         <Row justify="center" align="middle" style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
@@ -70,33 +73,55 @@ export const LoginComponent = () => {
 
 
                         <Form.Item>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <Button
                                     type="primary"
                                     htmlType="submit"
-                                    style={{ width: '100%', borderRadius: '4px', marginRight: '5px' }}
+                                    style={{ width: '100%', borderRadius: '4px' }}
                                 >
                                     Login Password
                                 </Button>
-                                <Button
-                                    type="default"
-                                    style={{ 
-                                        width: '100%', 
-                                        borderRadius: '4px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '8px',
-                                        border: '1px solid #dadce0'
-                                    }}
-                                >
-                                    <img 
-                                        src="https://developers.google.com/identity/images/g-logo.png" 
-                                        alt="Google" 
-                                        style={{ width: '18px', height: '18px' }}
-                                    />
-                                    Login Google
-                                </Button>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <Button
+                                        type="default"
+                                        style={{ 
+                                            flex: 1, 
+                                            borderRadius: '4px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '8px',
+                                            border: '1px solid #dadce0'
+                                        }}
+                                    >
+                                        <img 
+                                            src="https://developers.google.com/identity/images/g-logo.png" 
+                                            alt="Google" 
+                                            style={{ width: '18px', height: '18px' }}
+                                        />
+                                        Login Google
+                                    </Button>
+                                    <Button
+                                        onClick={goToRegister}
+                                        type="default"
+                                        style={{ 
+                                            flex: 1, 
+                                            borderRadius: '4px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '8px',
+                                            border: '1px solid #dadce0'
+                                        }}
+                                    >
+                                        <img 
+                                            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
+                                            alt="Register" 
+                                            style={{ width: '18px', height: '18px' }}
+                                        />
+                                        Register
+                                    </Button>
+                                </div>
                             </div>
                         </Form.Item>
                     </Form>

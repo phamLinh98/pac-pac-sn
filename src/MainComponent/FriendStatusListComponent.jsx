@@ -12,23 +12,21 @@ import { useNavigate } from 'react-router-dom';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
 
 export const FriendStatusListComponent = () => {
-  const { list, loading } = useFacadeList();
+  const getUserFromLocalStorage = localStorage.getItem('allow-login');
+  const getData = decodeJwt(getUserFromLocalStorage);
+  const { id } = getData;
+  const idToNumber = Number(id);
+  const { list, loading } = useFacadeList(idToNumber);
   const containerRefs = useRef([]);
   const navigate = useNavigate();
 
   const handleNavigate = (userId) => {
-    console.log(userId)
     navigate(`/profile/${userId}`);
   };
-
-  const getUserFromLocalStorage = localStorage.getItem('allow-login');
-  const getData = decodeJwt(getUserFromLocalStorage);
-  const { id } = getData;
-
   return (
     <>
       {loading ? <LoadingComponent /> : <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-        {list.length == 0 ? <NotListComponent /> : list.map((item, index) => (
+        {list.length == 0 || list.content === undefined ? <NotListComponent description={'Bảng tin chưa có bài đăng nào'} /> : list.map((item, index) => (
           <Card key={item.id} title={
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
               <ImageStatus active={true} width="26px" height="25px" image={item.avatar ? item.avatar : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'} style={{

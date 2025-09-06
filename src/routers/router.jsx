@@ -4,6 +4,7 @@ import { MainShowStatusAndStory } from "../MainComponent/MainShowStatusAndStory"
 import { FriendOrMyProfileComponent } from "../MainComponent/FriendOrMyProfileComponent";
 import { LoginComponent } from "../MainComponent/LoginComponent";
 import AuthGuard from "../MainComponent/ProtectedRouteComponent";
+import { CreateNewAccountComponent } from "../MainComponent/CreateNewAccountComponent";
 
 // Define your routes
 export const router = createBrowserRouter(
@@ -29,6 +30,10 @@ export const router = createBrowserRouter(
     {
       path: "/login",
       element: <LoginComponent />
+    },
+    {
+      path:"/register",
+      element:<CreateNewAccountComponent />
     }
   ],
   {

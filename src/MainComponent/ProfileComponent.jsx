@@ -248,7 +248,7 @@ export const ProfileComponent = () => {
                             </div>
                         </Card>
                     ) : (
-                        <NotListComponent description="Người dùng chưa đăng bài viết" key={item.id} />
+                        <NotListComponent description="Bạn chưa có bài viết nào" key={item.id} />
                     );
                 }) : <NotListComponent description="Người dùng không tồn tại" />}
             </div>}

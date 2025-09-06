@@ -3,11 +3,11 @@ import { eventLoading, getListStatus } from "./reduxListStatus";
 import { logError } from "./reduxStory";
 
 // Redux thunk cho list status 
-export const getListThunkFunction = () => {
+export const getListThunkFunction = (id) => {
     return async (dispatch) => {
         dispatch(eventLoading(true));
         try {
-            const data = await getApi('/list');
+            const data = await getApi(`/list/${id}`);
             const response = await data.json();
             dispatch(getListStatus(response));
         } catch (error) {

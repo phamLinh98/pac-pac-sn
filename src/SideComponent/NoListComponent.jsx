@@ -1,5 +1,5 @@
 import { Empty } from "antd";
 
-export const NotListComponent = ({description}="Bảng tin chưa có bài đăng nào") => {
+export const NotListComponent = ({description}) => {
     return <Empty description={description} />
 };
