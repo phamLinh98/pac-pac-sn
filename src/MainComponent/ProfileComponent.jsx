@@ -44,12 +44,20 @@ export const ProfileComponent = () => {
     setIsFollow(!isFollow);
   };
 
-  const [open, setOpen] = useState(false);
-  const showModal = () => {
-    setOpen(true);
+  const [openAvatar, setOpenAvatar] = useState(false);
+  const showModalAvatar = () => {
+    setOpenAvatar(true);
   };
-  const hideModal = () => {
-    setOpen(false);
+  const hideModalAvatar = () => {
+    setOpenAvatar(false);
+  };
+
+  const [openBG, setOpenBG] = useState(false);
+  const showModalBG = () => {
+    setOpenBG(true);
+  };
+  const hideModalBG = () => {
+    setOpenBG(false);
   };
 
   return (
@@ -135,9 +143,10 @@ export const ProfileComponent = () => {
                               marginLeft: "5px",
                             }}
                           >
-                            <Button onClick={showModal}>Thay avatar</Button>
-                            <Button>Thay ảnh bìa</Button>
-                            <ModalComponent open={open} hideModal={hideModal} id={idToNumber} />
+                            <Button onClick={showModalAvatar}>Thay avatar</Button>
+                            <Button onClick={showModalBG}>Thay ảnh bìa</Button>
+                            <ModalComponent open={openAvatar} hideModal={hideModalAvatar} id={idToNumber} />
+                            <ModalComponent open={openBG} hideModal={hideModalBG} id={idToNumber} />
                           </div>
                         ) : (
                           ""
