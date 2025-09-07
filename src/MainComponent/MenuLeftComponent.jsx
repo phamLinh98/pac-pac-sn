@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Menu, Switch } from "antd";
-import { RxAvatar } from "react-icons/rx";
 import { FaUserFriends } from "react-icons/fa";
 import { GrGroup, GrLogout } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { ImageStatus } from "../SideComponent/ImageStatus";
+import { MdAccountCircle } from "react-icons/md";
 
 export const MenuLeftComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
@@ -80,10 +80,16 @@ export const MenuLeftComponent = ({ collapsed }) => {
     },
     {
       key: "sub5",
+      icon:<MdAccountCircle/>,
+      label: "Create Account",
+      onClick: () => navigate('/register')
+    },
+    {
+      key: "sub6",
       icon: <GrLogout />,
       label: "Logout",
       onClick: logoutClearToken
-    },
+    }
   ];
 
   const handleOpenChange = (keys) => {
