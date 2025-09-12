@@ -4,6 +4,7 @@ import reduxStory from '../reduxs/reduxStory';
 import reduxComment from '../reduxs/reduxComment';
 import reduxListByUserId from '../reduxs/reduxListByUserId';
 import reduxFriends from '../reduxs/reduxFriendListOnline';
+import refuxListUserByIdByProfile from "../reduxs/reduxUserFriendInProfile";
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
         reduxListByUserId: reduxListByUserId,
         reduxStory: reduxStory ,// store for story
         reduxComment: reduxComment, // // store for story
-        reduxFriends: reduxFriends // store for friend
+        reduxFriends: reduxFriends, // store for friend
+        reduxListUserByIdByProfile: refuxListUserByIdByProfile // store for user by id in profile
     }
 })

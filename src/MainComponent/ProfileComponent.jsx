@@ -12,18 +12,19 @@ import { LoadingComponent } from "../SideComponent/LoadingComponent";
 import { NotListComponent } from "../SideComponent/NoListComponent";
 import { formatTimeStamp } from "../configs/configTimeStamp";
 import { useParams } from "react-router-dom";
-import { useFacadeListByUserId } from "../reduxs/useFacadeListByUserId";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo.js";
 import { MyStatusAreaComponent } from "./MyStatusAreaComponent.jsx";
 import { BsSendPlus } from "react-icons/bs";
 import { ModalComponent } from "../SideComponent/ModalComponent.jsx";
+import { useFacadeMyProfileList } from "../reduxs/useFacadeMyStatusProfile.jsx";
 
 const { Meta } = Card;
 
 export const ProfileComponent = () => {
   const userId = useParams();
   const userIdConverToNumber = +userId.id;
-  const { listUserById, loading } = useFacadeListByUserId(userIdConverToNumber);
+  const { listUserById,loading } = useFacadeMyProfileList(userIdConverToNumber);
+  //.log("listUserByIdHome", listUserById);
   const containerRefs = useRef([]);
   const isEmptyObject = (obj) =>
     obj && typeof obj === "object" && Object.keys(obj).length === 0;

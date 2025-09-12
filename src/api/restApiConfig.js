@@ -185,3 +185,54 @@ export const createNewUser = async (info) => {
   }
 }
 
+
+export const getApiListUserStatus = async (route) => {
+  try {
+    const url = `${envConfig.host}${route}`;
+    let response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: 'include',
+    });
+    
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 402) {
+        try {
+          const refreshResponse = await fetch(`${envConfig.host}/refesh-token`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: 'include',
+          });
+          
+          if (refreshResponse.ok) {
+            // Thực hiện lại request ban đầu sau khi refresh token thành công
+            response = await fetch(url, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: 'include',
+            });
+          } else {
+            throw new Error('Refresh token failed');
+          }
+        } catch(error) {
+          console.log('Refresh token error:', error);
+          throw error;
+        }
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Request failed');
+      }
+    }
+    return response;
+  } catch (error) {
+    console.log('API error:', error);
+    throw error;
+  }
+}
+
