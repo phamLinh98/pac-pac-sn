@@ -42,7 +42,7 @@ export const FriendStatusListComponent = () => {
                   onClick={() => handleNavigate(item.user_id)} // Thay đổi URL theo logic của bạn
                   style={{ textDecoration: 'none', color: 'blue' }} // Optional: bỏ gạch chân và giữ màu chữ
                 >
-                  {item.user_id !== id ? item.user_name : 'Bạn'}
+                  {item.user_id !== id ? item.name : 'Bạn'}
                 </a>
                 <span style={{ fontSize: '0.7rem', color: 'gray', paddingLeft: "0.8%" }}>
                   {`đã đăng tải bài viết(${formatTimeStamp(item.created_at)})`}
