@@ -1,4 +1,4 @@
-export function extractUniqueUsers(list) {
+export  const extractUniqueUsers = (list) => {
     const uniqueUsers = new Map(); // Sử dụng Map để tối ưu hơn object nếu key là số lớn
     
     for (const item of list) {
