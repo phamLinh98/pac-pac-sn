@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { ImageStatusAvatar } from "../SideComponent/ImageStatus";
 import { useFacadeList } from "../reduxs/useFacadeList";
-import { extractUniqueUsers } from "../SideFunction/getListFriendById";
+import { extractUniqueUsers } from "../SideFunction/GetListFriendById";
 
 // eslint-disable-next-line react/prop-types
 export const MenuRightComponent = ({ collapsed }) => {
