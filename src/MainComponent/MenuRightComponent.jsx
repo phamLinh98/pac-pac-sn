@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Menu, Switch } from "antd";
-import { RxAvatar } from "react-icons/rx";
+import { useState, useEffect } from "react";
+import { Menu } from "antd";
 import { FaUserFriends } from "react-icons/fa";
-import { GrGroup, GrLogout } from "react-icons/gr";
+import { GrGroup } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
-import { IoSettingsOutline } from "react-icons/io5";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
-import { ImageStatus, ImageStatusAvatar } from "../SideComponent/ImageStatus";
-import { useFacadeFriendListOnline } from "../reduxs/useFacadeFriendListOnline";
-import { LoadingComponent } from "../SideComponent/LoadingComponent";
+import { ImageStatusAvatar } from "../SideComponent/ImageStatus";
+import { useFacadeList } from "../reduxs/useFacadeList";
+import { extractUniqueUsers } from "../SideFunction/getListFriendById";
 
+// eslint-disable-next-line react/prop-types
 export const MenuRightComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
   const [selectedKeys, setSelectedKeys] = useState(["1"]);
@@ -19,14 +18,14 @@ export const MenuRightComponent = ({ collapsed }) => {
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id } = getData;
   const idToNumber = +id;
-  const { listFriendListOnline, error, loading } = useFacadeFriendListOnline(idToNumber);
-
+  const { list } = useFacadeList(idToNumber)
+  const getListFriend = extractUniqueUsers(list);
   const items2 = [
     {
       key: "sub1",
       icon: <FaUserFriends />, // Correct usage
       label: "Online Friends",
-      children: listFriendListOnline.map(friend => ({  // Map over the friend list
+      children: getListFriend.map(friend => ({  // Map over the friend list
         key: friend.id.toString(), // Use friend.id as the key (converted to string)
         label: (
           <div

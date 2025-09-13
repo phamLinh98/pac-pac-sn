@@ -1,17 +1,19 @@
 import { Card, Row, Col } from "antd";
 import { FaEye } from "react-icons/fa";
 import { MdAdd } from "react-icons/md";
-import { useFacadeFriendListOnline } from "../reduxs/useFacadeFriendListOnline";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { LoadingComponent } from "../SideComponent/LoadingComponent";
 import { useNavigate } from "react-router-dom";
+import { useFacadeList } from "../reduxs/useFacadeList";
+import { extractUniqueUsers } from "../SideFunction/GetListFriendById";
 
 export const ListFriendEachAccount = () => {
     const getUserFromLocalStorage = localStorage.getItem('allow-login');
     const getData = decodeJwt(getUserFromLocalStorage);
     const { id } = getData;
     const idToNumber = +id;
-    const { listFriendListOnline, loading } = useFacadeFriendListOnline(idToNumber);
+    const { list, loading } = useFacadeList(idToNumber)
+    const getListFriend = extractUniqueUsers(list);
     const navigate = useNavigate();
 
     const moveToProfile = (userId) => {
@@ -20,7 +22,7 @@ export const ListFriendEachAccount = () => {
 
     return (
         <Row gutter={[16, 16]}>
-            {loading ? <LoadingComponent /> :listFriendListOnline.map((friend, index) => (
+            {loading ? <LoadingComponent /> : getListFriend.map((friend, index) => (
                 <Col key={index} xs={24} sm={12} md={8} lg={6}>
                     <Card
                         size="small"
