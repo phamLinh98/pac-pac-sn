@@ -1,17 +1,17 @@
-import { Avatar, Layout, theme } from "antd";
+import { Layout, theme } from "antd";
 import { GrHomeRounded, GrNotification } from "react-icons/gr";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { SiGooglemarketingplatform, SiMessenger } from "react-icons/si";
+import { SiMessenger } from "react-icons/si";
 import { MenuLeftComponent } from "./MenuLeftComponent";
 import { PrivateAreaComponent } from "./PrivateAreaComponent";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
-import { FaHome, FaPhotoVideo } from "react-icons/fa";
+import { FaPhotoVideo } from "react-icons/fa";
 import { PiGameController } from "react-icons/pi";
 import { MenuRightComponent } from "./MenuRightComponent";
-import { IoMdPersonAdd } from "react-icons/io";
+import NotificationIcon from "../SideComponent/ButtonNewNotification";
 
 export const LayoutComponent = () => {
   const {
@@ -19,7 +19,6 @@ export const LayoutComponent = () => {
   } = theme.useToken();
 
   const [collapsed, setCollapsed] = useState(false);
-
   // Navigate to profile 
   const navigate = useNavigate();
   const backToMenu = () => {
@@ -49,7 +48,7 @@ export const LayoutComponent = () => {
     },
     {
       key: "6",
-      label: <IoMdPersonAdd style={{ fontSize: "17px" }} />
+      label: <NotificationIcon />
     }
   ];
 
