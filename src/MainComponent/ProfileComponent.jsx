@@ -1,4 +1,4 @@
-import React, {useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button, Card, Image, Space } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { IoIosPersonAdd } from "react-icons/io";
@@ -17,13 +17,16 @@ import { MyStatusAreaComponent } from "./MyStatusAreaComponent.jsx";
 import { BsSendPlus } from "react-icons/bs";
 import { ModalComponent } from "../SideComponent/ModalComponent.jsx";
 import { useFacadeMyProfileList } from "../reduxs/useFacadeMyStatusProfile.jsx";
+import { checkValueInArrayGetData } from "../SideFunction/CheckValueInArray.js";
+import { FaUserFriends } from "react-icons/fa";
 
 const { Meta } = Card;
 
 export const ProfileComponent = () => {
   const userId = useParams();
   const userIdConverToNumber = +userId.id;
-  const { listUserById,loading } = useFacadeMyProfileList(userIdConverToNumber);
+  const { listUserById, loading } =
+    useFacadeMyProfileList(userIdConverToNumber);
   //.log("listUserByIdHome", listUserById);
   const containerRefs = useRef([]);
   const isEmptyObject = (obj) =>
@@ -60,6 +63,13 @@ export const ProfileComponent = () => {
   const hideModalBG = () => {
     setOpenBG(false);
   };
+
+  const getUserFromParams = useParams();
+  const idUserParams = getUserFromParams.id;
+  const checkIsFriend = checkValueInArrayGetData(
+    getData["list_friend_id"],
+    idUserParams
+  );
 
   return (
     <>
@@ -144,10 +154,20 @@ export const ProfileComponent = () => {
                               marginLeft: "5px",
                             }}
                           >
-                            <Button onClick={showModalAvatar}>Thay avatar</Button>
+                            <Button onClick={showModalAvatar}>
+                              Thay avatar
+                            </Button>
                             <Button onClick={showModalBG}>Thay ảnh bìa</Button>
-                            <ModalComponent open={openAvatar} hideModal={hideModalAvatar} id={idToNumber} />
-                            <ModalComponent open={openBG} hideModal={hideModalBG} id={idToNumber} />
+                            <ModalComponent
+                              open={openAvatar}
+                              hideModal={hideModalAvatar}
+                              id={idToNumber}
+                            />
+                            <ModalComponent
+                              open={openBG}
+                              hideModal={hideModalBG}
+                              id={idToNumber}
+                            />
                           </div>
                         ) : (
                           ""
@@ -170,8 +190,22 @@ export const ProfileComponent = () => {
                       ) => (
                         <React.Fragment key={item.id}>
                           {item.user_id !== id && ( // Điều kiện hiển thị nút
-                            <>
-                              <Button
+                            <> {
+                              checkIsFriend ? <Button
+                                //type="primary"
+                                style={{ marginRight: "10px" }}
+                                icon={
+                                  !checkIsFriend ? (
+                                    <IoIosPersonAdd />
+                                  ) : (
+                                    <FaUserFriends />
+                                  )
+                                } // Đưa icon vào prop icon
+                                onClick={() => clickToAddFriend()}
+                              >
+                                {/* {addFriend ? "Đã gửi lời mời" : "Kết bạn"} */}
+                                {checkIsFriend ? "Bạn bè" : ""}
+                              </Button> : <Button
                                 type="primary"
                                 style={{ marginRight: "10px" }}
                                 icon={
@@ -185,6 +219,7 @@ export const ProfileComponent = () => {
                               >
                                 {addFriend ? "Đã gửi lời mời" : "Kết bạn"}
                               </Button>
+                            }
                               <Button
                                 type="primary"
                                 style={{ marginRight: "10px" }}

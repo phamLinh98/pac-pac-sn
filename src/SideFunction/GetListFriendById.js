@@ -5,7 +5,7 @@ export  const extractUniqueUsers = (list) => {
         const userId = item.user_id;
         if (!uniqueUsers.has(userId)) {
             uniqueUsers.set(userId, {
-                id: item.id,
+                id: item.user_id,
                 name: item.name,
                 avatar: item.avatar
             });
