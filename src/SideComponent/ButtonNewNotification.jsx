@@ -57,7 +57,7 @@ const NotificationIcon = () => {
       {isLoading ? (
         <div>Đang tải...</div>
       ) : notifications.length === 0 ? (
-        <div>Không có yêu cầu kết bạn nào</div>
+        <div style={{textAlign:"center"}}>Danh sách trống</div>
       ) : (
         notifications.map((notification) => (
           <div key={notification.id} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>

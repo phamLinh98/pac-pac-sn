@@ -8,6 +8,7 @@ import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { ImageStatus } from "../SideComponent/ImageStatus";
 import { MdAccountCircle } from "react-icons/md";
 
+// eslint-disable-next-line react/prop-types
 export const MenuLeftComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
   const [selectedKeys, setSelectedKeys] = useState(["1"]);
