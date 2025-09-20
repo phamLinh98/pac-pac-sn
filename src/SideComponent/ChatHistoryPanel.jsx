@@ -1,27 +1,18 @@
-import { useState, useEffect } from 'react';
-import { Popover, Modal, Button } from 'antd';
+import { useState } from 'react';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
 import { SiMessenger } from "react-icons/si";
-import { Divider, List, Typography } from 'antd';
-import { ChatItem } from "./ImageStatus";
+import { Divider, List, Avatar, Popover, Modal, Button } from 'antd';
+import { useFacadeList } from '../reduxs/useFacadeList';
+import { extractUniqueUsers } from "../SideFunction/GetListFriendById";
 
 const ChatHistoryPanel = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const getUserFromLocalStorage = localStorage.getItem("allow-login");
     const getData = decodeJwt(getUserFromLocalStorage);
-    const { id, avatar, name } = getData;
-
-    const idToNumber = +id;
-    // Hàm lấy danh sách yêu cầu kết bạn
-    const fetchFriendRequests = async () => {
-
-    };
-
-    // useEffect để gọi API khi component được mount
-    useEffect(() => {
-        fetchFriendRequests();
-    }, [idToNumber]); // Gọi lại API nếu idToNumber thay đổi
-
+    const { id } = getData;
+    const idToNumber = Number(id);
+    const { list } = useFacadeList(idToNumber);
+    const getListFriend = extractUniqueUsers(list);
     // Hàm để hiển thị Modal
     const showModal = () => {
         setIsModalVisible(true);
@@ -29,7 +20,6 @@ const ChatHistoryPanel = () => {
 
     // Hàm để đóng Modal và làm mới dữ liệu
     const handleOk = () => {
-        fetchFriendRequests(); // Làm mới danh sách thông báo
         setIsModalVisible(false); // Đóng Modal
     };
 
@@ -39,24 +29,38 @@ const ChatHistoryPanel = () => {
     };
 
     const data = [
-        'Racing car sprays burning fuel into crowd.',
-        'Japanese princess to wed commoner.',
-        'Australian walks 100km after outback crash.',
-        'Man charged over missing wedding girl.',
-        'Los Angeles battles huge wildfires.',
+        {
+            message: "Mai mày rảnh không?"
+        },
+        {
+            message: "Gửi tao mượn 100K?"
+        },
+        {
+            message: "Biết thế?"
+        },
+        {
+            message: "Có cl ấy?"
+        },
     ];
 
     // Nội dung của Popover với bố cục Flex
     const popoverContent = (
-        <div style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: '350px' }}>
             <List
-                bordered
-                dataSource={data}
-                // eslint-disable-next-line no-unused-vars
-                renderItem={(item) => <ChatItem avatar={avatar} name={name} />}
+                itemLayout="horizontal"
+                dataSource={getListFriend}
+                renderItem={(item) => (
+                    <List.Item>
+                        <List.Item.Meta
+                            avatar={<Avatar src={item.avatar} />}
+                            title={<a href="https://ant.design">{item.name}</a>}
+                            description={item.message}
+                        />
+                    </List.Item>
+                )}
             />
             <Button type="primary" onClick={showModal} style={{ marginTop: '8px' }}>
-                Xem tất cả
+                Xem tất cả tin nhắn
             </Button>
         </div>
     );
@@ -82,7 +86,7 @@ const ChatHistoryPanel = () => {
             <Modal
                 title="Lich Sử Trò Chuyện"
                 open={isModalVisible}
-                onOk={handleOk}
+                // onOk={handleOk}
                 onCancel={handleCancel}
                 footer={[
                     <Button key="back" onClick={handleCancel}>
@@ -97,11 +101,15 @@ const ChatHistoryPanel = () => {
                     <Button>Cài đặt</Button>
                 </Divider>
                 <List
-                    bordered
-                    dataSource={data}
+                    itemLayout="horizontal"
+                    dataSource={getListFriend}
                     renderItem={(item) => (
                         <List.Item>
-                            <Typography.Text mark>[ITEM]</Typography.Text> {item}
+                            <List.Item.Meta
+                                avatar={<Avatar src={item.avatar} />}
+                                title={<a href="https://ant.design">{item.name}</a>}
+                                description={item.message}
+                            />
                         </List.Item>
                     )}
                 />

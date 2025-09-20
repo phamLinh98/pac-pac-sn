@@ -1,5 +1,5 @@
 import { Layout, theme } from "antd";
-import { GrHomeRounded, GrNotification } from "react-icons/gr";
+import { GrHomeRounded } from "react-icons/gr";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { MenuLeftComponent } from "./MenuLeftComponent";
@@ -11,6 +11,7 @@ import { PiGameController } from "react-icons/pi";
 import { MenuRightComponent } from "./MenuRightComponent";
 import NotificationIcon from "../SideComponent/ButtonNewNotification";
 import ChatHistoryPanel from "../SideComponent/ChatHistoryPanel";
+import NotificationsPanel from "../SideComponent/NotificationsPanel";
 
 export const LayoutComponent = () => {
   const {
@@ -37,7 +38,7 @@ export const LayoutComponent = () => {
     },
     {
       key: "3",
-      label: <GrNotification style={{ fontSize: "17px" }} />
+      label: <NotificationsPanel />
     },
     {
       key: "4",

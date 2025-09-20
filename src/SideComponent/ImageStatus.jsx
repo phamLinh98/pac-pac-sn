@@ -95,7 +95,9 @@ export const ChatItem = ({ avatar, name }) => {
         }}
       />
       <span>{name}</span>
-      <Button>Click</Button>
+      <Button>Chat</Button>
+      <Button color="danger" variant="solid">Xóa</Button>
+      <Button color="cyan" variant="solid">Lưu trữ</Button>
     </div>
   );
 };
