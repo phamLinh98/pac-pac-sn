@@ -1,5 +1,6 @@
-import { Image } from "antd";
+import { Image, Button } from "antd";
 
+// eslint-disable-next-line react/prop-types
 export const ImageStatus = ({ image, width, height, style, active, preview }) => {
   return (
     <div style={{
@@ -36,7 +37,8 @@ export const ImageStatus = ({ image, width, height, style, active, preview }) =>
   );
 };
 
-export const ImageStatusAvatar = ({ image, width, height, style, active, preview}) => {
+// eslint-disable-next-line react/prop-types
+export const ImageStatusAvatar = ({ image, width, height, style, active, preview }) => {
   return (
     <div style={{
       position: 'relative',
@@ -70,4 +72,44 @@ export const ImageStatusAvatar = ({ image, width, height, style, active, preview
       ) : null} {/* Sử dụng null thay vì string rỗng */}
     </div>
   );
+};
+
+
+// Tạo component Item riêng
+// eslint-disable-next-line react/prop-types
+export const ChatItem = ({ avatar, name }) => {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0 8px 8px' }}>
+      <ImageStatusChat
+        image={avatar}
+        style={{
+          width: '40px',
+          height: '40px',
+          borderRadius: '100%',
+          border: '3px solid #0000FF',
+          boxSizing: 'border-box',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      />
+      <span>{name}</span>
+      <Button>Click</Button>
+    </div>
+  );
+};
+
+// eslint-disable-next-line react/prop-types
+export const ImageStatusChat = ({ image, width, height, style }) => {
+  return <Image
+    width={width}
+    height={height}
+    src={image}
+    style={{
+      ...style, // Giữ style ban đầu
+      display: 'block', // Đảm bảo không có khoảng trắng thừa
+    }}
+    preview={false}
+  />
 };

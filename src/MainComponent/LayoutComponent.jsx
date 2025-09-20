@@ -2,22 +2,22 @@ import { Layout, theme } from "antd";
 import { GrHomeRounded, GrNotification } from "react-icons/gr";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import { SiMessenger } from "react-icons/si";
 import { MenuLeftComponent } from "./MenuLeftComponent";
 import { PrivateAreaComponent } from "./PrivateAreaComponent";
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { FaPhotoVideo } from "react-icons/fa";
 import { PiGameController } from "react-icons/pi";
 import { MenuRightComponent } from "./MenuRightComponent";
 import NotificationIcon from "../SideComponent/ButtonNewNotification";
+import ChatHistoryPanel from "../SideComponent/ChatHistoryPanel";
 
 export const LayoutComponent = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
+  // eslint-disable-next-line no-unused-vars
   const [collapsed, setCollapsed] = useState(false);
   // Navigate to profile 
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ export const LayoutComponent = () => {
     },
     {
       key: "2",
-      label: <SiMessenger style={{ fontSize: "17px" }} />
+      label: <ChatHistoryPanel />
     },
     {
       key: "3",
