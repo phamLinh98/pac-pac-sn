@@ -1,4 +1,5 @@
 
+import { Content } from "antd/es/layout/layout";
 import { envConfig } from "../configs/envConfig";
 
 export const getApi = async (route) => {
@@ -11,7 +12,7 @@ export const getApi = async (route) => {
       },
       credentials: 'include',
     });
-    
+
     if (!response.ok) {
       if (response.status === 401 || response.status === 402) {
         try {
@@ -22,7 +23,7 @@ export const getApi = async (route) => {
             },
             credentials: 'include',
           });
-          
+
           if (refreshResponse.ok) {
             // Thực hiện lại request ban đầu sau khi refresh token thành công
             response = await fetch(url, {
@@ -35,7 +36,7 @@ export const getApi = async (route) => {
           } else {
             throw new Error('Refresh token failed');
           }
-        } catch(error) {
+        } catch (error) {
           console.log('Refresh token error:', error);
           throw error;
         }
@@ -84,7 +85,7 @@ export const refeshTokenWhenExpired = async (route) => {
       },
       credentials: 'include',
     });
-    
+
     if (!response.ok) {
       if (response.status === 402) {
         const refreshResponse = await fetch(`${envConfig.host}/refesh-token`, {
@@ -136,9 +137,9 @@ export const logoutClearToken = async (route) => {
   }
 }
 
-export const updateUserImageApi = async (avatarURL,id) => {
+export const updateUserImageApi = async (avatarURL, id) => {
   try {
-    const url = `${envConfig.host}/user/${id}`;  
+    const url = `${envConfig.host}/user/${id}`;
     const response = await fetch(url, {
       method: "PUT",
       headers: {
@@ -162,16 +163,16 @@ export const updateUserImageApi = async (avatarURL,id) => {
 
 export const createNewUser = async (info) => {
   try {
-    const url = `${envConfig.host}/register`;  
+    const url = `${envConfig.host}/register`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name:info.name,
-        email:info.email,
-        password:info.password
+        name: info.name,
+        email: info.email,
+        password: info.password
       }),
       credentials: 'include',
     });
@@ -196,7 +197,7 @@ export const getApiListUserStatus = async (route) => {
       },
       credentials: 'include',
     });
-    
+
     if (!response.ok) {
       if (response.status === 401 || response.status === 402) {
         try {
@@ -207,7 +208,7 @@ export const getApiListUserStatus = async (route) => {
             },
             credentials: 'include',
           });
-          
+
           if (refreshResponse.ok) {
             // Thực hiện lại request ban đầu sau khi refresh token thành công
             response = await fetch(url, {
@@ -220,7 +221,7 @@ export const getApiListUserStatus = async (route) => {
           } else {
             throw new Error('Refresh token failed');
           }
-        } catch(error) {
+        } catch (error) {
           console.log('Refresh token error:', error);
           throw error;
         }
@@ -236,3 +237,33 @@ export const getApiListUserStatus = async (route) => {
   }
 }
 
+export const addComment = async (content, userId, listId) => {
+  // Validate input parameters
+  if (!content || !userId || !listId) {
+    throw new Error('Missing required parameters: content, userId, or listId');
+  }
+
+  try {
+    const url = `${envConfig.host}/add-comment/${userId}/${listId}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content }),
+      credentials: 'include', // Include cookies for authentication
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text(); // Get response body for more context
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+    }
+
+    // Parse and return the JSON response
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Failed to add comment:', error);
+    throw error;
+  }
+};

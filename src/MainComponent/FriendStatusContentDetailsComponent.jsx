@@ -9,6 +9,7 @@ import { RiChatSmileAiLine } from 'react-icons/ri';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { GiChestnutLeaf } from 'react-icons/gi';
 
+// eslint-disable-next-line react/prop-types
 export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count, title, like, shared, image, postId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
@@ -25,12 +26,6 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
   };
 
   const containerRef = useRef(null);
-  // Đặt giới hạn ký tự mỗi dòng
-  const maxLength = 15;
-  const [isExpanded, setIsExpanded] = useState(false);
-  const handleClick = () => {
-    setIsExpanded(!isExpanded);
-  };
 
   return (
     <>
@@ -50,9 +45,9 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
       >
         {/* Tiêu đề */}
         <div>
-        <p>
-    {title}
-</p>
+          <p>
+            {title}
+          </p>
         </div>
 
         {/* Hình ảnh với logic cuộn */}
@@ -70,7 +65,9 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
             }}
           >
             {Array.isArray(image) ? (
+              // eslint-disable-next-line react/prop-types
               image.length > 0 ? (
+                // eslint-disable-next-line react/prop-types
                 image.map((img, index) => (
                   <div
                     key={index}
@@ -92,7 +89,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
                   </div>
                 ))
               ) : [] // Or [] if you prefer to render nothing
-            ) : []} 
+            ) : []}
           </div>
         </div>
 
@@ -120,7 +117,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
             <span>{shared}</span>Share
           </Button>
         </Space>
-        <CommentListInDetailComponent />
+        <CommentListInDetailComponent postId={postId} />
       </Modal>
     </>
   );

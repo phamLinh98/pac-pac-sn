@@ -20,7 +20,6 @@ const NotificationIcon = () => {
     setIsLoading(true);
     try {
       const data = await getApi(`/send-friend/${idToNumber}`);
-      console.log('data', data);
       const response = await data.json();
       setNotifications(response); // Giả định API trả về mảng thông báo
     } catch (error) {
@@ -29,8 +28,6 @@ const NotificationIcon = () => {
       setIsLoading(false);
     }
   };
-
-  console.log('notifications', notifications);
 
   // useEffect để gọi API khi component được mount
   useEffect(() => {

@@ -8,6 +8,10 @@ export const Comment = createSlice({
             state.listComment = action.payload;
             state.loading = false;
         },
+        addComment: (state, action) => {
+            state.listComment.unshift(action.payload); // Thêm comment mới vào đầu danh sách
+            state.loading = false;
+        },
         logError: (state, action) => {
             state.error = action.payload;
             state.loading = false;
@@ -18,5 +22,5 @@ export const Comment = createSlice({
     }
 })
 
-export const { getCommentStatus, logError, eventLoading } = Comment.actions;
+export const { getCommentStatus, addComment, logError, eventLoading } = Comment.actions;
 export default Comment.reducer;
