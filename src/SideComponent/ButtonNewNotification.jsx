@@ -8,7 +8,9 @@ const NotificationIcon = () => {
   const [notifications, setNotifications] = useState([]); // Lưu trữ danh sách thông báo từ API
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // Trạng thái loading
-  const numberAdd = notifications.length; // Số lượng thông báo từ API
+  // Đảm bảo notifications luôn là array
+  const safeNotifications = Array.isArray(notifications) ? notifications : [];
+  const numberAdd = safeNotifications.length; // Số lượng thông báo từ API
 
   const getUserFromLocalStorage = localStorage.getItem("allow-login");
   const getData = decodeJwt(getUserFromLocalStorage);
@@ -56,10 +58,10 @@ const NotificationIcon = () => {
       <p>Bạn có {numberAdd} yêu cầu kết bạn mới</p>
       {isLoading ? (
         <div>Đang tải...</div>
-      ) : notifications.length === 0 ? (
+      ) : safeNotifications.length === 0 ? (
         <div style={{textAlign:"center"}}>Danh sách trống</div>
       ) : (
-        notifications.map((notification) => (
+        safeNotifications.map((notification) => (
           <div key={notification.id} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {/* Dòng 1: Ảnh và Tên */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -101,7 +103,7 @@ const NotificationIcon = () => {
       >
         <div style={{ cursor: 'pointer' }}>
           <IoMdPersonAdd style={{ fontSize: '17px' }} />
-        { notifications.length ?
+        { safeNotifications.length ?
           <span
             style={{
               position: 'absolute',
@@ -142,8 +144,8 @@ const NotificationIcon = () => {
         ]}
       >
         <p>Đây là nội dung chi tiết của thông báo.</p>
-       { notifications.length ? <p>Bạn có {numberAdd} lời mời kết bạn mới.</p> : '' }
-        {notifications.map((notif) => (
+       { safeNotifications.length ? <p>Bạn có {numberAdd} lời mời kết bạn mới.</p> : '' }
+        {safeNotifications.map((notif) => (
           <div key={notif.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <Avatar src={notif.avatar} size={32} />
             <span>{notif.name}</span>

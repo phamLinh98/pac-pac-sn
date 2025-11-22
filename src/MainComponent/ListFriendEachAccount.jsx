@@ -13,7 +13,9 @@ export const ListFriendEachAccount = () => {
     const { id } = getData;
     const idToNumber = +id;
     const { list, loading } = useFacadeList(idToNumber)
-    const getListFriend = extractUniqueUsers(list);
+    // Đảm bảo list luôn là array
+    const safeList = Array.isArray(list) ? list : [];
+    const getListFriend = extractUniqueUsers(safeList);
     const navigate = useNavigate();
 
     const moveToProfile = (userId) => {

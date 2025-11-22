@@ -19,7 +19,9 @@ export const MenuRightComponent = ({ collapsed }) => {
   const { id } = getData;
   const idToNumber = +id;
   const { list } = useFacadeList(idToNumber)
-  const getListFriend = extractUniqueUsers(list);
+  // Đảm bảo list luôn là array
+  const safeList = Array.isArray(list) ? list : [];
+  const getListFriend = extractUniqueUsers(safeList);
   const items2 = [
     {
       key: "sub1",

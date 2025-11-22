@@ -1,4 +1,9 @@
 export  const extractUniqueUsers = (list) => {
+    // Kiểm tra nếu list không phải array hoặc null/undefined
+    if (!Array.isArray(list)) {
+        return [];
+    }
+    
     const uniqueUsers = new Map(); // Sử dụng Map để tối ưu hơn object nếu key là số lớn
     
     for (const item of list) {

@@ -27,6 +27,8 @@ export const ProfileComponent = () => {
   const userIdConverToNumber = +userId.id;
   const { listUserById, loading } =
     useFacadeMyProfileList(userIdConverToNumber);
+  // Đảm bảo listUserById luôn là array
+  const safeListUserById = Array.isArray(listUserById) ? listUserById : [];
   //.log("listUserByIdHome", listUserById);
   const containerRefs = useRef([]);
   const isEmptyObject = (obj) =>
@@ -102,7 +104,7 @@ export const ProfileComponent = () => {
                   {loading ? (
                     <LoadingComponent />
                   ) : (
-                    listUserById.slice(0, 1).map((item) => (
+                    safeListUserById.slice(0, 1).map((item) => (
                       <div
                         key={item.id}
                         style={{ display: "flex", alignItems: "center" }}
@@ -183,8 +185,8 @@ export const ProfileComponent = () => {
                     alignItems: "center", // Căn giữa theo chiều dọc
                   }}
                 >
-                  {listUserById &&
-                    listUserById.slice(0, 1).map(
+                  {safeListUserById &&
+                    safeListUserById.slice(0, 1).map(
                       (
                         item // Chỉ lấy phần tử đầu tiên
                       ) => (
@@ -258,8 +260,8 @@ export const ProfileComponent = () => {
             paddingTop: "1%",
           }}
         >
-          {listUserById.length > 0 ? (
-            listUserById.map((item, index) => {
+          {safeListUserById.length > 0 ? (
+            safeListUserById.map((item, index) => {
               return !isEmptyObject(item.content) ? (
                 <Card
                   key={item.id}

@@ -14,6 +14,8 @@ export const AllStory = () => {
   // Sử dụng ref để truy cập container
   const containerRef = useRef(null);
   const { story, loadingStory } = useFacadeStory();
+  // Đảm bảo story luôn là array
+  const safeStory = Array.isArray(story) ? story : [];
   const navigate = useNavigate();
   const moveToProfileUser = (userId) => {
     navigate(`/profile/${userId}`)
@@ -41,7 +43,7 @@ export const AllStory = () => {
         }}
       >
         <div style={{ display: 'flex' }}> {/* Container Flexbox */}
-          {loadingStory ? <LoadingComponent /> : story.map((item, index) => (
+          {loadingStory ? <LoadingComponent /> : safeStory.map((item, index) => (
             <Card
               key={index}
               hoverable
