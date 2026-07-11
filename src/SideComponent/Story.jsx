@@ -54,7 +54,7 @@ export const AllStory = () => {
                 order: item.user_id === id ? -1 : 0, // Đặt item có user_id === id từ localstorage lên đầu
               }}
               cover={
-                <ImageStatus image={item.image} width={150} height={250} active={false} />
+                <ImageStatus image={item.image_url} width={150} height={250} active={false} />
               }
               actions={[
                 <PiHeartbeatBold key="setting" style={{ fontSize: "1.5rem", color: "red" }} />,
