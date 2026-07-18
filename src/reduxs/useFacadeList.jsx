@@ -3,14 +3,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { getListThunkFunction } from "./thunkFunctionList";
 
 export const useFacadeList = (id) => {
-    const { list, error, loading } = useSelector(state => state.reduxListByUserId);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(getListThunkFunction(id));
-    }, [dispatch,id]);
-    return {
-        list,
-        error,
-        loading
+  const dispatch = useDispatch();
+
+  const {
+    listUserById,
+    error,
+    loading,
+  } = useSelector((state) => state.reduxListByUserId);
+
+  useEffect(() => {
+    if (!Number.isFinite(id) || id <= 0) {
+      return;
     }
-}
+
+    dispatch(getListThunkFunction(id));
+  }, [dispatch, id]);
+
+  return {
+    list: listUserById,
+    error,
+    loading,
+  };
+};

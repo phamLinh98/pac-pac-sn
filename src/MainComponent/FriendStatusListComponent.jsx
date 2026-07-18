@@ -32,16 +32,18 @@ export const FriendStatusListComponent = () => {
   };
 
   const getPostContent = (item) => {
-    if (item?.content && typeof item.content === 'object' && !Array.isArray(item.content)) {
+    const content = item?.content;
+
+    if (content && typeof content === 'object' && !Array.isArray(content)) {
       return {
-        title: item.content.title || 'Không có nội dung',
-        images: Array.isArray(item.content.images) ? item.content.images : [],
+        title: content.text || 'Không có nội dung',
+        images: content.image ? [content.image] : [],
       };
     }
 
     return {
-      title: item?.title || 'Không có nội dung',
-      images: []
+      title: 'Không có nội dung',
+      images: [],
     };
   };
 
