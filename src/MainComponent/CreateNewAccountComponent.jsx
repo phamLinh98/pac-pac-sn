@@ -70,9 +70,9 @@ export const CreateNewAccountComponent = () => {
         email: values.email,
         password: values.password
       };
-      
+
       const response = await createNewUser(userInfo);
-      
+
       if (response && response.ok) {
         message.success('🎉 Tài khoản đã được tạo thành công!');
         // Reset form sau khi tạo thành công
@@ -100,8 +100,8 @@ export const CreateNewAccountComponent = () => {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
+    <div style={{
+      minHeight: '100vh',
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       display: 'flex',
       alignItems: 'center',
@@ -121,8 +121,8 @@ export const CreateNewAccountComponent = () => {
         bodyStyle={{ padding: '40px' }}
       >
         <div style={{ textAlign: 'center', marginBottom: 30 }}>
-          <div style={{ 
-            fontSize: 48, 
+          <div style={{
+            fontSize: 48,
             marginBottom: 16,
             background: 'linear-gradient(45deg, #667eea, #764ba2)',
             WebkitBackgroundClip: 'text',
@@ -130,8 +130,8 @@ export const CreateNewAccountComponent = () => {
           }}>
             <RocketOutlined />
           </div>
-          <Title level={2} style={{ 
-            margin: 0, 
+          <Title level={2} style={{
+            margin: 0,
             background: 'linear-gradient(45deg, #667eea, #764ba2)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
