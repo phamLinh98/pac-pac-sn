@@ -12,6 +12,13 @@ import { MenuRightComponent } from "./MenuRightComponent";
 import NotificationIcon from "../SideComponent/ButtonNewNotification";
 import ChatHistoryPanel from "../SideComponent/ChatHistoryPanel";
 import NotificationsPanel from "../SideComponent/NotificationsPanel";
+import PropTypes from "prop-types";
+
+PrivateAreaComponent.propTypes = {
+    items: PropTypes.array.isRequired,
+    onToggleMenu: PropTypes.func,
+    collapsed: PropTypes.bool,
+};
 
 export const LayoutComponent = () => {
   const {
@@ -20,7 +27,7 @@ export const LayoutComponent = () => {
 
   // eslint-disable-next-line no-unused-vars
   const [collapsed, setCollapsed] = useState(false);
-  // Navigate to profile 
+  // Navigate to profile
   const navigate = useNavigate();
   const backToMenu = () => {
     navigate('/home')

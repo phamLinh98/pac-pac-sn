@@ -1,5 +1,4 @@
 
-import { Content } from "antd/es/layout/layout";
 import { envConfig } from "../configs/envConfig";
 
 export const getApi = async (route) => {

@@ -1,10 +1,9 @@
-import { Button, Input, Layout, Menu } from "antd";
-import React, { useState } from "react";
-import { IoMenu } from "react-icons/io5";
+/* eslint-disable react/prop-types */
+import { Input, Layout, Menu } from "antd";
 const { Header } = Layout;
 
-export const PrivateAreaComponent = ({ items, onToggleMenu, collapsed }) => {
-  const [localCollapsed, setLocalCollapsed] = useState(collapsed);
+export const PrivateAreaComponent = ({ items }) => {
+
   return (
     <Header
       style={{
