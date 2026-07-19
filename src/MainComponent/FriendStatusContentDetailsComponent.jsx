@@ -26,15 +26,6 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
   };
 
   const containerRef = useRef(null);
-
-    console.log(likeStatus,
-    console.log(comment_count),
-    console.log(title),
-    console.log(like),
-    console.log(shared),
-    console.log(image),
-    console.log(postId)
-  );
   return (
     <>
       {/* Before Open Modal */}

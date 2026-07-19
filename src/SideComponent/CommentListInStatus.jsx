@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Button, Input, List, Space, message, } from 'antd';
 import { LoadingComponent } from "./LoadingComponent";
 import { TbMessageReply } from "react-icons/tb";
@@ -8,7 +8,7 @@ import { NotListComponent } from "./NoListComponent";
 import { useNavigate } from "react-router-dom";
 import { ImageStatus } from "./ImageStatus";
 import { useState } from "react";
-//import { addCommentThunkFunction } from "../reduxs/thunkFunctionComment";
+import { addCommentThunkFunction } from "../reduxs/thunkFunctionComment";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { EmojiPopover } from "./Popover";
 import { useFacadeComment } from "../reduxs/useFacadeComment";
@@ -18,7 +18,7 @@ import { useFacadeComment } from "../reduxs/useFacadeComment";
 export const CommentListInDetailComponent = ({ postId }) => {
   //const { listComment, loading } = useSelector(state => state.reduxComment);
   const navigate = useNavigate();
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [commentText, setCommentText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { listComment, loading } = useFacadeComment(postId);
@@ -47,7 +47,7 @@ export const CommentListInDetailComponent = ({ postId }) => {
     setIsSubmitting(true);
 
     try {
-      //await dispatch(addCommentThunkFunction(commentText, userId, postId));
+      await dispatch(addCommentThunkFunction(commentText, userId, postId));
       setCommentText(''); // Reset input sau khi thêm thành công
       message.success('Bình luận đã được thêm');
     } catch (error) {
