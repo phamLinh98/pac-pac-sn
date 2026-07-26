@@ -30,7 +30,7 @@ import { MyStatusAreaComponent } from "./MyStatusAreaComponent.jsx";
 import { ModalComponent } from "../SideComponent/ModalComponent.jsx";
 import { useFacadeMyProfileList } from "../reduxs/useFacadeMyStatusProfile.jsx";
 import { checkValueInArrayGetData } from "../SideFunction/CheckValueInArray.js";
-import { updatePostApi } from "../api/restApiConfig";
+import { updatePostApi, uploadPostImagesApi } from "../api/restApiConfig";
 import { message } from "antd";
 
 const { Meta } = Card;
@@ -455,17 +455,32 @@ export const ProfileComponent = () => {
   /*
    * Lưu tạm thay đổi trên UI.
    *
-   * Chưa gọi backend.
+   * Upload ảnh mới trước, sau đó update bài viết.
    */
   const handleSaveEditOnUI = async (postId) => {
     try {
-      const imageUrls = editDraft.images.map((imageItem) => imageItem.url);
+      // Tách ảnh local (cần upload) và ảnh cũ (đã có URL thực)
+      const localImages = editDraft.images.filter((img) => img.isLocal && img.file);
+      const existingImages = editDraft.images.filter((img) => !img.isLocal);
 
+      let allImageUrls = existingImages.map((img) => img.url);
+
+      // Nếu có ảnh mới, upload trước
+      if (localImages.length > 0) {
+        const filesToUpload = localImages.map((img) => img.file);
+        const uploadedImageKeys = await uploadPostImagesApi(
+          filesToUpload,
+          loginUserId
+        );
+        allImageUrls = [...allImageUrls, ...uploadedImageKeys];
+      }
+
+      // Update bài viết với tất cả ảnh
       await updatePostApi({
         postId,
         content: {
           text: editDraft.text,
-          image: imageUrls,
+          image: allImageUrls,
         },
       });
 
