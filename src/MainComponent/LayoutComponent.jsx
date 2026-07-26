@@ -18,6 +18,7 @@ PrivateAreaComponent.propTypes = {
     items: PropTypes.array.isRequired,
     onToggleMenu: PropTypes.func,
     collapsed: PropTypes.bool,
+    backgroundImage: PropTypes.string,
 };
 
 export const LayoutComponent = () => {
@@ -32,6 +33,9 @@ export const LayoutComponent = () => {
   const backToMenu = () => {
     navigate('/home')
   }
+
+  const headerBackgroundImage =
+    "https://i.pinimg.com/vwebp/1200x/d9/b2/97/d9b29715b473dd0a5b37e1bc9929907b.webp";
   // List icon and function in top menu(notification, profile, message)
   const headerItem = [
     {
@@ -62,7 +66,7 @@ export const LayoutComponent = () => {
 
   return (
     <Layout style={{ height: "200vh" }}>
-      <PrivateAreaComponent items={headerItem} collapsed={collapsed} />
+      <PrivateAreaComponent items={headerItem} collapsed={collapsed} backgroundImage={headerBackgroundImage}/>
       <Layout style={{ marginTop: 64 }}>
         {/* Left Sider */}
         <Sider
