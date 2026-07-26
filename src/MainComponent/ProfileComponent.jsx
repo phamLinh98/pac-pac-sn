@@ -512,7 +512,7 @@ export const ProfileComponent = () => {
     }
 
     Modal.confirm({
-      title: "Xóa bài viết",
+      title: "Xóa bài viết.",
 
       content:
         "Bạn có chắc chắn muốn xóa bài viết này không? Hành động này không thể hoàn tác.",
