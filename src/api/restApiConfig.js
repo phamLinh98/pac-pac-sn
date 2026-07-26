@@ -515,6 +515,7 @@ export const updatePostApi = async ({
       : [],
   };
 
+  // Cho phép update chỉ text (không cần ảnh)
   if (
     !normalizedContent.text &&
     normalizedContent.image
@@ -528,10 +529,10 @@ export const updatePostApi = async ({
   // Xây dựng FormData cho multipart/form-data
   const formData = new FormData();
 
-  // Thêm text
+  // Thêm text (luôn có, kể cả rỗng)
   formData.append('text', normalizedContent.text);
 
-  // Thêm ảnh hiện có (existing images)
+  // Thêm ảnh hiện có (luôn gửi, kể cả [])
   formData.append(
     'existingImages',
     JSON.stringify(normalizedContent.image)
@@ -543,6 +544,9 @@ export const updatePostApi = async ({
       'oldImageKeys',
       JSON.stringify(imagesToDelete)
     );
+  } else {
+    // Gửi array rỗng nếu không có ảnh xoá
+    formData.append('oldImageKeys', JSON.stringify([]));
   }
 
   // Thêm file mới (nếu có)
@@ -553,6 +557,14 @@ export const updatePostApi = async ({
       }
     });
   }
+
+  console.log("updatePostApi FormData:", {
+    postId: normalizedPostId,
+    text: normalizedContent.text.substring(0, 50),
+    image: normalizedContent.image,
+    imagesToDelete,
+    filesToUpload: filesToUpload.length,
+  });
 
   const response = await fetch(
     `${envConfig.host}/update-post/${normalizedPostId}`,
