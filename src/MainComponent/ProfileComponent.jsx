@@ -469,9 +469,8 @@ export const ProfileComponent = () => {
    */
   const handleSaveEditOnUI = async (postId) => {
     try {
-      // Tách ảnh local (cần upload) và ảnh cũ (đã có URL thực)
+      // Tách ảnh local (cần upload) và ảnh cũ (đã có trong S3)
       const localImages = editDraft.images.filter((img) => img.isLocal && img.file);
-      const existingImages = editDraft.images.filter((img) => !img.isLocal);
 
       let uploadedImageKeys = [];
 
@@ -484,23 +483,29 @@ export const ProfileComponent = () => {
         );
       }
 
-      // Tính toán ảnh hiện có (ảnh cũ + ảnh mới vừa upload)
-      const existingImageKeys = existingImages.map((img) => img.url);
-      const allImageKeys = [...existingImageKeys, ...uploadedImageKeys];
+      // Tính toán ảnh hiện có (ảnh gốc + ảnh mới vừa upload)
+      const allImageKeys = [...originalPostImages, ...uploadedImageKeys];
 
       // Tính toán ảnh bị xoá (ảnh gốc nhưng không có trong allImageKeys)
       const imagesToDelete = originalPostImages.filter(
         (originalKey) => !allImageKeys.includes(originalKey)
       );
 
-      // Update bài viết với tất cả ảnh và danh sách ảnh cần xoá
+      console.log("handleSaveEditOnUI:", {
+        originalPostImages,
+        uploadedImageKeys,
+        allImageKeys,
+        imagesToDelete,
+      });
+
+      // Update bài viết
       await updatePostApi({
         postId,
         content: {
           text: editDraft.text,
-          image: allImageKeys,
+          image: allImageKeys,  // S3 object keys
         },
-        filesToUpload: [],  // Đã upload trước rồi, không cần upload lại
+        filesToUpload: [],  // Đã upload trước rồi
         imagesToDelete,
       });
 
