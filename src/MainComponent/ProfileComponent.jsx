@@ -1,6 +1,21 @@
-import { useRef, useState } from "react";
-import { Button, Card, Image, Space } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import {
+  useRef,
+  useState,
+} from "react";
+import {
+  Button,
+  Card,
+  Image,
+  Popover,
+  Space,
+} from "antd";
+import {
+  EditOutlined,
+  EyeInvisibleOutlined,
+  HistoryOutlined,
+  UnorderedListOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { IoIosPersonAdd } from "react-icons/io";
 import { FiSend } from "react-icons/fi";
 import { GiChestnutLeaf } from "react-icons/gi";
@@ -8,7 +23,10 @@ import { VscShare } from "react-icons/vsc";
 import { MdRemoveRedEye } from "react-icons/md";
 import { BsSendPlus } from "react-icons/bs";
 import { FaUserFriends } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import {
   ImageStatus,
@@ -32,16 +50,6 @@ const DEFAULT_AVATAR =
 const DEFAULT_BACKGROUND =
   "https://i.pinimg.com/1200x/80/7f/bd/807fbd1b0342fe62bc600f8ad7aa4860.jpg";
 
-/**
- * Chuẩn hóa danh sách ảnh.
- *
- * Hỗ trợ:
- * ["url1", "url2"]
- * '["url1", "url2"]'
- * "url1"
- * [["url1", "url2"]]
- * null
- */
 const normalizeImages = (rawImages) => {
   if (!rawImages) {
     return [];
@@ -59,18 +67,21 @@ const normalizeImages = (rawImages) => {
   }
 
   if (typeof rawImages === "string") {
-    const trimmedImages = rawImages.trim();
+    const trimmedImages =
+      rawImages.trim();
 
     if (!trimmedImages) {
       return [];
     }
 
     try {
-      const parsedImages = JSON.parse(trimmedImages);
+      const parsedImages =
+        JSON.parse(trimmedImages);
 
-      return normalizeImages(parsedImages);
+      return normalizeImages(
+        parsedImages
+      );
     } catch {
-      // Trường hợp rawImages chỉ là một URL đơn lẻ
       return [trimmedImages];
     }
   }
@@ -78,22 +89,9 @@ const normalizeImages = (rawImages) => {
   return [];
 };
 
-/**
- * Chuẩn hóa content.
- *
- * DB hiện tại dùng:
- * {
- *   text: "...",
- *   image: ["url1", "url2"]
- * }
- *
- * Đồng thời hỗ trợ dữ liệu cũ:
- * {
- *   title: "...",
- *   images: [...]
- * }
- */
-const normalizeContent = (rawContent) => {
+const normalizeContent = (
+  rawContent
+) => {
   if (!rawContent) {
     return {
       text: "",
@@ -103,8 +101,11 @@ const normalizeContent = (rawContent) => {
 
   let parsedContent = rawContent;
 
-  if (typeof rawContent === "string") {
-    const trimmedContent = rawContent.trim();
+  if (
+    typeof rawContent === "string"
+  ) {
+    const trimmedContent =
+      rawContent.trim();
 
     if (!trimmedContent) {
       return {
@@ -114,7 +115,9 @@ const normalizeContent = (rawContent) => {
     }
 
     try {
-      parsedContent = JSON.parse(trimmedContent);
+      parsedContent = JSON.parse(
+        trimmedContent
+      );
     } catch (error) {
       console.error(
         "Không thể parse content của bài viết:",
@@ -131,7 +134,8 @@ const normalizeContent = (rawContent) => {
 
   if (
     !parsedContent ||
-    typeof parsedContent !== "object" ||
+    typeof parsedContent !==
+      "object" ||
     Array.isArray(parsedContent)
   ) {
     return {
@@ -160,20 +164,35 @@ const hasPostContent = (content) => {
 };
 
 export const ProfileComponent = () => {
-  const { id: profileIdParam } = useParams();
+  const {
+    id: profileIdParam,
+  } = useParams();
 
-  const profileUserId = Number(profileIdParam);
+  const navigate = useNavigate();
 
-  const { listUserById, loading } =
-    useFacadeMyProfileList(profileUserId);
+  const profileUserId = Number(
+    profileIdParam
+  );
 
-  const safeListUserById = Array.isArray(listUserById)
-    ? listUserById
-    : Array.isArray(listUserById?.list)
-      ? listUserById.list
-      : Array.isArray(listUserById?.data)
-        ? listUserById.data
-        : [];
+  const {
+    listUserById,
+    loading,
+  } = useFacadeMyProfileList(
+    profileUserId
+  );
+
+  const safeListUserById =
+    Array.isArray(listUserById)
+      ? listUserById
+      : Array.isArray(
+            listUserById?.list
+          )
+        ? listUserById.list
+        : Array.isArray(
+              listUserById?.data
+            )
+          ? listUserById.data
+          : [];
 
   const profileUser =
     safeListUserById.length > 0
@@ -182,7 +201,10 @@ export const ProfileComponent = () => {
 
   const containerRefs = useRef([]);
 
-  const token = localStorage.getItem("allow-login");
+  const token =
+    localStorage.getItem(
+      "allow-login"
+    );
 
   let loginUser = {};
 
@@ -191,10 +213,15 @@ export const ProfileComponent = () => {
       ? decodeJwt(token) ?? {}
       : {};
   } catch (error) {
-    console.error("Không thể decode JWT:", error);
+    console.error(
+      "Không thể decode JWT:",
+      error
+    );
   }
 
-  const loginUserId = Number(loginUser?.id);
+  const loginUserId = Number(
+    loginUser?.id
+  );
 
   const isOwnProfile =
     Number.isFinite(loginUserId) &&
@@ -225,15 +252,20 @@ export const ProfileComponent = () => {
   const [openBG, setOpenBG] =
     useState(false);
 
+  const [openPostMenuId, setOpenPostMenuId] =
+    useState(null);
+
   const clickToAddFriend = () => {
     setAddFriend(
-      (previousValue) => !previousValue
+      (previousValue) =>
+        !previousValue
     );
   };
 
   const clickToFollow = () => {
     setIsFollow(
-      (previousValue) => !previousValue
+      (previousValue) =>
+        !previousValue
     );
   };
 
@@ -253,13 +285,66 @@ export const ProfileComponent = () => {
     setOpenBG(false);
   };
 
+  const closePostMenu = () => {
+    setOpenPostMenuId(null);
+  };
+
+  const handleViewPostHistory = (
+    item
+  ) => {
+    closePostMenu();
+
+    console.log(
+      "Xem lịch sử bài viết:",
+      item.id
+    );
+
+    navigate(
+      `/post-history/${item.id}`
+    );
+  };
+
+  const handleEditPost = (item) => {
+    closePostMenu();
+
+    console.log(
+      "Chỉnh sửa bài viết:",
+      item.id
+    );
+
+    navigate(`/post/edit/${item.id}`);
+  };
+
+  const handleHidePost = (item) => {
+    closePostMenu();
+
+    console.log(
+      "Ẩn bài viết:",
+      item.id
+    );
+
+    /*
+     * Gọi API ẩn bài viết ở đây.
+     *
+     * Ví dụ:
+     *
+     * await hidePostAPI(item.id);
+     *
+     * Sau khi thành công:
+     * - fetch lại danh sách bài viết
+     * hoặc
+     * - xóa bài viết khỏi Redux state
+     */
+  };
+
   const normalizedPostList =
     safeListUserById
       .map((item) => ({
         ...item,
-        normalizedContent: normalizeContent(
-          item?.content
-        ),
+        normalizedContent:
+          normalizeContent(
+            item?.content
+          ),
       }))
       .filter((item) =>
         hasPostContent(
@@ -287,7 +372,11 @@ export const ProfileComponent = () => {
                 objectFit: "cover",
               }}
               alt="Ảnh bìa"
-              src={DEFAULT_BACKGROUND}
+              src={
+                profileUser?.background ||
+                profileUser?.background_image ||
+                DEFAULT_BACKGROUND
+              }
               preview
             />
           }
@@ -316,9 +405,12 @@ export const ProfileComponent = () => {
                   ) : profileUser ? (
                     <div
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        flexWrap: "wrap",
+                        display:
+                          "flex",
+                        alignItems:
+                          "center",
+                        flexWrap:
+                          "wrap",
                         gap: "5px",
                       }}
                     >
@@ -333,18 +425,24 @@ export const ProfileComponent = () => {
                           DEFAULT_AVATAR
                         }
                         style={{
-                          width: "64px",
-                          height: "64px",
+                          width:
+                            "64px",
+                          height:
+                            "64px",
                           border:
                             "5px solid #0000FF",
-                          borderRadius: "50%",
+                          borderRadius:
+                            "50%",
                           boxSizing:
                             "border-box",
-                          display: "flex",
-                          alignItems: "center",
+                          display:
+                            "flex",
+                          alignItems:
+                            "center",
                           justifyContent:
                             "center",
-                          overflow: "hidden",
+                          overflow:
+                            "hidden",
                         }}
                       />
 
@@ -369,7 +467,8 @@ export const ProfileComponent = () => {
                             "10px",
                           fontSize:
                             "12px",
-                          color: "gray",
+                          color:
+                            "gray",
                         }}
                       >
                         (
@@ -501,7 +600,9 @@ export const ProfileComponent = () => {
 
                       <Button
                         type="dashed"
-                        icon={<FiSend />}
+                        icon={
+                          <FiSend />
+                        }
                       >
                         Nhắn tin
                       </Button>
@@ -552,81 +653,273 @@ export const ProfileComponent = () => {
                   item.user_name ||
                   "Người dùng";
 
+                const postOwnerId =
+                  Number(item.user_id);
+
+                const isOwnPost =
+                  Number.isFinite(
+                    loginUserId
+                  ) &&
+                  Number.isFinite(
+                    postOwnerId
+                  ) &&
+                  loginUserId ===
+                    postOwnerId;
+
+                const postKey =
+                  item.id ??
+                  `${item.user_id}-${index}`;
+
                 return (
                   <Card
-                    key={
-                      item.id ??
-                      `${item.user_id}-${index}`
-                    }
+                    key={postKey}
                     title={
                       <div
                         style={{
+                          width:
+                            "100%",
                           display:
                             "flex",
                           alignItems:
                             "center",
-                          gap: "5px",
+                          justifyContent:
+                            "space-between",
+                          gap: "10px",
                         }}
                       >
-                        <ImageStatus
-                          active
-                          width="26px"
-                          height="25px"
-                          image={
-                            item.avatar ||
-                            DEFAULT_AVATAR
-                          }
+                        <div
                           style={{
-                            width:
-                              "26px",
-                            height:
-                              "25px",
-                            borderRadius:
-                              "5px",
-                            border:
-                              "3px solid #0000FF",
-                            boxSizing:
-                              "border-box",
-                            overflow:
-                              "hidden",
                             display:
                               "flex",
                             alignItems:
                               "center",
-                            justifyContent:
-                              "center",
+                            gap: "5px",
+                            minWidth: 0,
+                            flex: 1,
                           }}
-                        />
-
-                        <span>
-                          <span
+                        >
+                          <ImageStatus
+                            active
+                            width="26px"
+                            height="25px"
+                            image={
+                              item.avatar ||
+                              DEFAULT_AVATAR
+                            }
                             style={{
-                              textDecoration:
-                                "none",
-                              color:
-                                "blue",
+                              width:
+                                "26px",
+                              height:
+                                "25px",
+                              borderRadius:
+                                "5px",
+                              border:
+                                "3px solid #0000FF",
+                              boxSizing:
+                                "border-box",
+                              overflow:
+                                "hidden",
+                              display:
+                                "flex",
+                              alignItems:
+                                "center",
+                              justifyContent:
+                                "center",
+                              flexShrink: 0,
+                            }}
+                          />
+
+                          <div
+                            style={{
+                              display:
+                                "flex",
+                              alignItems:
+                                "center",
+                              flexWrap:
+                                "wrap",
+                              minWidth: 0,
                             }}
                           >
-                            {ownerName}
-                          </span>
+                            <span
+                              style={{
+                                textDecoration:
+                                  "none",
+                                color:
+                                  "blue",
+                                fontWeight:
+                                  500,
+                              }}
+                            >
+                              {isOwnPost
+                                ? "Bạn"
+                                : ownerName}
+                            </span>
 
-                          <span
-                            style={{
-                              fontSize:
-                                "0.7rem",
-                              color:
-                                "gray",
-                              paddingLeft:
-                                "0.8%",
+                            <span
+                              style={{
+                                fontSize:
+                                  "0.7rem",
+                                color:
+                                  "gray",
+                                paddingLeft:
+                                  "6px",
+                              }}
+                            >
+                              {item.created_at
+                                ? `đã đăng tải bài viết (${formatTimeStamp(
+                                    item.created_at
+                                  )})`
+                                : "đã đăng tải bài viết"}
+                            </span>
+                          </div>
+                        </div>
+
+                        <Popover
+                          placement="bottomRight"
+                          trigger="click"
+                          arrow
+                          open={
+                            openPostMenuId ===
+                            postKey
+                          }
+                          onOpenChange={(
+                            open
+                          ) => {
+                            setOpenPostMenuId(
+                              open
+                                ? postKey
+                                : null
+                            );
+                          }}
+                          title={
+                            <span
+                              style={{
+                                fontWeight:
+                                  600,
+                              }}
+                            >
+                              Tùy chọn bài viết
+                            </span>
+                          }
+                          content={
+                            <div
+                              style={{
+                                width:
+                                  "220px",
+                                display:
+                                  "flex",
+                                flexDirection:
+                                  "column",
+                                gap: "5px",
+                              }}
+                            >
+                              <Button
+                                type="text"
+                                block
+                                icon={
+                                  <HistoryOutlined />
+                                }
+                                onClick={() =>
+                                  handleViewPostHistory(
+                                    item
+                                  )
+                                }
+                                style={{
+                                  display:
+                                    "flex",
+                                  alignItems:
+                                    "center",
+                                  justifyContent:
+                                    "flex-start",
+                                  textAlign:
+                                    "left",
+                                }}
+                              >
+                                Xem lịch sử bài viết
+                              </Button>
+
+                              {isOwnPost && (
+                                <Button
+                                  type="text"
+                                  block
+                                  icon={
+                                    <EditOutlined />
+                                  }
+                                  onClick={() =>
+                                    handleEditPost(
+                                      item
+                                    )
+                                  }
+                                  style={{
+                                    display:
+                                      "flex",
+                                    alignItems:
+                                      "center",
+                                    justifyContent:
+                                      "flex-start",
+                                    textAlign:
+                                      "left",
+                                  }}
+                                >
+                                  Chỉnh sửa bài viết
+                                </Button>
+                              )}
+
+                              <Button
+                                type="text"
+                                block
+                                icon={
+                                  <EyeInvisibleOutlined />
+                                }
+                                onClick={() =>
+                                  handleHidePost(
+                                    item
+                                  )
+                                }
+                                style={{
+                                  display:
+                                    "flex",
+                                  alignItems:
+                                    "center",
+                                  justifyContent:
+                                    "flex-start",
+                                  textAlign:
+                                    "left",
+                                }}
+                              >
+                                Ẩn bài viết
+                              </Button>
+                            </div>
+                          }
+                        >
+                          <Button
+                            type="text"
+                            shape="circle"
+                            aria-label="Mở tùy chọn bài viết"
+                            icon={
+                              <UnorderedListOutlined
+                                style={{
+                                  fontSize:
+                                    "18px",
+                                }}
+                              />
+                            }
+                            onClick={(
+                              event
+                            ) => {
+                              event.stopPropagation();
                             }}
-                          >
-                            {item.created_at
-                              ? `đã đăng tải bài viết (${formatTimeStamp(
-                                  item.created_at
-                                )})`
-                              : "đã đăng tải bài viết"}
-                          </span>
-                        </span>
+                            style={{
+                              flexShrink: 0,
+                              display:
+                                "flex",
+                              alignItems:
+                                "center",
+                              justifyContent:
+                                "center",
+                            }}
+                          />
+                        </Popover>
                       </div>
                     }
                     size="small"
