@@ -471,6 +471,7 @@ export const ProfileComponent = () => {
     try {
       // Tách ảnh local (cần upload) và ảnh cũ (đã có trong S3)
       const localImages = editDraft.images.filter((img) => img.isLocal && img.file);
+      const existingImages = editDraft.images.filter((img) => !img.isLocal);
 
       let uploadedImageKeys = [];
 
@@ -483,16 +484,22 @@ export const ProfileComponent = () => {
         );
       }
 
-      // Tính toán ảnh hiện có (ảnh gốc + ảnh mới vừa upload)
-      const allImageKeys = [...originalPostImages, ...uploadedImageKeys];
+      // Lấy S3 keys của ảnh đang giữ (từ existing images)
+      // img.url là S3 key vì được lấy từ content.image
+      const keptExistingKeys = existingImages.map((img) => img.url);
 
-      // Tính toán ảnh bị xoá (ảnh gốc nhưng không có trong allImageKeys)
+      // Tính toán ảnh hiện có (ảnh giữ lại + ảnh mới vừa upload)
+      const allImageKeys = [...keptExistingKeys, ...uploadedImageKeys];
+
+      // Tính toán ảnh bị xoá (ảnh gốc nhưng không có trong keptExistingKeys)
+      // = những ảnh đã bị xoá khỏi editDraft.images
       const imagesToDelete = originalPostImages.filter(
-        (originalKey) => !allImageKeys.includes(originalKey)
+        (originalKey) => !keptExistingKeys.includes(originalKey)
       );
 
       console.log("handleSaveEditOnUI:", {
         originalPostImages,
+        keptExistingKeys,
         uploadedImageKeys,
         allImageKeys,
         imagesToDelete,
