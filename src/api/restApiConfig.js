@@ -468,6 +468,8 @@ export const addPostApi = async ({
 export const updatePostApi = async ({
   postId,
   content,
+  filesToUpload = [],
+  imagesToDelete = [],
 }) => {
   const normalizedPostId =
     Number(postId);
@@ -523,19 +525,42 @@ export const updatePostApi = async ({
     );
   }
 
+  // Xây dựng FormData cho multipart/form-data
+  const formData = new FormData();
+
+  // Thêm text
+  formData.append('text', normalizedContent.text);
+
+  // Thêm ảnh hiện có (existing images)
+  formData.append(
+    'existingImages',
+    JSON.stringify(normalizedContent.image)
+  );
+
+  // Thêm ảnh cũ cần xoá
+  if (Array.isArray(imagesToDelete) && imagesToDelete.length > 0) {
+    formData.append(
+      'oldImageKeys',
+      JSON.stringify(imagesToDelete)
+    );
+  }
+
+  // Thêm file mới (nếu có)
+  if (Array.isArray(filesToUpload) && filesToUpload.length > 0) {
+    filesToUpload.forEach((file) => {
+      if (file instanceof File) {
+        formData.append('images', file);
+      }
+    });
+  }
+
   const response = await fetch(
     `${envConfig.host}/update-post/${normalizedPostId}`,
     {
       method: "PUT",
-      headers: {
-        "Content-Type":
-          "application/json",
-      },
       credentials: "include",
-      body: JSON.stringify({
-        content:
-          normalizedContent,
-      }),
+      body: formData,
+      // Không set Content-Type header vì FormData tự động set
     }
   );
 

@@ -219,6 +219,11 @@ export const ProfileComponent = () => {
   });
 
   /*
+   * Lưu ảnh gốc để tính toán ảnh bị xoá
+   */
+  const [originalPostImages, setOriginalPostImages] = useState([]);
+
+  /*
    * Dữ liệu đã "lưu" tạm trên UI.
    *
    * Vì chưa có backend nên khi bấm lưu,
@@ -336,6 +341,11 @@ export const ProfileComponent = () => {
     const currentImageItems =
       savedOverride?.imageItems ?? createExistingImageItems(content.image);
 
+    // Lưu ảnh gốc để tính toán ảnh bị xoá
+    setOriginalPostImages(
+      Array.isArray(content.image) ? content.image : []
+    );
+
     setEditingPostId(item.id);
 
     setEditDraft({
@@ -445,7 +455,7 @@ export const ProfileComponent = () => {
     });
 
     setEditingPostId(null);
-
+    setOriginalPostImages([]);
     setEditDraft({
       text: "",
       images: [],
@@ -463,25 +473,35 @@ export const ProfileComponent = () => {
       const localImages = editDraft.images.filter((img) => img.isLocal && img.file);
       const existingImages = editDraft.images.filter((img) => !img.isLocal);
 
-      let allImageUrls = existingImages.map((img) => img.url);
+      let uploadedImageKeys = [];
 
       // Nếu có ảnh mới, upload trước
       if (localImages.length > 0) {
         const filesToUpload = localImages.map((img) => img.file);
-        const uploadedImageKeys = await uploadPostImagesApi(
+        uploadedImageKeys = await uploadPostImagesApi(
           filesToUpload,
           loginUserId
         );
-        allImageUrls = [...allImageUrls, ...uploadedImageKeys];
       }
 
-      // Update bài viết với tất cả ảnh
+      // Tính toán ảnh hiện có (ảnh cũ + ảnh mới vừa upload)
+      const existingImageKeys = existingImages.map((img) => img.url);
+      const allImageKeys = [...existingImageKeys, ...uploadedImageKeys];
+
+      // Tính toán ảnh bị xoá (ảnh gốc nhưng không có trong allImageKeys)
+      const imagesToDelete = originalPostImages.filter(
+        (originalKey) => !allImageKeys.includes(originalKey)
+      );
+
+      // Update bài viết với tất cả ảnh và danh sách ảnh cần xoá
       await updatePostApi({
         postId,
         content: {
           text: editDraft.text,
-          image: allImageUrls,
+          image: allImageKeys,
         },
+        filesToUpload: [],  // Đã upload trước rồi, không cần upload lại
+        imagesToDelete,
       });
 
       setLocalPostOverrides((previousOverrides) => ({
@@ -495,7 +515,7 @@ export const ProfileComponent = () => {
       }));
 
       setEditingPostId(null);
-
+      setOriginalPostImages([]);
       setEditDraft({
         text: "",
         images: [],
