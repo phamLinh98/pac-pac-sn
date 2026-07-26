@@ -37,31 +37,44 @@ export const LayoutComponent = () => {
   const headerBackgroundImage =
     "https://i.pinimg.com/vwebp/1200x/d9/b2/97/d9b29715b473dd0a5b37e1bc9929907b.webp";
   // List icon and function in top menu(notification, profile, message)
+  const menuItemStyle = {
+    background: "transparent",
+    color: "#fff",
+    borderRadius: "8px",
+  };
+
   const headerItem = [
     {
       key: "1",
-      label: <GrHomeRounded style={{ fontSize: "17px" }} />,
-      onClick: backToMenu
+      label: <GrHomeRounded style={{ fontSize: 17 }} />,
+      onClick: backToMenu,
+      style: menuItemStyle,
     },
     {
       key: "2",
-      label: <ChatHistoryPanel />
+      label: <ChatHistoryPanel />,
+      style: menuItemStyle,
     },
     {
       key: "3",
-      label: <NotificationsPanel />
+      label: <NotificationsPanel />,
+      style: menuItemStyle,
     },
     {
       key: "4",
-      label: <PiGameController style={{ fontSize: "17px" }} />
-    }, {
+      label: <PiGameController style={{ fontSize: 17 }} />,
+      style: menuItemStyle,
+    },
+    {
       key: "5",
-      label: <FaPhotoVideo style={{ fontSize: "17px" }} />
+      label: <FaPhotoVideo style={{ fontSize: 17 }} />,
+      style: menuItemStyle,
     },
     {
       key: "6",
-      label: <NotificationIcon />
-    }
+      label: <NotificationIcon />,
+      style: menuItemStyle,
+    },
   ];
 
   return (

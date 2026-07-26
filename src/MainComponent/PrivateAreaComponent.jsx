@@ -29,12 +29,12 @@ export const PrivateAreaComponent = ({ items, backgroundImage }) => {
       <Input placeholder="Search User" style={{width:"15%"}}/>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}> {/* Thay đổi ở đây */}
         <Menu
-          theme="dark"
           mode="horizontal"
           items={items}
           style={{
-            minWidth: 0,
-            alignItems: 'center'
+            background: "transparent",
+            borderBottom: "none",
+            color: "#fff",
           }}
         />
       </div>
