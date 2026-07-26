@@ -1,92 +1,294 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button, Card, Image, Space } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { IoIosPersonAdd } from "react-icons/io";
 import { FiSend } from "react-icons/fi";
-import { ImageStatus, ImageStatusAvatar } from "../SideComponent/ImageStatus";
 import { GiChestnutLeaf } from "react-icons/gi";
 import { VscShare } from "react-icons/vsc";
 import { MdRemoveRedEye } from "react-icons/md";
+import { BsSendPlus } from "react-icons/bs";
+import { FaUserFriends } from "react-icons/fa";
+import { useParams } from "react-router-dom";
+
+import {
+  ImageStatus,
+  ImageStatusAvatar,
+} from "../SideComponent/ImageStatus";
 import { FriendStatusContentDetailsComponent } from "./FriendStatusContentDetailsComponent";
 import { LoadingComponent } from "../SideComponent/LoadingComponent";
 import { NotListComponent } from "../SideComponent/NoListComponent";
 import { formatTimeStamp } from "../configs/configTimeStamp";
-import { useParams } from "react-router-dom";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo.js";
 import { MyStatusAreaComponent } from "./MyStatusAreaComponent.jsx";
-import { BsSendPlus } from "react-icons/bs";
 import { ModalComponent } from "../SideComponent/ModalComponent.jsx";
 import { useFacadeMyProfileList } from "../reduxs/useFacadeMyStatusProfile.jsx";
 import { checkValueInArrayGetData } from "../SideFunction/CheckValueInArray.js";
-import { FaUserFriends } from "react-icons/fa";
 
 const { Meta } = Card;
 
+const DEFAULT_AVATAR =
+  "https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg";
+
+const DEFAULT_BACKGROUND =
+  "https://i.pinimg.com/1200x/80/7f/bd/807fbd1b0342fe62bc600f8ad7aa4860.jpg";
+
+/**
+ * Chuẩn hóa danh sách ảnh.
+ *
+ * Hỗ trợ:
+ * ["url1", "url2"]
+ * '["url1", "url2"]'
+ * "url1"
+ * [["url1", "url2"]]
+ * null
+ */
+const normalizeImages = (rawImages) => {
+  if (!rawImages) {
+    return [];
+  }
+
+  if (Array.isArray(rawImages)) {
+    return rawImages
+      .flat(Infinity)
+      .filter(
+        (image) =>
+          typeof image === "string" &&
+          image.trim() !== ""
+      )
+      .map((image) => image.trim());
+  }
+
+  if (typeof rawImages === "string") {
+    const trimmedImages = rawImages.trim();
+
+    if (!trimmedImages) {
+      return [];
+    }
+
+    try {
+      const parsedImages = JSON.parse(trimmedImages);
+
+      return normalizeImages(parsedImages);
+    } catch {
+      // Trường hợp rawImages chỉ là một URL đơn lẻ
+      return [trimmedImages];
+    }
+  }
+
+  return [];
+};
+
+/**
+ * Chuẩn hóa content.
+ *
+ * DB hiện tại dùng:
+ * {
+ *   text: "...",
+ *   image: ["url1", "url2"]
+ * }
+ *
+ * Đồng thời hỗ trợ dữ liệu cũ:
+ * {
+ *   title: "...",
+ *   images: [...]
+ * }
+ */
+const normalizeContent = (rawContent) => {
+  if (!rawContent) {
+    return {
+      text: "",
+      image: [],
+    };
+  }
+
+  let parsedContent = rawContent;
+
+  if (typeof rawContent === "string") {
+    const trimmedContent = rawContent.trim();
+
+    if (!trimmedContent) {
+      return {
+        text: "",
+        image: [],
+      };
+    }
+
+    try {
+      parsedContent = JSON.parse(trimmedContent);
+    } catch (error) {
+      console.error(
+        "Không thể parse content của bài viết:",
+        rawContent,
+        error
+      );
+
+      return {
+        text: trimmedContent,
+        image: [],
+      };
+    }
+  }
+
+  if (
+    !parsedContent ||
+    typeof parsedContent !== "object" ||
+    Array.isArray(parsedContent)
+  ) {
+    return {
+      text: "",
+      image: [],
+    };
+  }
+
+  return {
+    text:
+      parsedContent.text ??
+      parsedContent.title ??
+      "",
+    image: normalizeImages(
+      parsedContent.image ??
+        parsedContent.images
+    ),
+  };
+};
+
+const hasPostContent = (content) => {
+  return Boolean(
+    content.text.trim() ||
+      content.image.length > 0
+  );
+};
+
 export const ProfileComponent = () => {
-  const userId = useParams();
-  const userIdConverToNumber = +userId.id;
+  const { id: profileIdParam } = useParams();
+
+  const profileUserId = Number(profileIdParam);
+
   const { listUserById, loading } =
-    useFacadeMyProfileList(userIdConverToNumber);
-  // Đảm bảo listUserById luôn là array
-  const safeListUserById = Array.isArray(listUserById) ? listUserById : [];
-  //.log("listUserByIdHome", listUserById);
+    useFacadeMyProfileList(profileUserId);
+
+  const safeListUserById = Array.isArray(listUserById)
+    ? listUserById
+    : Array.isArray(listUserById?.list)
+      ? listUserById.list
+      : Array.isArray(listUserById?.data)
+        ? listUserById.data
+        : [];
+
+  const profileUser =
+    safeListUserById.length > 0
+      ? safeListUserById[0]
+      : null;
+
   const containerRefs = useRef([]);
-  const isEmptyObject = (obj) =>
-    obj && typeof obj === "object" && Object.keys(obj).length === 0;
-  const getUserFromLocalStorage = localStorage.getItem("allow-login");
-  const getData = decodeJwt(getUserFromLocalStorage);
-  const { id } = getData;
 
-  const idToNumber = +id;
+  const token = localStorage.getItem("allow-login");
 
-  const [addFriend, setAddFriend] = useState(false);
-  const [isFollow, setIsFollow] = useState(false);
+  let loginUser = {};
+
+  try {
+    loginUser = token
+      ? decodeJwt(token) ?? {}
+      : {};
+  } catch (error) {
+    console.error("Không thể decode JWT:", error);
+  }
+
+  const loginUserId = Number(loginUser?.id);
+
+  const isOwnProfile =
+    Number.isFinite(loginUserId) &&
+    Number.isFinite(profileUserId) &&
+    loginUserId === profileUserId;
+
+  const friendIdList = Array.isArray(
+    loginUser?.list_friend_id
+  )
+    ? loginUser.list_friend_id
+    : [];
+
+  const checkIsFriend =
+    checkValueInArrayGetData(
+      friendIdList,
+      profileIdParam
+    );
+
+  const [addFriend, setAddFriend] =
+    useState(false);
+
+  const [isFollow, setIsFollow] =
+    useState(false);
+
+  const [openAvatar, setOpenAvatar] =
+    useState(false);
+
+  const [openBG, setOpenBG] =
+    useState(false);
 
   const clickToAddFriend = () => {
-    setAddFriend(!addFriend);
+    setAddFriend(
+      (previousValue) => !previousValue
+    );
   };
 
   const clickToFollow = () => {
-    setIsFollow(!isFollow);
+    setIsFollow(
+      (previousValue) => !previousValue
+    );
   };
 
-  const [openAvatar, setOpenAvatar] = useState(false);
   const showModalAvatar = () => {
     setOpenAvatar(true);
   };
+
   const hideModalAvatar = () => {
     setOpenAvatar(false);
   };
 
-  const [openBG, setOpenBG] = useState(false);
   const showModalBG = () => {
     setOpenBG(true);
   };
+
   const hideModalBG = () => {
     setOpenBG(false);
   };
 
-  const getUserFromParams = useParams();
-  const idUserParams = getUserFromParams.id;
-  const checkIsFriend = checkValueInArrayGetData(
-    getData["list_friend_id"],
-    idUserParams
-  );
+  const normalizedPostList =
+    safeListUserById
+      .map((item) => ({
+        ...item,
+        normalizedContent: normalizeContent(
+          item?.content
+        ),
+      }))
+      .filter((item) =>
+        hasPostContent(
+          item.normalizedContent
+        )
+      );
 
   return (
     <>
-      <div style={{ width: "100%", height: "5%", position: "relative" }}>
+      <div
+        style={{
+          width: "100%",
+          position: "relative",
+        }}
+      >
         <Card
           hoverable
-          style={{ width: "100%", height: "5%" }}
+          style={{
+            width: "100%",
+          }}
           cover={
             <Image
-              style={{ height: "230px", objectFit: "cover" }}
-              alt="example"
-              src={
-                "https://i.pinimg.com/1200x/80/7f/bd/807fbd1b0342fe62bc600f8ad7aa4860.jpg"
-              }
-              preview={true}
+              style={{
+                height: "230px",
+                objectFit: "cover",
+              }}
+              alt="Ảnh bìa"
+              src={DEFAULT_BACKGROUND}
+              preview
             />
           }
         >
@@ -95,160 +297,233 @@ export const ProfileComponent = () => {
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent:
+                    "space-between",
                   alignItems: "center",
                   padding: "10px",
+                  flexWrap: "wrap",
+                  gap: "10px",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  {loading ? (
-                    <LoadingComponent />
-                  ) : (
-                    safeListUserById.slice(0, 1).map((item) => (
-                      <div
-                        key={item.id}
-                        style={{ display: "flex", alignItems: "center" }}
-                      >
-                        <ImageStatusAvatar
-                          active={true}
-                          size={64} // Cần thiết để Avatar hoạt động đúng kích thước
-                          icon={<UserOutlined />}
-                          image={
-                            item.avatar
-                              ? item.avatar
-                              : "https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg"
-                          }
-                          style={{
-                            width: "64px",
-                            height: "64px",
-                            border: "5px solid #0000FF",
-                            borderRadius: "50%",
-                            boxSizing: "border-box",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            overflow: "hidden",
-                          }}
-                        />
-                        <span
-                          style={{
-                            marginLeft: "10px",
-                            fontWeight: "bold",
-                            fontSize: "16px",
-                          }}
-                        >
-                          {item.name}
-                        </span>
-                        <span
-                          style={{
-                            marginLeft: "10px",
-                            fontSize: "12px",
-                            color: "gray",
-                          }}
-                        >
-                          ({item.friends ?? 0} bạn bè)
-                        </span>
-                        {id === item.user_id ? (
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: "5px",
-                              marginLeft: "5px",
-                            }}
-                          >
-                            <Button onClick={showModalAvatar}>
-                              Thay avatar
-                            </Button>
-                            <Button onClick={showModalBG}>Thay ảnh bìa</Button>
-                            <ModalComponent
-                              open={openAvatar}
-                              hideModal={hideModalAvatar}
-                              id={idToNumber}
-                            />
-                            <ModalComponent
-                              open={openBG}
-                              hideModal={hideModalBG}
-                              id={idToNumber}
-                            />
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "center", // Căn giữa theo chiều ngang
-                    alignItems: "center", // Căn giữa theo chiều dọc
+                    alignItems: "center",
                   }}
                 >
-                  {safeListUserById &&
-                    safeListUserById.slice(0, 1).map(
-                      (
-                        item // Chỉ lấy phần tử đầu tiên
-                      ) => (
-                        <React.Fragment key={item.id}>
-                          {item.user_id !== id && ( // Điều kiện hiển thị nút
-                            <> {
-                              checkIsFriend ? <Button
-                                //type="primary"
-                                style={{ marginRight: "10px" }}
-                                icon={
-                                  !checkIsFriend ? (
-                                    <IoIosPersonAdd />
-                                  ) : (
-                                    <FaUserFriends />
-                                  )
-                                } // Đưa icon vào prop icon
-                                onClick={() => clickToAddFriend()}
-                              >
-                                {/* {addFriend ? "Đã gửi lời mời" : "Kết bạn"} */}
-                                {checkIsFriend ? "Bạn bè" : ""}
-                              </Button> : <Button
-                                type="primary"
-                                style={{ marginRight: "10px" }}
-                                icon={
-                                  !addFriend ? (
-                                    <IoIosPersonAdd />
-                                  ) : (
-                                    <BsSendPlus />
-                                  )
-                                } // Đưa icon vào prop icon
-                                onClick={() => clickToAddFriend()}
-                              >
-                                {addFriend ? "Đã gửi lời mời" : "Kết bạn"}
-                              </Button>
+                  {loading ? (
+                    <LoadingComponent />
+                  ) : profileUser ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        gap: "5px",
+                      }}
+                    >
+                      <ImageStatusAvatar
+                        active
+                        size={64}
+                        icon={
+                          <UserOutlined />
+                        }
+                        image={
+                          profileUser.avatar ||
+                          DEFAULT_AVATAR
+                        }
+                        style={{
+                          width: "64px",
+                          height: "64px",
+                          border:
+                            "5px solid #0000FF",
+                          borderRadius: "50%",
+                          boxSizing:
+                            "border-box",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent:
+                            "center",
+                          overflow: "hidden",
+                        }}
+                      />
+
+                      <span
+                        style={{
+                          marginLeft:
+                            "10px",
+                          fontWeight:
+                            "bold",
+                          fontSize:
+                            "16px",
+                        }}
+                      >
+                        {profileUser.name ||
+                          profileUser.user_name ||
+                          "Người dùng"}
+                      </span>
+
+                      <span
+                        style={{
+                          marginLeft:
+                            "10px",
+                          fontSize:
+                            "12px",
+                          color: "gray",
+                        }}
+                      >
+                        (
+                        {profileUser.friends ??
+                          0}{" "}
+                        bạn bè)
+                      </span>
+
+                      {isOwnProfile && (
+                        <div
+                          style={{
+                            display:
+                              "flex",
+                            gap: "5px",
+                            marginLeft:
+                              "5px",
+                            flexWrap:
+                              "wrap",
+                          }}
+                        >
+                          <Button
+                            onClick={
+                              showModalAvatar
                             }
-                              <Button
-                                type="primary"
-                                style={{ marginRight: "10px" }}
-                                icon={<MdRemoveRedEye />}
-                                onClick={() => clickToFollow()}
-                              >
-                                {isFollow ? "Đã theo dõi" : "Theo dõi"}
-                              </Button>
-                              <Button type="dashed" icon={<FiSend />}>
-                                Nhắn Tin
-                              </Button>
-                            </>
-                          )}
-                        </React.Fragment>
-                      )
-                    )}
+                          >
+                            Thay avatar
+                          </Button>
+
+                          <Button
+                            onClick={
+                              showModalBG
+                            }
+                          >
+                            Thay ảnh bìa
+                          </Button>
+
+                          <ModalComponent
+                            open={
+                              openAvatar
+                            }
+                            hideModal={
+                              hideModalAvatar
+                            }
+                            id={
+                              loginUserId
+                            }
+                          />
+
+                          <ModalComponent
+                            open={openBG}
+                            hideModal={
+                              hideModalBG
+                            }
+                            id={
+                              loginUserId
+                            }
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <span>
+                      Người dùng không tồn
+                      tại
+                    </span>
+                  )}
                 </div>
+
+                {!loading &&
+                  profileUser &&
+                  !isOwnProfile && (
+                    <div
+                      style={{
+                        display:
+                          "flex",
+                        justifyContent:
+                          "center",
+                        alignItems:
+                          "center",
+                        flexWrap:
+                          "wrap",
+                        gap: "10px",
+                      }}
+                    >
+                      {checkIsFriend ? (
+                        <Button
+                          icon={
+                            <FaUserFriends />
+                          }
+                          onClick={
+                            clickToAddFriend
+                          }
+                        >
+                          Bạn bè
+                        </Button>
+                      ) : (
+                        <Button
+                          type="primary"
+                          icon={
+                            addFriend ? (
+                              <BsSendPlus />
+                            ) : (
+                              <IoIosPersonAdd />
+                            )
+                          }
+                          onClick={
+                            clickToAddFriend
+                          }
+                        >
+                          {addFriend
+                            ? "Đã gửi lời mời"
+                            : "Kết bạn"}
+                        </Button>
+                      )}
+
+                      <Button
+                        type="primary"
+                        icon={
+                          <MdRemoveRedEye />
+                        }
+                        onClick={
+                          clickToFollow
+                        }
+                      >
+                        {isFollow
+                          ? "Đã theo dõi"
+                          : "Theo dõi"}
+                      </Button>
+
+                      <Button
+                        type="dashed"
+                        icon={<FiSend />}
+                      >
+                        Nhắn tin
+                      </Button>
+                    </div>
+                  )}
               </div>
             }
             description=""
           />
         </Card>
       </div>
-      <div style={{ paddingTop: "1%" }}>
-        <MyStatusAreaComponent />
-      </div>
-      {/* TODO123 */}
+
+      {isOwnProfile && (
+        <div
+          style={{
+            paddingTop: "1%",
+          }}
+        >
+          <MyStatusAreaComponent />
+        </div>
+      )}
+
       {loading ? (
         <LoadingComponent />
       ) : (
@@ -260,161 +535,275 @@ export const ProfileComponent = () => {
             paddingTop: "1%",
           }}
         >
-          {safeListUserById.length > 0 ? (
-            safeListUserById.map((item, index) => {
-              return !isEmptyObject(item.content) ? (
-                <Card
-                  key={item.id}
-                  title={
+          {safeListUserById.length ===
+          0 ? (
+            <NotListComponent description="Người dùng không tồn tại" />
+          ) : normalizedPostList.length ===
+            0 ? (
+            <NotListComponent description="Người dùng chưa có bài viết nào" />
+          ) : (
+            normalizedPostList.map(
+              (item, index) => {
+                const content =
+                  item.normalizedContent;
+
+                const ownerName =
+                  item.name ||
+                  item.user_name ||
+                  "Người dùng";
+
+                return (
+                  <Card
+                    key={
+                      item.id ??
+                      `${item.user_id}-${index}`
+                    }
+                    title={
+                      <div
+                        style={{
+                          display:
+                            "flex",
+                          alignItems:
+                            "center",
+                          gap: "5px",
+                        }}
+                      >
+                        <ImageStatus
+                          active
+                          width="26px"
+                          height="25px"
+                          image={
+                            item.avatar ||
+                            DEFAULT_AVATAR
+                          }
+                          style={{
+                            width:
+                              "26px",
+                            height:
+                              "25px",
+                            borderRadius:
+                              "5px",
+                            border:
+                              "3px solid #0000FF",
+                            boxSizing:
+                              "border-box",
+                            overflow:
+                              "hidden",
+                            display:
+                              "flex",
+                            alignItems:
+                              "center",
+                            justifyContent:
+                              "center",
+                          }}
+                        />
+
+                        <span>
+                          <span
+                            style={{
+                              textDecoration:
+                                "none",
+                              color:
+                                "blue",
+                            }}
+                          >
+                            {ownerName}
+                          </span>
+
+                          <span
+                            style={{
+                              fontSize:
+                                "0.7rem",
+                              color:
+                                "gray",
+                              paddingLeft:
+                                "0.8%",
+                            }}
+                          >
+                            {item.created_at
+                              ? `đã đăng tải bài viết (${formatTimeStamp(
+                                  item.created_at
+                                )})`
+                              : "đã đăng tải bài viết"}
+                          </span>
+                        </span>
+                      </div>
+                    }
+                    size="small"
+                  >
+                    {content.text && (
+                      <div>
+                        <p>
+                          {content.text}
+                        </p>
+                      </div>
+                    )}
+
                     <div
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "5px",
+                        display:
+                          "flex",
+                        flexDirection:
+                          "column",
+                        gap: "2px",
                       }}
                     >
-                      <ImageStatus
-                        active={true}
-                        width="26px"
-                        height="25px"
-                        image={
-                          item.avatar
-                            ? item.avatar
-                            : "https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg"
-                        }
-                        style={{
-                          width:
-                            "26px" /* Đảm bảo width khớp với kích thước ảnh */,
-                          height:
-                            "25px" /* Đảm bảo height khớp với kích thước ảnh */,
-                          borderRadius: "5px" /* Giữ border-radius ban đầu */,
-                          border: "3px solid #0000FF" /* Màu xanh đậm */,
-                          boxSizing:
-                            "border-box" /* Đảm bảo kích thước không bị ảnh hưởng bởi border */,
-                          overflow:
-                            "hidden" /* Cắt bỏ phần border thừa nếu có */,
-                          display: "flex" /* Để căn giữa nếu cần thiết */,
-                          alignItems: "center" /* Căn giữa dọc */,
-                          justifyContent: "center" /* Căn giữa ngang */,
-                        }}
-                      />
-                      <span>
-                        <a
-                          style={{ textDecoration: "none", color: "blue" }} // Optional: bỏ gạch chân và giữ màu chữ
-                        >
-                          {item.name}
-                        </a>
-                        <span
+                      {content.image
+                        .length > 0 && (
+                        <div
                           style={{
-                            fontSize: "0.7rem",
-                            color: "gray",
-                            paddingLeft: "0.8%",
+                            position:
+                              "relative",
+                            width:
+                              "100%",
+                            overflowX:
+                              "hidden",
                           }}
                         >
-                          {`đã đăng tải bài viết(${formatTimeStamp(
-                            item.created_at
-                          )})`}
-                        </span>
-                      </span>
-                    </div>
-                  }
-                  size="small"
-                >
-                  <div>
-                    <p>{item.content.title}</p>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "2px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        position: "relative",
-                        width: "100%",
-                        overflowX: "hidden",
-                      }}
-                    >
-                      <div
-                        ref={containerRefs.current[index]}
-                        style={{
-                          display: "flex",
-                          gap: "5px",
-                          overflowX: "auto",
-                          whiteSpace: "nowrap",
-                          scrollbarWidth: "none", // Ẩn thanh cuộn cho Firefox
-                          msOverflowStyle: "none", // Ẩn thanh cuộn cho IE
-                        }}
-                      >
-                        {item.content.images &&
-                          item.content.images.length > 0 &&
-                          item.content.images.map((image, imageIndex) => (
-                            <div
-                              key={imageIndex}
-                              style={{
-                                display: "inline-block",
-                                marginRight: "5px",
-                                marginBottom: "5px",
-                                padding: 0,
-                              }}
-                            >
-                              <ImageStatus
-                                image={image ? image : ""}
-                                width={150}
-                                height={250}
-                                preview={true}
-                              />
-                            </div>
-                          ))}
-                      </div>
-                    </div>
+                          <div
+                            ref={(
+                              element
+                            ) => {
+                              containerRefs.current[
+                                index
+                              ] =
+                                element;
+                            }}
+                            style={{
+                              display:
+                                "flex",
+                              gap: "5px",
+                              overflowX:
+                                "auto",
+                              whiteSpace:
+                                "nowrap",
+                              scrollbarWidth:
+                                "none",
+                              msOverflowStyle:
+                                "none",
+                            }}
+                          >
+                            {content.image.map(
+                              (
+                                imageUrl,
+                                imageIndex
+                              ) => (
+                                <div
+                                  key={`${item.id}-${imageIndex}`}
+                                  style={{
+                                    display:
+                                      "inline-block",
+                                    flexShrink: 0,
+                                    marginRight:
+                                      "5px",
+                                    marginBottom:
+                                      "5px",
+                                    padding: 0,
+                                  }}
+                                >
+                                  <ImageStatus
+                                    image={
+                                      imageUrl
+                                    }
+                                    width={
+                                      150
+                                    }
+                                    height={
+                                      250
+                                    }
+                                    preview
+                                  />
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      )}
 
-                    <Space
-                      style={{
-                        flex: 1,
-                        minWidth: 0,
-                        display: "flex",
-                        justifyContent: "flex-end",
-                      }}
-                    >
-                      <Button
+                      <Space
                         style={{
-                          color: item.likestatus ? "red" : "#FFFFF",
-                          backgroundColor: "white",
-                          border: `1px solid ${
-                            item.likestatus ? "red" : "#FFFFF"
-                          }`,
+                          flex: 1,
+                          minWidth: 0,
+                          display:
+                            "flex",
+                          justifyContent:
+                            "flex-end",
                         }}
                       >
-                        <GiChestnutLeaf />
-                        <span>{item.like}</span>Like
-                      </Button>
-                      <FriendStatusContentDetailsComponent
-                        comment_count={item.comment}
-                        title={item.content.title}
-                        like={item.like}
-                        shared={item.shared}
-                        image={item.content.images}
-                        postId={item.id}
-                      />
-                      <Button>
-                        <VscShare />
-                        <span>{item.shared}</span>Share
-                      </Button>
-                    </Space>
-                  </div>
-                </Card>
-              ) : (
-                <NotListComponent
-                  description="Bạn chưa có bài viết nào"
-                  key={item.id}
-                />
-              );
-            })
-          ) : (
-            <NotListComponent description="Người dùng không tồn tại" />
+                        <Button
+                          style={{
+                            color:
+                              item.likestatus
+                                ? "red"
+                                : "#000000",
+                            backgroundColor:
+                              "#FFFFFF",
+                            border: `1px solid ${
+                              item.likestatus
+                                ? "red"
+                                : "#D9D9D9"
+                            }`,
+                          }}
+                        >
+                          <GiChestnutLeaf
+                            style={{
+                              color:
+                                item.likestatus
+                                  ? "red"
+                                  : "#000000",
+                            }}
+                          />
+
+                          <span>
+                            {item.like ??
+                              0}
+                          </span>
+
+                          Like
+                        </Button>
+
+                        <FriendStatusContentDetailsComponent
+                          comment_count={
+                            item.comment ??
+                            0
+                          }
+                          title={
+                            content.text
+                          }
+                          like={
+                            item.like ?? 0
+                          }
+                          shared={
+                            item.shared ??
+                            0
+                          }
+                          image={
+                            content.image
+                          }
+                          postId={
+                            item.id
+                          }
+                          likeStatus={Boolean(
+                            item.likestatus
+                          )}
+                        />
+
+                        <Button>
+                          <VscShare />
+
+                          <span>
+                            {item.shared ??
+                              0}
+                          </span>
+
+                          Share
+                        </Button>
+                      </Space>
+                    </div>
+                  </Card>
+                );
+              }
+            )
           )}
         </div>
       )}

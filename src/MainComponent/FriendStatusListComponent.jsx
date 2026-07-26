@@ -32,18 +32,38 @@ export const FriendStatusListComponent = () => {
   };
 
   const getPostContent = (item) => {
-    const content = item?.content;
+    let content = item?.content;
+
+    // Trường hợp API trả content dưới dạng JSON string
+    if (typeof content === 'string') {
+      try {
+        content = JSON.parse(content);
+      } catch (error) {
+        console.error('Không thể parse content:', error);
+
+        return {
+          title: 'Không có nội dung',
+          image: [],
+        };
+      }
+    }
 
     if (content && typeof content === 'object' && !Array.isArray(content)) {
+      const images = Array.isArray(content.image)
+        ? content.image
+        : typeof content.image === 'string' && content.image.trim()
+          ? [content.image]
+          : [];
+
       return {
         title: content.text || 'Không có nội dung',
-        images: content.image ? [content.image] : [],
+        image: images,
       };
     }
 
     return {
       title: 'Không có nội dung',
-      images: [],
+      image: [],
     };
   };
 
@@ -60,7 +80,7 @@ export const FriendStatusListComponent = () => {
               const content = getPostContent(item);
               const ownerName = item.user_name || item.name || 'Người dùng';
               const createdAt = item.created_at || item.createdAt;
-              const images = content.images || [];
+              const image = content.image || [];
 
               return (
                 <Card
@@ -114,8 +134,8 @@ export const FriendStatusListComponent = () => {
                           msOverflowStyle: 'none',
                         }}
                       >
-                        {images.length > 0
-                          ? images.map((image, imageIndex) => (
+                        {image.length > 0
+                          ? image.map((image, imageIndex) => (
                               <div
                                 key={imageIndex}
                                 style={{
@@ -159,7 +179,7 @@ export const FriendStatusListComponent = () => {
                         title={content.title}
                         like={item.like ?? 0}
                         shared={item.shared ?? 0}
-                        image={images.length > 0 ? images : 'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'}
+                        image={content.image}
                         postId={item.id}
                         likeStatus={Boolean(item.likestatus)}
                       />
