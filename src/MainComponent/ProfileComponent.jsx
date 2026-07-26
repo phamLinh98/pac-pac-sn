@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -6,13 +7,17 @@ import {
   Button,
   Card,
   Image,
+  Input,
   Popover,
   Space,
 } from "antd";
 import {
+  CloseOutlined,
   EditOutlined,
   EyeInvisibleOutlined,
   HistoryOutlined,
+  PlusOutlined,
+  SaveOutlined,
   UnorderedListOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -43,6 +48,7 @@ import { useFacadeMyProfileList } from "../reduxs/useFacadeMyStatusProfile.jsx";
 import { checkValueInArrayGetData } from "../SideFunction/CheckValueInArray.js";
 
 const { Meta } = Card;
+const { TextArea } = Input;
 
 const DEFAULT_AVATAR =
   "https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg";
@@ -201,6 +207,19 @@ export const ProfileComponent = () => {
 
   const containerRefs = useRef([]);
 
+  /*
+   * Ref của TextArea đang chỉnh sửa.
+   * Dùng để focus và đặt con trỏ cuối dòng.
+   */
+  const editTextAreaRef = useRef(null);
+
+  /*
+   * Input file được ẩn khỏi UI.
+   * Button "Thêm ảnh" sẽ gọi click()
+   * vào input này.
+   */
+  const imageInputRef = useRef(null);
+
   const token =
     localStorage.getItem(
       "allow-login"
@@ -252,8 +271,121 @@ export const ProfileComponent = () => {
   const [openBG, setOpenBG] =
     useState(false);
 
-  const [openPostMenuId, setOpenPostMenuId] =
-    useState(null);
+  /*
+   * ID menu Popover đang mở.
+   */
+  const [
+    openPostMenuId,
+    setOpenPostMenuId,
+  ] = useState(null);
+
+  /*
+   * ID bài viết đang trong chế độ chỉnh sửa.
+   * null nghĩa là không có bài nào đang chỉnh sửa.
+   */
+  const [
+    editingPostId,
+    setEditingPostId,
+  ] = useState(null);
+
+  /*
+   * Bản nháp hiện tại.
+   *
+   * images chứa:
+   * {
+   *   id: string,
+   *   url: string,
+   *   file: File | null,
+   *   isLocal: boolean
+   * }
+   */
+  const [
+    editDraft,
+    setEditDraft,
+  ] = useState({
+    text: "",
+    images: [],
+  });
+
+  /*
+   * Dữ liệu đã "lưu" tạm trên UI.
+   *
+   * Vì chưa có backend nên khi bấm lưu,
+   * dữ liệu được đặt vào object này.
+   */
+  const [
+    localPostOverrides,
+    setLocalPostOverrides,
+  ] = useState({});
+
+  /*
+   * Khi vào chế độ edit:
+   * - focus TextArea
+   * - đặt con trỏ cuối nội dung
+   */
+  useEffect(() => {
+    if (!editingPostId) {
+      return;
+    }
+
+    const timer = window.setTimeout(
+      () => {
+        const textArea =
+          editTextAreaRef.current
+            ?.resizableTextArea
+            ?.textArea ??
+          editTextAreaRef.current
+            ?.input ??
+          null;
+
+        if (!textArea) {
+          return;
+        }
+
+        textArea.focus();
+
+        const endPosition =
+          textArea.value.length;
+
+        textArea.setSelectionRange(
+          endPosition,
+          endPosition
+        );
+      },
+      0
+    );
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [editingPostId]);
+
+  /*
+   * Thu hồi các blob URL khi component unmount
+   * để tránh rò rỉ bộ nhớ.
+   */
+  useEffect(() => {
+    return () => {
+      Object.values(
+        localPostOverrides
+      ).forEach((post) => {
+        post.imageItems?.forEach(
+          (imageItem) => {
+            if (
+              imageItem.isLocal &&
+              imageItem.url?.startsWith(
+                "blob:"
+              )
+            ) {
+              URL.revokeObjectURL(
+                imageItem.url
+              );
+            }
+          }
+        );
+      });
+    };
+  }, [localPostOverrides]);
 
   const clickToAddFriend = () => {
     setAddFriend(
@@ -304,15 +436,239 @@ export const ProfileComponent = () => {
     );
   };
 
-  const handleEditPost = (item) => {
+  /*
+   * Chuyển ảnh URL thành cấu trúc dùng
+   * trong chế độ chỉnh sửa.
+   */
+  const createExistingImageItems = (
+    images
+  ) => {
+    return images.map(
+      (imageUrl, index) => ({
+        id: `existing-${index}-${imageUrl}`,
+        url: imageUrl,
+        file: null,
+        isLocal: false,
+      })
+    );
+  };
+
+  /*
+   * Bắt đầu chỉnh sửa bài viết.
+   */
+  const handleEditPost = (
+    item,
+    content
+  ) => {
     closePostMenu();
 
-    console.log(
-      "Chỉnh sửa bài viết:",
-      item.id
+    const savedOverride =
+      localPostOverrides[item.id];
+
+    const currentText =
+      savedOverride?.text ??
+      content.text ??
+      "";
+
+    const currentImageItems =
+      savedOverride?.imageItems ??
+      createExistingImageItems(
+        content.image
+      );
+
+    setEditingPostId(item.id);
+
+    setEditDraft({
+      text: currentText,
+      images: currentImageItems.map(
+        (imageItem) => ({
+          ...imageItem,
+        })
+      ),
+    });
+  };
+
+  /*
+   * Thay đổi nội dung TextArea.
+   */
+  const handleDraftTextChange = (
+    event
+  ) => {
+    const nextText =
+      event.target.value;
+
+    setEditDraft(
+      (previousDraft) => ({
+        ...previousDraft,
+        text: nextText,
+      })
+    );
+  };
+
+  /*
+   * Mở hộp chọn file.
+   */
+  const handleOpenImagePicker = () => {
+    imageInputRef.current?.click();
+  };
+
+  /*
+   * Thêm ảnh mới vào bản nháp.
+   *
+   * URL.createObjectURL cho phép xem ảnh
+   * ngay mà không cần upload lên backend.
+   */
+  const handleAddImages = (
+    event
+  ) => {
+    const selectedFiles =
+      Array.from(
+        event.target.files ?? []
+      );
+
+    if (selectedFiles.length === 0) {
+      return;
+    }
+
+    const validFiles =
+      selectedFiles.filter((file) =>
+        file.type.startsWith("image/")
+      );
+
+    const newImageItems =
+      validFiles.map(
+        (file, index) => ({
+          id: `local-${Date.now()}-${index}-${file.name}`,
+          url: URL.createObjectURL(file),
+          file,
+          isLocal: true,
+        })
+      );
+
+    setEditDraft(
+      (previousDraft) => ({
+        ...previousDraft,
+        images: [
+          ...previousDraft.images,
+          ...newImageItems,
+        ],
+      })
     );
 
-    navigate(`/post/edit/${item.id}`);
+    /*
+     * Reset value để người dùng có thể
+     * chọn lại cùng một file.
+     */
+    event.target.value = "";
+  };
+
+  /*
+   * Xóa một ảnh khỏi bản nháp.
+   */
+  const handleRemoveDraftImage = (
+    imageId
+  ) => {
+    setEditDraft(
+      (previousDraft) => {
+        const removedImage =
+          previousDraft.images.find(
+            (imageItem) =>
+              imageItem.id === imageId
+          );
+
+        if (
+          removedImage?.isLocal &&
+          removedImage.url?.startsWith(
+            "blob:"
+          )
+        ) {
+          URL.revokeObjectURL(
+            removedImage.url
+          );
+        }
+
+        return {
+          ...previousDraft,
+          images:
+            previousDraft.images.filter(
+              (imageItem) =>
+                imageItem.id !==
+                imageId
+            ),
+        };
+      }
+    );
+  };
+
+  /*
+   * Hủy chỉnh sửa.
+   *
+   * Các ảnh local vừa thêm nhưng chưa lưu
+   * sẽ được thu hồi blob URL.
+   */
+  const handleCancelEdit = () => {
+    editDraft.images.forEach(
+      (imageItem) => {
+        const alreadySaved =
+          localPostOverrides[
+            editingPostId
+          ]?.imageItems?.some(
+            (savedImage) =>
+              savedImage.url ===
+              imageItem.url
+          );
+
+        if (
+          imageItem.isLocal &&
+          !alreadySaved &&
+          imageItem.url?.startsWith(
+            "blob:"
+          )
+        ) {
+          URL.revokeObjectURL(
+            imageItem.url
+          );
+        }
+      }
+    );
+
+    setEditingPostId(null);
+
+    setEditDraft({
+      text: "",
+      images: [],
+    });
+  };
+
+  /*
+   * Lưu tạm thay đổi trên UI.
+   *
+   * Chưa gọi backend.
+   */
+  const handleSaveEditOnUI = (
+    postId
+  ) => {
+    setLocalPostOverrides(
+      (previousOverrides) => ({
+        ...previousOverrides,
+        [postId]: {
+          text: editDraft.text,
+          imageItems:
+            editDraft.images.map(
+              (imageItem) => ({
+                ...imageItem,
+              })
+            ),
+        },
+      })
+    );
+
+    setEditingPostId(null);
+
+    setEditDraft({
+      text: "",
+      images: [],
+    });
   };
 
   const handleHidePost = (item) => {
@@ -324,16 +680,7 @@ export const ProfileComponent = () => {
     );
 
     /*
-     * Gọi API ẩn bài viết ở đây.
-     *
-     * Ví dụ:
-     *
-     * await hidePostAPI(item.id);
-     *
-     * Sau khi thành công:
-     * - fetch lại danh sách bài viết
-     * hoặc
-     * - xóa bài viết khỏi Redux state
+     * Chưa gọi backend.
      */
   };
 
@@ -374,7 +721,8 @@ export const ProfileComponent = () => {
               alt="Ảnh bìa"
               src={
                 profileUser?.background ||
-                profileUser?.background_image ||
+                profileUser
+                  ?.background_image ||
                 DEFAULT_BACKGROUND
               }
               preview
@@ -425,10 +773,8 @@ export const ProfileComponent = () => {
                           DEFAULT_AVATAR
                         }
                         style={{
-                          width:
-                            "64px",
-                          height:
-                            "64px",
+                          width: "64px",
+                          height: "64px",
                           border:
                             "5px solid #0000FF",
                           borderRadius:
@@ -467,8 +813,7 @@ export const ProfileComponent = () => {
                             "10px",
                           fontSize:
                             "12px",
-                          color:
-                            "gray",
+                          color: "gray",
                         }}
                       >
                         (
@@ -600,9 +945,7 @@ export const ProfileComponent = () => {
 
                       <Button
                         type="dashed"
-                        icon={
-                          <FiSend />
-                        }
+                        icon={<FiSend />}
                       >
                         Nhắn tin
                       </Button>
@@ -645,8 +988,26 @@ export const ProfileComponent = () => {
           ) : (
             normalizedPostList.map(
               (item, index) => {
-                const content =
+                const originalContent =
                   item.normalizedContent;
+
+                const savedOverride =
+                  localPostOverrides[
+                    item.id
+                  ];
+
+                const displayContent =
+                  savedOverride
+                    ? {
+                        text:
+                          savedOverride.text,
+                        image:
+                          savedOverride.imageItems.map(
+                            (imageItem) =>
+                              imageItem.url
+                          ),
+                      }
+                    : originalContent;
 
                 const ownerName =
                   item.name ||
@@ -670,14 +1031,32 @@ export const ProfileComponent = () => {
                   item.id ??
                   `${item.user_id}-${index}`;
 
+                const isEditing =
+                  editingPostId ===
+                  item.id;
+
+                const displayedImages =
+                  isEditing
+                    ? editDraft.images
+                    : displayContent.image.map(
+                        (
+                          imageUrl,
+                          imageIndex
+                        ) => ({
+                          id: `display-${imageIndex}-${imageUrl}`,
+                          url: imageUrl,
+                          file: null,
+                          isLocal: false,
+                        })
+                      );
+
                 return (
                   <Card
                     key={postKey}
                     title={
                       <div
                         style={{
-                          width:
-                            "100%",
+                          width: "100%",
                           display:
                             "flex",
                           alignItems:
@@ -742,8 +1121,6 @@ export const ProfileComponent = () => {
                           >
                             <span
                               style={{
-                                textDecoration:
-                                  "none",
                                 color:
                                   "blue",
                                 fontWeight:
@@ -774,79 +1151,54 @@ export const ProfileComponent = () => {
                           </div>
                         </div>
 
-                        <Popover
-                          placement="bottomRight"
-                          trigger="click"
-                          arrow
-                          open={
-                            openPostMenuId ===
-                            postKey
-                          }
-                          onOpenChange={(
-                            open
-                          ) => {
-                            setOpenPostMenuId(
+                        {!isEditing && (
+                          <Popover
+                            placement="bottomRight"
+                            trigger="click"
+                            arrow
+                            open={
+                              openPostMenuId ===
+                              postKey
+                            }
+                            onOpenChange={(
                               open
-                                ? postKey
-                                : null
-                            );
-                          }}
-                          title={
-                            <span
-                              style={{
-                                fontWeight:
-                                  600,
-                              }}
-                            >
-                              Tùy chọn bài viết
-                            </span>
-                          }
-                          content={
-                            <div
-                              style={{
-                                width:
-                                  "220px",
-                                display:
-                                  "flex",
-                                flexDirection:
-                                  "column",
-                                gap: "5px",
-                              }}
-                            >
-                              <Button
-                                type="text"
-                                block
-                                icon={
-                                  <HistoryOutlined />
-                                }
-                                onClick={() =>
-                                  handleViewPostHistory(
-                                    item
-                                  )
-                                }
+                            ) => {
+                              setOpenPostMenuId(
+                                open
+                                  ? postKey
+                                  : null
+                              );
+                            }}
+                            title={
+                              <span
                                 style={{
-                                  display:
-                                    "flex",
-                                  alignItems:
-                                    "center",
-                                  justifyContent:
-                                    "flex-start",
-                                  textAlign:
-                                    "left",
+                                  fontWeight:
+                                    600,
                                 }}
                               >
-                                Xem lịch sử bài viết
-                              </Button>
-
-                              {isOwnPost && (
+                                Tùy chọn bài viết
+                              </span>
+                            }
+                            content={
+                              <div
+                                style={{
+                                  width:
+                                    "220px",
+                                  display:
+                                    "flex",
+                                  flexDirection:
+                                    "column",
+                                  gap: "5px",
+                                }}
+                              >
                                 <Button
                                   type="text"
                                   block
                                   icon={
-                                    <EditOutlined />
+                                    <HistoryOutlined />
                                   }
                                   onClick={() =>
-                                    handleEditPost(
+                                    handleViewPostHistory(
                                       item
                                     )
                                   }
@@ -857,79 +1209,129 @@ export const ProfileComponent = () => {
                                       "center",
                                     justifyContent:
                                       "flex-start",
-                                    textAlign:
-                                      "left",
                                   }}
                                 >
-                                  Chỉnh sửa bài viết
+                                  Xem lịch sử bài viết
                                 </Button>
-                              )}
 
-                              <Button
-                                type="text"
-                                block
-                                icon={
-                                  <EyeInvisibleOutlined />
-                                }
-                                onClick={() =>
-                                  handleHidePost(
-                                    item
-                                  )
-                                }
-                                style={{
-                                  display:
-                                    "flex",
-                                  alignItems:
-                                    "center",
-                                  justifyContent:
-                                    "flex-start",
-                                  textAlign:
-                                    "left",
-                                }}
-                              >
-                                Ẩn bài viết
-                              </Button>
-                            </div>
-                          }
-                        >
-                          <Button
-                            type="text"
-                            shape="circle"
-                            aria-label="Mở tùy chọn bài viết"
-                            icon={
-                              <UnorderedListOutlined
-                                style={{
-                                  fontSize:
-                                    "18px",
-                                }}
-                              />
+                                {isOwnPost && (
+                                  <Button
+                                    type="text"
+                                    block
+                                    icon={
+                                      <EditOutlined />
+                                    }
+                                    onClick={() =>
+                                      handleEditPost(
+                                        item,
+                                        displayContent
+                                      )
+                                    }
+                                    style={{
+                                      display:
+                                        "flex",
+                                      alignItems:
+                                        "center",
+                                      justifyContent:
+                                        "flex-start",
+                                    }}
+                                  >
+                                    Chỉnh sửa bài viết
+                                  </Button>
+                                )}
+
+                                <Button
+                                  type="text"
+                                  block
+                                  icon={
+                                    <EyeInvisibleOutlined />
+                                  }
+                                  onClick={() =>
+                                    handleHidePost(
+                                      item
+                                    )
+                                  }
+                                  style={{
+                                    display:
+                                      "flex",
+                                    alignItems:
+                                      "center",
+                                    justifyContent:
+                                      "flex-start",
+                                  }}
+                                >
+                                  Ẩn bài viết
+                                </Button>
+                              </div>
                             }
-                            onClick={(
-                              event
-                            ) => {
-                              event.stopPropagation();
-                            }}
-                            style={{
-                              flexShrink: 0,
-                              display:
-                                "flex",
-                              alignItems:
-                                "center",
-                              justifyContent:
-                                "center",
-                            }}
-                          />
-                        </Popover>
+                          >
+                            <Button
+                              type="text"
+                              shape="circle"
+                              aria-label="Mở tùy chọn bài viết"
+                              icon={
+                                <UnorderedListOutlined
+                                  style={{
+                                    fontSize:
+                                      "18px",
+                                  }}
+                                />
+                              }
+                              style={{
+                                flexShrink: 0,
+                                display:
+                                  "flex",
+                                alignItems:
+                                  "center",
+                                justifyContent:
+                                  "center",
+                              }}
+                            />
+                          </Popover>
+                        )}
                       </div>
                     }
                     size="small"
                   >
-                    {content.text && (
-                      <div>
-                        <p>
-                          {content.text}
-                        </p>
+                    {isEditing ? (
+                      <div
+                        style={{
+                          display:
+                            "flex",
+                          flexDirection:
+                            "column",
+                          gap: "10px",
+                          marginBottom:
+                            "10px",
+                        }}
+                      >
+                        <TextArea
+                          ref={
+                            editTextAreaRef
+                          }
+                          value={
+                            editDraft.text
+                          }
+                          onChange={
+                            handleDraftTextChange
+                          }
+                          autoSize={{
+                            minRows: 2,
+                            maxRows: 8,
+                          }}
+                          placeholder="Nhập nội dung bài viết..."
+                          maxLength={5000}
+                          showCount
+                        />
                       </div>
+                    ) : (
+                      displayContent.text && (
+                        <p>
+                          {
+                            displayContent.text
+                          }
+                        </p>
+                      )
                     )}
 
                     <div
@@ -938,11 +1340,11 @@ export const ProfileComponent = () => {
                           "flex",
                         flexDirection:
                           "column",
-                        gap: "2px",
+                        gap: "8px",
                       }}
                     >
-                      {content.image
-                        .length > 0 && (
+                      {displayedImages.length >
+                        0 && (
                         <div
                           style={{
                             position:
@@ -965,7 +1367,7 @@ export const ProfileComponent = () => {
                             style={{
                               display:
                                 "flex",
-                              gap: "5px",
+                              gap: "8px",
                               overflowX:
                                 "auto",
                               whiteSpace:
@@ -974,16 +1376,24 @@ export const ProfileComponent = () => {
                                 "none",
                               msOverflowStyle:
                                 "none",
+                              paddingTop:
+                                isEditing
+                                  ? "8px"
+                                  : 0,
                             }}
                           >
-                            {content.image.map(
+                            {displayedImages.map(
                               (
-                                imageUrl,
+                                imageItem,
                                 imageIndex
                               ) => (
                                 <div
-                                  key={`${item.id}-${imageIndex}`}
+                                  key={
+                                    imageItem.id
+                                  }
                                   style={{
+                                    position:
+                                      "relative",
                                     display:
                                       "inline-block",
                                     flexShrink: 0,
@@ -991,12 +1401,11 @@ export const ProfileComponent = () => {
                                       "5px",
                                     marginBottom:
                                       "5px",
-                                    padding: 0,
                                   }}
                                 >
                                   <ImageStatus
                                     image={
-                                      imageUrl
+                                      imageItem.url
                                     }
                                     width={
                                       150
@@ -1004,8 +1413,47 @@ export const ProfileComponent = () => {
                                     height={
                                       250
                                     }
-                                    preview
+                                    preview={
+                                      !isEditing
+                                    }
                                   />
+
+                                  {isEditing && (
+                                    <Button
+                                      danger
+                                      type="primary"
+                                      shape="circle"
+                                      size="small"
+                                      aria-label={`Xóa ảnh ${
+                                        imageIndex +
+                                        1
+                                      }`}
+                                      icon={
+                                        <CloseOutlined />
+                                      }
+                                      onClick={() =>
+                                        handleRemoveDraftImage(
+                                          imageItem.id
+                                        )
+                                      }
+                                      style={{
+                                        position:
+                                          "absolute",
+                                        top: "6px",
+                                        right:
+                                          "6px",
+                                        zIndex: 10,
+                                        display:
+                                          "flex",
+                                        alignItems:
+                                          "center",
+                                        justifyContent:
+                                          "center",
+                                        boxShadow:
+                                          "0 2px 8px rgba(0, 0, 0, 0.35)",
+                                      }}
+                                    />
+                                  )}
                                 </div>
                               )
                             )}
@@ -1013,85 +1461,163 @@ export const ProfileComponent = () => {
                         </div>
                       )}
 
-                      <Space
-                        style={{
-                          flex: 1,
-                          minWidth: 0,
-                          display:
-                            "flex",
-                          justifyContent:
-                            "flex-end",
-                        }}
-                      >
-                        <Button
+                      {isEditing ? (
+                        <div
                           style={{
-                            color:
-                              item.likestatus
-                                ? "red"
-                                : "#000000",
-                            backgroundColor:
-                              "#FFFFFF",
-                            border: `1px solid ${
-                              item.likestatus
-                                ? "red"
-                                : "#D9D9D9"
-                            }`,
+                            display:
+                              "flex",
+                            justifyContent:
+                              "space-between",
+                            alignItems:
+                              "center",
+                            flexWrap:
+                              "wrap",
+                            gap: "8px",
+                            paddingTop:
+                              "4px",
                           }}
                         >
-                          <GiChestnutLeaf
+                          <div>
+                            <input
+                              ref={
+                                imageInputRef
+                              }
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              onChange={
+                                handleAddImages
+                              }
+                              style={{
+                                display:
+                                  "none",
+                              }}
+                            />
+
+                            <Button
+                              icon={
+                                <PlusOutlined />
+                              }
+                              onClick={
+                                handleOpenImagePicker
+                              }
+                            >
+                              Thêm ảnh
+                            </Button>
+                          </div>
+
+                          <Space>
+                            <Button
+                              onClick={
+                                handleCancelEdit
+                              }
+                            >
+                              Hủy
+                            </Button>
+
+                            <Button
+                              type="primary"
+                              icon={
+                                <SaveOutlined />
+                              }
+                              disabled={
+                                !editDraft.text.trim() &&
+                                editDraft
+                                  .images
+                                  .length ===
+                                  0
+                              }
+                              onClick={() =>
+                                handleSaveEditOnUI(
+                                  item.id
+                                )
+                              }
+                            >
+                              Lưu thay đổi
+                            </Button>
+                          </Space>
+                        </div>
+                      ) : (
+                        <Space
+                          style={{
+                            flex: 1,
+                            minWidth: 0,
+                            display:
+                              "flex",
+                            justifyContent:
+                              "flex-end",
+                          }}
+                        >
+                          <Button
                             style={{
                               color:
                                 item.likestatus
                                   ? "red"
                                   : "#000000",
+                              backgroundColor:
+                                "#FFFFFF",
+                              border: `1px solid ${
+                                item.likestatus
+                                  ? "red"
+                                  : "#D9D9D9"
+                              }`,
                             }}
+                          >
+                            <GiChestnutLeaf
+                              style={{
+                                color:
+                                  item.likestatus
+                                    ? "red"
+                                    : "#000000",
+                              }}
+                            />
+
+                            <span>
+                              {item.like ??
+                                0}
+                            </span>
+
+                            Like
+                          </Button>
+
+                          <FriendStatusContentDetailsComponent
+                            comment_count={
+                              item.comment ??
+                              0
+                            }
+                            title={
+                              displayContent.text
+                            }
+                            like={
+                              item.like ?? 0
+                            }
+                            shared={
+                              item.shared ??
+                              0
+                            }
+                            image={
+                              displayContent.image
+                            }
+                            postId={
+                              item.id
+                            }
+                            likeStatus={Boolean(
+                              item.likestatus
+                            )}
                           />
 
-                          <span>
-                            {item.like ??
-                              0}
-                          </span>
+                          <Button>
+                            <VscShare />
 
-                          Like
-                        </Button>
+                            <span>
+                              {item.shared ??
+                                0}
+                            </span>
 
-                        <FriendStatusContentDetailsComponent
-                          comment_count={
-                            item.comment ??
-                            0
-                          }
-                          title={
-                            content.text
-                          }
-                          like={
-                            item.like ?? 0
-                          }
-                          shared={
-                            item.shared ??
-                            0
-                          }
-                          image={
-                            content.image
-                          }
-                          postId={
-                            item.id
-                          }
-                          likeStatus={Boolean(
-                            item.likestatus
-                          )}
-                        />
-
-                        <Button>
-                          <VscShare />
-
-                          <span>
-                            {item.shared ??
-                              0}
-                          </span>
-
-                          Share
-                        </Button>
-                      </Space>
+                            Share
+                          </Button>
+                        </Space>
+                      )}
                     </div>
                   </Card>
                 );
