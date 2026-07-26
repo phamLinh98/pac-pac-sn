@@ -305,32 +305,27 @@ export const FriendStatusListComponent = () => {
               >
                 <Button
                   style={{
-                    color:
-                      item.likestatus
-                        ? 'red'
-                        : '#ffffff',
-                    backgroundColor:
-                      'white',
+                    color: item.likestatus
+                      ? 'red'
+                      : '#595959',
+                    backgroundColor: 'white',
                     border: `1px solid ${
                       item.likestatus
                         ? 'red'
-                        : '#ffffff'
+                        : '#d9d9d9'
                     }`,
                   }}
                 >
                   <GiChestnutLeaf
                     style={{
-                      color:
-                        item.likestatus
-                          ? 'red'
-                          : '#ffffff',
+                      color: item.likestatus
+                        ? 'red'
+                        : '#595959',
                     }}
                   />
 
-                  <span>
-                    {item.like ?? 0}
-                  </span>
-                  Like
+                  <span>{item.like ?? 0}</span>
+                  <span>Like</span>
                 </Button>
 
                 <FriendStatusContentDetailsComponent
