@@ -30,6 +30,8 @@ import { MyStatusAreaComponent } from "./MyStatusAreaComponent.jsx";
 import { ModalComponent } from "../SideComponent/ModalComponent.jsx";
 import { useFacadeMyProfileList } from "../reduxs/useFacadeMyStatusProfile.jsx";
 import { checkValueInArrayGetData } from "../SideFunction/CheckValueInArray.js";
+import { updatePostApi } from "../api/restApiConfig";
+import { message } from "antd";
 
 const { Meta } = Card;
 const { TextArea } = Input;
@@ -455,23 +457,40 @@ export const ProfileComponent = () => {
    *
    * Chưa gọi backend.
    */
-  const handleSaveEditOnUI = (postId) => {
-    setLocalPostOverrides((previousOverrides) => ({
-      ...previousOverrides,
-      [postId]: {
-        text: editDraft.text,
-        imageItems: editDraft.images.map((imageItem) => ({
-          ...imageItem,
-        })),
-      },
-    }));
+  const handleSaveEditOnUI = async (postId) => {
+    try {
+      const imageUrls = editDraft.images.map((imageItem) => imageItem.url);
 
-    setEditingPostId(null);
+      await updatePostApi({
+        postId,
+        content: {
+          text: editDraft.text,
+          image: imageUrls,
+        },
+      });
 
-    setEditDraft({
-      text: "",
-      images: [],
-    });
+      setLocalPostOverrides((previousOverrides) => ({
+        ...previousOverrides,
+        [postId]: {
+          text: editDraft.text,
+          imageItems: editDraft.images.map((imageItem) => ({
+            ...imageItem,
+          })),
+        },
+      }));
+
+      setEditingPostId(null);
+
+      setEditDraft({
+        text: "",
+        images: [],
+      });
+
+      message.success("Cập nhật bài viết thành công!");
+    } catch (error) {
+      console.error("Lỗi cập nhật bài viết:", error);
+      message.error(error.message || "Cập nhật bài viết thất bại!");
+    }
   };
 
   const handleHidePost = (item) => {

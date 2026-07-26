@@ -464,3 +464,92 @@ export const addPostApi = async ({
 
   return response.json();
 };
+
+export const updatePostApi = async ({
+  postId,
+  content,
+}) => {
+  const normalizedPostId =
+    Number(postId);
+
+  if (
+    !Number.isFinite(
+      normalizedPostId
+    ) ||
+    normalizedPostId <= 0
+  ) {
+    throw new Error(
+      "postId không hợp lệ."
+    );
+  }
+
+  if (
+    !content ||
+    typeof content !==
+      "object" ||
+    Array.isArray(content)
+  ) {
+    throw new Error(
+      "content không hợp lệ."
+    );
+  }
+
+  const normalizedContent = {
+    text:
+      typeof content.text ===
+      "string"
+        ? content.text.trim()
+        : "",
+
+    image: Array.isArray(
+      content.image
+    )
+      ? content.image.filter(
+          (key) =>
+            typeof key ===
+              "string" &&
+            key.trim() !== ""
+        )
+      : [],
+  };
+
+  if (
+    !normalizedContent.text &&
+    normalizedContent.image
+      .length === 0
+  ) {
+    throw new Error(
+      "Bài viết phải có nội dung hoặc hình ảnh."
+    );
+  }
+
+  const response = await fetch(
+    `${envConfig.host}/update-post/${normalizedPostId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        content:
+          normalizedContent,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorMessage =
+      await readErrorResponse(
+        response
+      );
+
+    throw new Error(
+      errorMessage ||
+        `Cập nhật bài thất bại: ${response.status}`
+    );
+  }
+
+  return response.json();
+};
