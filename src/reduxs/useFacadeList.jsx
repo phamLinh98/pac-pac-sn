@@ -1,5 +1,9 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
 import { getListThunkFunction } from "./thunkFunctionList";
 
 export const useFacadeList = (id) => {
@@ -9,19 +13,28 @@ export const useFacadeList = (id) => {
     listUserById,
     error,
     loading,
-  } = useSelector((state) => state.reduxListByUserId);
+    hasLoaded,
+  } = useSelector(
+    (state) => state.reduxListByUserId
+  );
 
   useEffect(() => {
-    if (!Number.isFinite(id) || id <= 0) {
+    if (
+      !Number.isFinite(id) ||
+      id <= 0
+    ) {
       return;
     }
 
-    dispatch(getListThunkFunction(id));
+    dispatch(
+      getListThunkFunction(id)
+    );
   }, [dispatch, id]);
 
   return {
     list: listUserById,
     error,
     loading,
+    hasLoaded,
   };
 };
