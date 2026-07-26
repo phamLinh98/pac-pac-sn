@@ -1,5 +1,15 @@
 import { useRef } from 'react';
-import { Button, Card, Space } from 'antd';
+import {
+  Button,
+  Card,
+  Space,
+  Popover,
+} from 'antd';
+import {
+  UnorderedListOutlined,
+  HistoryOutlined,
+  EyeInvisibleOutlined,
+} from '@ant-design/icons';
 import { VscShare } from 'react-icons/vsc';
 import { GiChestnutLeaf } from 'react-icons/gi';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +29,8 @@ export const FriendStatusListComponent = () => {
   const currentUserId = Number(tokenData?.id);
 
   const idToNumber =
-    Number.isFinite(currentUserId) && currentUserId > 0
+    Number.isFinite(currentUserId) &&
+    currentUserId > 0
       ? currentUserId
       : null;
 
@@ -50,6 +61,24 @@ export const FriendStatusListComponent = () => {
 
   const handleNavigate = (userId) => {
     navigate(`/profile/${userId}`);
+  };
+
+  const handleViewPostHistory = (item) => {
+    console.log(
+      'Xem lịch sử bài viết:',
+      item.id
+    );
+
+    navigate(`/post-history/${item.id}`);
+  };
+
+  const handleHidePost = (item) => {
+    console.log(
+      'Ẩn bài viết:',
+      item.id
+    );
+
+    // Gọi API ẩn bài viết tại đây
   };
 
   const getPostContent = (item) => {
@@ -155,70 +184,196 @@ export const FriendStatusListComponent = () => {
             title={
               <div
                 style={{
+                  width: '100%',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px',
+                  justifyContent:
+                    'space-between',
+                  gap: '10px',
                 }}
               >
-                <ImageStatus
-                  active
-                  width="26px"
-                  height="25px"
-                  image={
-                    item.avatar ||
-                    'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'
-                  }
+                <div
                   style={{
-                    borderRadius: '5px',
-                    border:
-                      '3px solid #0000FF',
-                    boxSizing:
-                      'border-box',
-                    overflow: 'hidden',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent:
-                      'center',
+                    gap: '5px',
+                    minWidth: 0,
+                    flex: 1,
                   }}
-                />
-
-                <span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleNavigate(
-                        item.user_id
-                      )
+                >
+                  <ImageStatus
+                    active
+                    width="26px"
+                    height="25px"
+                    image={
+                      item.avatar ||
+                      'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'
                     }
                     style={{
-                      padding: 0,
-                      border: 0,
-                      background:
-                        'transparent',
-                      color: 'blue',
-                      cursor: 'pointer',
+                      borderRadius: '5px',
+                      border:
+                        '3px solid #0000FF',
+                      boxSizing:
+                        'border-box',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      alignItems:
+                        'center',
+                      justifyContent:
+                        'center',
+                      flexShrink: 0,
                     }}
-                  >
-                    {item.user_id !==
-                    idToNumber
-                      ? ownerName
-                      : 'Bạn'}
-                  </button>
+                  />
 
-                  <span
+                  <div
                     style={{
-                      fontSize: '0.7rem',
-                      color: 'gray',
-                      paddingLeft: '0.8%',
+                      minWidth: 0,
+                      display: 'flex',
+                      alignItems:
+                        'center',
+                      flexWrap: 'wrap',
                     }}
                   >
-                    {createdAt
-                      ? `đã đăng tải bài viết (${formatTimeStamp(
-                          createdAt
-                        )})`
-                      : 'đã đăng tải bài viết'}
-                  </span>
-                </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleNavigate(
+                          item.user_id
+                        )
+                      }
+                      style={{
+                        padding: 0,
+                        border: 0,
+                        background:
+                          'transparent',
+                        color: 'blue',
+                        cursor: 'pointer',
+                        fontWeight: 500,
+                      }}
+                    >
+                      {item.user_id !==
+                      idToNumber
+                        ? ownerName
+                        : 'Bạn'}
+                    </button>
+
+                    <span
+                      style={{
+                        fontSize:
+                          '0.7rem',
+                        color: 'gray',
+                        paddingLeft:
+                          '6px',
+                      }}
+                    >
+                      {createdAt
+                        ? `đã đăng tải bài viết (${formatTimeStamp(
+                            createdAt
+                          )})`
+                        : 'đã đăng tải bài viết'}
+                    </span>
+                  </div>
+                </div>
+
+                <Popover
+                  placement="bottomRight"
+                  trigger="click"
+                  arrow
+                  title={
+                    <span
+                      style={{
+                        fontWeight: 600,
+                      }}
+                    >
+                      Tùy chọn bài viết
+                    </span>
+                  }
+                  content={
+                    <div
+                      style={{
+                        width: '210px',
+                        display: 'flex',
+                        flexDirection:
+                          'column',
+                        gap: '6px',
+                      }}
+                    >
+                      <Button
+                        type="text"
+                        block
+                        icon={
+                          <HistoryOutlined />
+                        }
+                        onClick={() =>
+                          handleViewPostHistory(
+                            item
+                          )
+                        }
+                        style={{
+                          display:
+                            'flex',
+                          alignItems:
+                            'center',
+                          justifyContent:
+                            'flex-start',
+                          textAlign:
+                            'left',
+                        }}
+                      >
+                        Xem lịch sử bài viết
+                      </Button>
+
+                      <Button
+                        type="text"
+                        block
+                        icon={
+                          <EyeInvisibleOutlined />
+                        }
+                        onClick={() =>
+                          handleHidePost(
+                            item
+                          )
+                        }
+                        style={{
+                          display:
+                            'flex',
+                          alignItems:
+                            'center',
+                          justifyContent:
+                            'flex-start',
+                          textAlign:
+                            'left',
+                        }}
+                      >
+                        Ẩn bài viết
+                      </Button>
+                    </div>
+                  }
+                >
+                  <Button
+                    type="text"
+                    shape="circle"
+                    icon={
+                      <UnorderedListOutlined
+                        style={{
+                          fontSize:
+                            '18px',
+                        }}
+                      />
+                    }
+                    onClick={(event) => {
+                      event.stopPropagation();
+                    }}
+                    style={{
+                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems:
+                        'center',
+                      justifyContent:
+                        'center',
+                    }}
+                  />
+                </Popover>
               </div>
             }
             size="small"
@@ -308,7 +463,8 @@ export const FriendStatusListComponent = () => {
                     color: item.likestatus
                       ? 'red'
                       : '#595959',
-                    backgroundColor: 'white',
+                    backgroundColor:
+                      'white',
                     border: `1px solid ${
                       item.likestatus
                         ? 'red'
@@ -318,13 +474,17 @@ export const FriendStatusListComponent = () => {
                 >
                   <GiChestnutLeaf
                     style={{
-                      color: item.likestatus
-                        ? 'red'
-                        : '#595959',
+                      color:
+                        item.likestatus
+                          ? 'red'
+                          : '#595959',
                     }}
                   />
 
-                  <span>{item.like ?? 0}</span>
+                  <span>
+                    {item.like ?? 0}
+                  </span>
+
                   <span>Like</span>
                 </Button>
 
@@ -346,9 +506,11 @@ export const FriendStatusListComponent = () => {
 
                 <Button>
                   <VscShare />
+
                   <span>
                     {item.shared ?? 0}
                   </span>
+
                   Share
                 </Button>
               </Space>
