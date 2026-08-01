@@ -677,7 +677,7 @@ export const ProfileComponent = () => {
                           color: "gray",
                         }}
                       >
-                        ({profileUser.friends ?? 0} bạn bè)
+                          ({profileUser.friends?.length ?? 0} bạn bè)
                       </span>
 
                       {isOwnProfile && (
