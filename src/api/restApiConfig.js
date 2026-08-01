@@ -466,6 +466,11 @@ export const sendFriendRequestApi =
     }
   };
 
+export const getFriendRequestsApi =
+  async (userId) => {
+    return getApi(`/send-friend/${userId}`);
+  };
+
 /*
  * =========================================================
  * Profile status

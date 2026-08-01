@@ -60,6 +60,7 @@ import { checkValueInArrayGetData } from "../SideFunction/CheckValueInArray.js";
 
 import {
   deletePostApi,
+  getFriendRequestsApi,
   sendFriendRequestApi,
   updatePostApi,
   uploadPostImagesApi,
@@ -292,6 +293,70 @@ export const ProfileComponent = () => {
     return normalizedStatus;
   };
 
+  useEffect(() => {
+    if (
+      !Number.isFinite(loginUserId) ||
+      !Number.isFinite(profileUserId) ||
+      loginUserId === profileUserId
+    ) {
+      setFriendRequestStatus(null);
+      setAddFriend(false);
+      return undefined;
+    }
+
+    let isActive = true;
+
+    const fetchFriendRequestStatus = async () => {
+      try {
+        const response = await getFriendRequestsApi(loginUserId);
+        const payload = await response.json().catch(() => []);
+        const requestList = Array.isArray(payload)
+          ? payload
+          : Array.isArray(payload?.result)
+            ? payload.result
+            : [];
+
+        const relation = requestList.find((request) => {
+          const senderId = Number(request?.sender_id);
+          const receiverId = Number(request?.receiver_id);
+
+          return (
+            (senderId === loginUserId && receiverId === profileUserId) ||
+            (senderId === profileUserId && receiverId === loginUserId)
+          );
+        });
+
+        if (!isActive) {
+          return;
+        }
+
+        const status = normalizeFriendRequestStatus(relation);
+        setFriendRequestStatus(status);
+        setAddFriend(status === "pending");
+      } catch (error) {
+        if (isActive) {
+          console.error("Không thể tải trạng thái kết bạn:", error);
+          setFriendRequestStatus(null);
+          setAddFriend(false);
+        }
+      }
+    };
+
+    fetchFriendRequestStatus();
+    window.addEventListener(
+      "friend-request-updated",
+      fetchFriendRequestStatus
+    );
+
+    return () => {
+      isActive = false;
+      window.removeEventListener(
+        "friend-request-updated",
+        fetchFriendRequestStatus
+      );
+    };
+  }, [loginUserId, profileUserId]);
+
   const clickToAddFriend = async () => {
     if (!Number.isFinite(loginUserId) || !Number.isFinite(profileUserId)) {
       message.error("Không thể xác định người dùng để gửi lời mời kết bạn.");
@@ -303,7 +368,11 @@ export const ProfileComponent = () => {
       return;
     }
 
-    if (addFriend || friendRequestStatus === "pending") {
+    if (
+      addFriend ||
+      friendRequestStatus === "pending" ||
+      friendRequestStatus === "accepted"
+    ) {
       return;
     }
 
@@ -312,7 +381,10 @@ export const ProfileComponent = () => {
       const payload = await response.json().catch(() => null);
       const requestStatus = normalizeFriendRequestStatus(payload);
 
-      if (requestStatus === "pending" || requestStatus === "waiting") {
+      if (requestStatus === "accepted") {
+        setFriendRequestStatus("accepted");
+        setAddFriend(false);
+      } else if (requestStatus === "pending" || requestStatus === "waiting") {
         setFriendRequestStatus("pending");
         setAddFriend(true);
       } else {
@@ -781,7 +853,7 @@ export const ProfileComponent = () => {
                       gap: "10px",
                     }}
                   >
-                    {checkIsFriend ? (
+                    {checkIsFriend || friendRequestStatus === "accepted" ? (
                       <Button
                         icon={<FaUserFriends />}
                         onClick={clickToAddFriend}
@@ -791,10 +863,10 @@ export const ProfileComponent = () => {
                     ) : (
                       <Button
                         type="primary"
-                        icon={addFriend ? <BsSendPlus /> : <IoIosPersonAdd />}
+                        icon={friendRequestStatus === "pending" ? <BsSendPlus /> : <IoIosPersonAdd />}
                         onClick={clickToAddFriend}
                       >
-                        {addFriend || friendRequestStatus === "pending" ? "Đã gửi lời mời kết bạn" : "Kết bạn"}
+                        {friendRequestStatus === "pending" ? "Đã gửi lời mời kết bạn" : "Kết bạn"}
                       </Button>
                     )}
 

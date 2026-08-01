@@ -1,8 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { IoMdPersonAdd } from 'react-icons/io';
 import { Popover, Modal, Button, Avatar, message } from 'antd';
-import { getApi, sendFriendRequestApi } from '../api/restApiConfig';
+import { getFriendRequestsApi, sendFriendRequestApi } from '../api/restApiConfig';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
+
+const normalizeFriendRequestList = (response) => {
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  if (Array.isArray(response?.result)) {
+    return response.result;
+  }
+
+  if (response?.result && typeof response.result === "object") {
+    return [response.result];
+  }
+
+  return [];
+};
 
 const NotificationIcon = () => {
   const [notifications, setNotifications] = useState([]); // Lưu trữ danh sách thông báo từ API
@@ -21,24 +37,9 @@ const NotificationIcon = () => {
 
   const idToNumber = Number(id);
 
-  const normalizeFriendRequestList = (response) => {
-    if (Array.isArray(response)) {
-      return response;
-    }
-
-    if (Array.isArray(response?.result)) {
-      return response.result;
-    }
-
-    if (response?.result && typeof response.result === "object") {
-      return [response.result];
-    }
-
-    return [];
-  };
-
   const getNotificationName = (notification) => {
     return (
+      notification?.sender_name ||
       notification?.name_sending ||
       notification?.name ||
       notification?.senderName ||
@@ -46,6 +47,10 @@ const NotificationIcon = () => {
       notification?.sender_name ||
       'Người dùng'
     );
+  };
+
+  const getNotificationAvatar = (notification) => {
+    return notification?.sender_avatar || notification?.avatar;
   };
 
   const getNotificationSenderId = (notification) => {
@@ -71,14 +76,20 @@ const NotificationIcon = () => {
   };
 
   // Hàm lấy danh sách yêu cầu kết bạn
-  const fetchFriendRequests = async () => {
+  const fetchFriendRequests = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await getApi(`/send-friend/${idToNumber}`);
+      const data = await getFriendRequestsApi(idToNumber);
       const response = await data.json().catch(() => null);
       const normalizedNotifications = normalizeFriendRequestList(response).filter((notification) => {
         const status = String(notification?.status || '').toLowerCase();
-        return status === 'pending' || status === 'wait' || status === 'waiting' || status === '';
+        const receiverId = Number(notification?.receiver_id);
+        return receiverId === idToNumber && (
+          status === 'pending' ||
+          status === 'wait' ||
+          status === 'waiting' ||
+          status === ''
+        );
       });
       setNotifications(normalizedNotifications);
     } catch (error) {
@@ -86,12 +97,12 @@ const NotificationIcon = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [idToNumber]);
 
   // useEffect để gọi API khi component được mount
   useEffect(() => {
     fetchFriendRequests();
-  }, [idToNumber]); // Gọi lại API nếu idToNumber thay đổi
+  }, [fetchFriendRequests]);
 
   // Hàm để hiển thị Modal
   const showModal = () => {
@@ -107,7 +118,16 @@ const NotificationIcon = () => {
     }
 
     try {
-      await sendFriendRequestApi(idToNumber, senderId);
+      const response = await sendFriendRequestApi(idToNumber, senderId);
+      const payload = await response.json().catch(() => null);
+      const result = Array.isArray(payload?.result)
+        ? payload.result[0]
+        : payload?.result;
+
+      if (String(result?.status || '').toLowerCase() !== 'accepted') {
+        throw new Error('Server chưa xác nhận lời mời kết bạn.');
+      }
+      window.dispatchEvent(new Event('friend-request-updated'));
       message.success('Đã chấp nhận lời mời kết bạn.');
       await fetchFriendRequests();
     } catch (error) {
@@ -150,8 +170,8 @@ const NotificationIcon = () => {
           <div key={notification.id} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {/* Dòng 1: Ảnh và Tên */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Avatar src={notification.avatar} size={32} />
-              <span>{getNotificationName(notification)} (20 bạn chung)</span>
+              <Avatar src={getNotificationAvatar(notification)} size={32} />
+              <span>{getNotificationName(notification)} đã gửi lời mời kết bạn</span>
             </div>
             {/* Dòng 2: Button Đồng ý và Từ chối */}
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -232,7 +252,7 @@ const NotificationIcon = () => {
        { safeNotifications.length ? <p>Bạn có {numberAdd} lời mời kết bạn mới.</p> : '' }
         {safeNotifications.map((notif) => (
           <div key={notif.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <Avatar src={notif.avatar} size={32} />
+            <Avatar src={getNotificationAvatar(notif)} size={32} />
             <span>{getNotificationName(notif)}</span>
           </div>
         ))}
