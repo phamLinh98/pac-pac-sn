@@ -3,15 +3,24 @@ import { FaEye } from "react-icons/fa";
 import { MdAdd } from "react-icons/md";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { LoadingComponent } from "../SideComponent/LoadingComponent";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFacadeList } from "../reduxs/useFacadeList";
 import { extractUniqueUsers } from "../SideFunction/GetListFriendById";
 
 export const ListFriendEachAccount = () => {
     const getUserFromLocalStorage = localStorage.getItem('allow-login');
     const getData = decodeJwt(getUserFromLocalStorage);
-    const { id } = getData;
-    const idToNumber = +id;
+    const { id: profileIdParam } = useParams();
+
+    const routeUserId = Number(profileIdParam);
+    const loginUserId = Number(getData?.id);
+
+    const idToNumber = Number.isFinite(routeUserId) && routeUserId > 0
+        ? routeUserId
+        : Number.isFinite(loginUserId) && loginUserId > 0
+            ? loginUserId
+            : null;
+
     const { list, loading } = useFacadeList(idToNumber)
     // Đảm bảo list luôn là array
     const safeList = Array.isArray(list) ? list : [];

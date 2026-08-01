@@ -1,12 +1,12 @@
 import { getApi } from "../api/restApiConfig";
 import { eventLoading, getListByUserId, logError } from "./reduxListByUserId";
 
-// Redux thunk cho list status 
+// Redux thunk cho list status
 export const getListByUserIdThunk = (userId) => {
     return async (dispatch) => {
         dispatch(eventLoading(true));
         try {
-            const data = await getApi(`/list/${userId}`);
+            const data = await getApi(`/list-user/${userId}`);
             const response = await data.json();
             dispatch(getListByUserId(response));
         } catch (error) {

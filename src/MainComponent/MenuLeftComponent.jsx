@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, Switch } from "antd";
 import { FaUserFriends } from "react-icons/fa";
 import { GrGroup, GrLogout } from "react-icons/gr";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { ImageStatus } from "../SideComponent/ImageStatus";
@@ -13,6 +13,7 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
   const [selectedKeys, setSelectedKeys] = useState(["1"]);
   const navigate = useNavigate();
+  const { id: routeProfileId } = useParams();
 
   const logoutClearToken = () => {
     localStorage.removeItem('allow-login');
@@ -22,6 +23,11 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const getUserFromLocalStorage = localStorage.getItem('allow-login');
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id, name, avatar } = getData;
+
+  const routeUserId = Number(routeProfileId);
+  const targetProfileId = Number.isFinite(routeUserId) && routeUserId > 0
+    ? routeUserId
+    : id;
 
   const moveToProfile = (userId) => {
     navigate(`/profile/${userId}`);
@@ -48,7 +54,7 @@ export const MenuLeftComponent = ({ collapsed }) => {
           <p style={{ margin: '0 0 0 5px' }}>{name}</p>
         </div>
       ),
-      onClick: () => moveToProfile(id)
+      onClick: () => moveToProfile(targetProfileId)
     },
     {
       key: "sub2",

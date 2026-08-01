@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu } from "antd";
 import { FaUserFriends } from "react-icons/fa";
 import { GrGroup } from "react-icons/gr";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { ImageStatusAvatar } from "../SideComponent/ImageStatus";
 import { useFacadeList } from "../reduxs/useFacadeList";
@@ -13,11 +13,17 @@ export const MenuRightComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
   const [selectedKeys, setSelectedKeys] = useState(["1"]);
   const navigate = useNavigate();
+  const { id: routeProfileId } = useParams();
 
   const getUserFromLocalStorage = localStorage.getItem('allow-login');
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id } = getData;
-  const idToNumber = +id;
+  const routeUserId = Number(routeProfileId);
+  const idToNumber = Number.isFinite(routeUserId) && routeUserId > 0
+    ? routeUserId
+    : Number.isFinite(id) && id > 0
+      ? id
+      : null;
   const { list } = useFacadeList(idToNumber)
   // Đảm bảo list luôn là array
   const safeList = Array.isArray(list) ? list : [];
