@@ -23,7 +23,17 @@ export const useFacadeStory = () => {
     useEffect(() => {
         const activeStories = Array.isArray(story) ? story : [];
         const expirationTimes = activeStories
-            .map((item) => new Date(item?.created_at).getTime() + 24 * 60 * 60 * 1000)
+            .map((item) => {
+                const explicitExpiration = item?.expires_at
+                    ? new Date(item.expires_at).getTime()
+                    : Number.NaN;
+
+                if (Number.isFinite(explicitExpiration)) {
+                    return explicitExpiration;
+                }
+
+                return new Date(item?.created_at).getTime() + 24 * 60 * 60 * 1000;
+            })
             .filter(Number.isFinite);
 
         if (expirationTimes.length === 0) {
