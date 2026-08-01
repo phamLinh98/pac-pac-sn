@@ -471,6 +471,60 @@ export const getFriendRequestsApi =
     return getApi(`/send-friend/${userId}`);
   };
 
+export const createStoryApi = async (file) => {
+  if (!(file instanceof File)) {
+    throw new Error("Ảnh story không hợp lệ.");
+  }
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const requestOptions = {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  };
+
+  let response = await fetch(`${envConfig.host}/story`, requestOptions);
+
+  if (!response.ok && isAuthenticationError(response)) {
+    await refreshAccessToken();
+    response = await fetch(`${envConfig.host}/story`, requestOptions);
+  }
+
+  if (!response.ok) {
+    throw new Error(await readErrorResponse(response));
+  }
+
+  return response.json();
+};
+
+export const deleteStoryApi = async (storyId) => {
+  const response = await fetch(`${envConfig.host}/story/${storyId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(await readErrorResponse(response));
+  }
+
+  return response.json();
+};
+
+export const deleteExpiredStoriesApi = async () => {
+  const response = await fetch(`${envConfig.host}/story/expired`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(await readErrorResponse(response));
+  }
+
+  return response.json();
+};
+
 /*
  * =========================================================
  * Profile status
