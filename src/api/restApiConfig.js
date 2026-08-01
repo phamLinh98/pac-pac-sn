@@ -421,6 +421,51 @@ export const createNewUser =
     }
   };
 
+export const sendFriendRequestApi =
+  async (userIdFirst, userIdSecond) => {
+    try {
+      const url =
+        `${envConfig.host}/send-friend-request`;
+
+      const response = await fetch(
+        url,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            userIdFirst,
+            userIdSecond,
+          }),
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const errorMessage =
+          await readErrorResponse(
+            response
+          );
+
+        throw new Error(
+          errorMessage ||
+            `Không thể gửi lời mời kết bạn: ${response.status}`
+        );
+      }
+
+      return response;
+    } catch (error) {
+      console.error(
+        "Send friend request error:",
+        error
+      );
+
+      throw error;
+    }
+  };
+
 /*
  * =========================================================
  * Profile status

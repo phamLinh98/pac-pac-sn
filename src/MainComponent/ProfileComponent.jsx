@@ -60,6 +60,7 @@ import { checkValueInArrayGetData } from "../SideFunction/CheckValueInArray.js";
 
 import {
   deletePostApi,
+  sendFriendRequestApi,
   updatePostApi,
   uploadPostImagesApi,
 } from "../api/restApiConfig";
@@ -269,8 +270,33 @@ export const ProfileComponent = () => {
     };
   }, [localPostOverrides]);
 
-  const clickToAddFriend = () => {
-    setAddFriend((previousValue) => !previousValue);
+  const clickToAddFriend = async () => {
+    if (!Number.isFinite(loginUserId) || !Number.isFinite(profileUserId)) {
+      message.error("Không thể xác định người dùng để gửi lời mời kết bạn.");
+      return;
+    }
+
+    if (loginUserId === profileUserId) {
+      message.info("Bạn không thể gửi lời mời kết bạn cho chính mình.");
+      return;
+    }
+
+    if (addFriend) {
+      return;
+    }
+
+    try {
+      setAddFriend(true);
+      await sendFriendRequestApi(loginUserId, profileUserId);
+      message.success("Đã gửi lời mời kết bạn.");
+    } catch (error) {
+      setAddFriend(false);
+      message.error(
+        error instanceof Error
+          ? error.message
+          : "Không thể gửi lời mời kết bạn."
+      );
+    }
   };
 
   const clickToFollow = () => {

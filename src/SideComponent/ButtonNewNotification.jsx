@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { IoMdPersonAdd } from 'react-icons/io';
-import { Popover, Modal, Button, Avatar } from 'antd';
-import { getApi } from '../api/restApiConfig';
+import { Popover, Modal, Button, Avatar, message } from 'antd';
+import { getApi, sendFriendRequestApi } from '../api/restApiConfig';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
 
 const NotificationIcon = () => {
@@ -16,7 +16,41 @@ const NotificationIcon = () => {
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id } = getData;
 
-  const idToNumber = +id;
+  const idToNumber = Number(id);
+
+  const getNotificationName = (notification) => {
+    return (
+      notification?.name_sending ||
+      notification?.name ||
+      notification?.senderName ||
+      notification?.user_name ||
+      notification?.sender_name ||
+      'Người dùng'
+    );
+  };
+
+  const getNotificationSenderId = (notification) => {
+    const candidates = [
+      notification?.userIdFirst,
+      notification?.user_id_first,
+      notification?.senderId,
+      notification?.sender_id,
+      notification?.fromUserId,
+      notification?.from_user_id,
+      notification?.userId,
+      notification?.user_id,
+    ];
+
+    for (const candidate of candidates) {
+      const parsed = Number(candidate);
+      if (Number.isFinite(parsed) && parsed > 0) {
+        return parsed;
+      }
+    }
+
+    return null;
+  };
+
   // Hàm lấy danh sách yêu cầu kết bạn
   const fetchFriendRequests = async () => {
     setIsLoading(true);
@@ -39,6 +73,34 @@ const NotificationIcon = () => {
   // Hàm để hiển thị Modal
   const showModal = () => {
     setIsModalVisible(true);
+  };
+
+  const handleAcceptRequest = async (notification) => {
+    const senderId = getNotificationSenderId(notification);
+
+    if (!Number.isFinite(idToNumber) || idToNumber <= 0 || !Number.isFinite(senderId)) {
+      message.error('Không thể xác định người gửi lời mời kết bạn.');
+      return;
+    }
+
+    try {
+      await sendFriendRequestApi(idToNumber, senderId);
+      message.success('Đã chấp nhận lời mời kết bạn.');
+      await fetchFriendRequests();
+    } catch (error) {
+      message.error(
+        error instanceof Error
+          ? error.message
+          : 'Không thể chấp nhận lời mời kết bạn.'
+      );
+    }
+  };
+
+  const handleRejectRequest = (notificationId) => {
+    setNotifications((previous) =>
+      previous.filter((item) => item.id !== notificationId)
+    );
+    message.info('Đã bỏ qua lời mời kết bạn.');
   };
 
   // Hàm để đóng Modal và làm mới dữ liệu
@@ -66,20 +128,20 @@ const NotificationIcon = () => {
             {/* Dòng 1: Ảnh và Tên */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Avatar src={notification.avatar} size={32} />
-              <span>{notification.name_sending}(20 bạn chung)</span>
+              <span>{getNotificationName(notification)} (20 bạn chung)</span>
             </div>
             {/* Dòng 2: Button Đồng ý và Từ chối */}
             <div style={{ display: 'flex', gap: '8px' }}>
               <Button
                 type="primary"
                 size="small"
-                //onClick={() => handleAccept(notification.id)}
+                onClick={() => handleAcceptRequest(notification)}
               >
                 Đồng ý
               </Button>
               <Button
                 size="small"
-                //onClick={() => handleReject(notification.id)}
+                onClick={() => handleRejectRequest(notification.id)}
               >
                 Từ chối
               </Button>
@@ -148,7 +210,7 @@ const NotificationIcon = () => {
         {safeNotifications.map((notif) => (
           <div key={notif.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <Avatar src={notif.avatar} size={32} />
-            <span>{notif.name}</span>
+            <span>{getNotificationName(notif)}</span>
           </div>
         ))}
       </Modal>
