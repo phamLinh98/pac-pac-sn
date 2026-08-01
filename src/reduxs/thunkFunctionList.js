@@ -12,7 +12,7 @@ export const getListThunkFunction = (id) => {
 
     try {
       const response =
-        await getApi(`/list-user/${id}`);
+        await getApi(`/list/${id}`);
       if (!response.ok) {
         throw new Error(
           `Không thể tải dữ liệu: ${response.status}`
