@@ -5,7 +5,8 @@ import { MyStatusAreaUploadComponent } from "./MyStatusAreaUploadComponent";
 import { GoStarFill } from "react-icons/go";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 
-export const MyStatusAreaComponent = () => {
+// eslint-disable-next-line react/prop-types
+export const MyStatusAreaComponent = ({ onPostCreated }) => {
   const getUserFromLocalStorage = localStorage.getItem('allow-login');
   const getData = decodeJwt(getUserFromLocalStorage);
   const {name} = getData;
@@ -20,11 +21,11 @@ export const MyStatusAreaComponent = () => {
           justifyContent: "flex-end",
         }}
       >
-        <MyStatusAreaUploadComponent>
+        <MyStatusAreaUploadComponent onPostCreated={onPostCreated}>
           <GoStarFill />
           New Status
         </MyStatusAreaUploadComponent>
-        <MyStatusAreaUploadComponent>
+        <MyStatusAreaUploadComponent onPostCreated={onPostCreated}>
            <BsFillImageFill />
            Image
         </MyStatusAreaUploadComponent>

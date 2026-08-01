@@ -10,6 +10,16 @@ export const List = createSlice({
             state.hasLoaded = true;
             state.error = "";
         },
+        addListStatus: (state, action) => {
+            if (!Array.isArray(state.list)) {
+                state.list = [];
+            }
+
+            state.list.unshift(action.payload);
+            state.loading = false;
+            state.hasLoaded = true;
+            state.error = "";
+        },
         logError: (state, action) => {
             state.error = action.payload;
             state.loading = false;
@@ -25,5 +35,5 @@ export const List = createSlice({
     }
 })
 
-export const { getListStatus, logError, eventLoading } = List.actions;
+export const { getListStatus, addListStatus, logError, eventLoading } = List.actions;
 export default List.reducer;
