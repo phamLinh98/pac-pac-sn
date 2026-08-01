@@ -131,7 +131,7 @@ export const AllStory = () => {
           <Card
             hoverable
             onClick={() => setIsModalOpen(true)}
-            style={{ width: 150, marginRight: 5, marginBottom: 5 }}
+            style={{ width: 150, marginRight: 5, marginBottom: 5, order: -2 }}
             cover={
               <div
                 style={{
