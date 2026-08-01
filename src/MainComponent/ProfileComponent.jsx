@@ -209,6 +209,7 @@ export const ProfileComponent = () => {
   const checkIsFriend = checkValueInArrayGetData(friendIdList, profileIdParam);
 
   const [addFriend, setAddFriend] = useState(false);
+  const [friendRequestStatus, setFriendRequestStatus] = useState(null);
 
   const [isFollow, setIsFollow] = useState(false);
 
@@ -270,6 +271,27 @@ export const ProfileComponent = () => {
     };
   }, [localPostOverrides]);
 
+  const normalizeFriendRequestStatus = (payload) => {
+    const resultCandidate = payload?.result ?? payload;
+    const firstResult = Array.isArray(resultCandidate)
+      ? resultCandidate[0]
+      : resultCandidate;
+
+    const rawStatus = firstResult?.status ?? payload?.status ?? null;
+
+    if (typeof rawStatus !== "string") {
+      return null;
+    }
+
+    const normalizedStatus = rawStatus.trim().toLowerCase();
+
+    if (normalizedStatus === "pendind") {
+      return "pending";
+    }
+
+    return normalizedStatus;
+  };
+
   const clickToAddFriend = async () => {
     if (!Number.isFinite(loginUserId) || !Number.isFinite(profileUserId)) {
       message.error("Không thể xác định người dùng để gửi lời mời kết bạn.");
@@ -281,16 +303,27 @@ export const ProfileComponent = () => {
       return;
     }
 
-    if (addFriend) {
+    if (addFriend || friendRequestStatus === "pending") {
       return;
     }
 
     try {
-      setAddFriend(true);
-      await sendFriendRequestApi(loginUserId, profileUserId);
-      message.success("Đã gửi lời mời kết bạn.");
+      const response = await sendFriendRequestApi(loginUserId, profileUserId);
+      const payload = await response.json().catch(() => null);
+      const requestStatus = normalizeFriendRequestStatus(payload);
+
+      if (requestStatus === "pending" || requestStatus === "waiting") {
+        setFriendRequestStatus("pending");
+        setAddFriend(true);
+      } else {
+        setFriendRequestStatus(null);
+        setAddFriend(false);
+      }
+
+      message.success(payload?.message || "Đã gửi lời mời kết bạn.");
     } catch (error) {
       setAddFriend(false);
+      setFriendRequestStatus(null);
       message.error(
         error instanceof Error
           ? error.message
@@ -761,7 +794,7 @@ export const ProfileComponent = () => {
                         icon={addFriend ? <BsSendPlus /> : <IoIosPersonAdd />}
                         onClick={clickToAddFriend}
                       >
-                        {addFriend ? "Đã gửi lời mời" : "Kết bạn"}
+                        {addFriend || friendRequestStatus === "pending" ? "Đã gửi lời mời kết bạn" : "Kết bạn"}
                       </Button>
                     )}
 

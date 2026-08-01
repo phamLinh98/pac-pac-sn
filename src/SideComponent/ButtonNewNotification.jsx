@@ -10,13 +10,32 @@ const NotificationIcon = () => {
   const [isLoading, setIsLoading] = useState(false); // Trạng thái loading
   // Đảm bảo notifications luôn là array
   const safeNotifications = Array.isArray(notifications) ? notifications : [];
-  const numberAdd = safeNotifications.length; // Số lượng thông báo từ API
+  const numberAdd = safeNotifications.filter((notification) => {
+    const status = String(notification?.status || '').toLowerCase();
+    return status === 'pending' || status === 'waiting' || status === '';
+  }).length;
 
   const getUserFromLocalStorage = localStorage.getItem("allow-login");
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id } = getData;
 
   const idToNumber = Number(id);
+
+  const normalizeFriendRequestList = (response) => {
+    if (Array.isArray(response)) {
+      return response;
+    }
+
+    if (Array.isArray(response?.result)) {
+      return response.result;
+    }
+
+    if (response?.result && typeof response.result === "object") {
+      return [response.result];
+    }
+
+    return [];
+  };
 
   const getNotificationName = (notification) => {
     return (
@@ -56,8 +75,12 @@ const NotificationIcon = () => {
     setIsLoading(true);
     try {
       const data = await getApi(`/send-friend/${idToNumber}`);
-      const response = await data.json();
-      setNotifications(response); // Giả định API trả về mảng thông báo
+      const response = await data.json().catch(() => null);
+      const normalizedNotifications = normalizeFriendRequestList(response).filter((notification) => {
+        const status = String(notification?.status || '').toLowerCase();
+        return status === 'pending' || status === 'wait' || status === 'waiting' || status === '';
+      });
+      setNotifications(normalizedNotifications);
     } catch (error) {
       console.error('Lỗi khi lấy yêu cầu kết bạn:', error);
     } finally {
