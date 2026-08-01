@@ -780,9 +780,7 @@ export const ProfileComponent = () => {
             paddingTop: "1%",
           }}
         >
-          {safeListUserById.length === 0 ? (
-            <NotListComponent description="Người dùng không tồn tại" />
-          ) : normalizedPostList.length === 0 ? (
+          {normalizedPostList.length === 0 ? (
             <NotListComponent description="Người dùng chưa có bài viết nào" />
           ) : (
             normalizedPostList.map((item, index) => {
