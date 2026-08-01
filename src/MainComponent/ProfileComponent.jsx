@@ -167,7 +167,12 @@ export const ProfileComponent = () => {
 
   const profileUserId = Number(profileIdParam);
 
-  const { listUserById, loading, refetchProfilePosts } =
+  const {
+    listUserById,
+    loading,
+    refetchProfilePosts,
+    addProfilePost,
+  } =
     useFacadeMyProfileList(profileUserId);
 
   const safeListUserById = Array.isArray(listUserById)
@@ -406,6 +411,28 @@ export const ProfileComponent = () => {
 
   const clickToFollow = () => {
     setIsFollow((previousValue) => !previousValue);
+  };
+
+  const handleProfilePostCreated = (payload) => {
+    const post = payload?.post ?? payload;
+
+    if (!post || typeof post !== "object") {
+      return;
+    }
+
+    const postUserId = Number(post.user_id ?? loginUserId);
+
+    addProfilePost({
+      ...profileUser,
+      ...post,
+      user_id: Number.isFinite(postUserId)
+        ? postUserId
+        : post.user_id,
+      name: post.name ?? profileUser?.name ?? loginUser?.name,
+      user_name:
+        post.user_name ?? profileUser?.name ?? loginUser?.name,
+      avatar: post.avatar ?? profileUser?.avatar ?? loginUser?.avatar,
+    });
   };
 
   const showModalAvatar = () => {
@@ -896,7 +923,7 @@ export const ProfileComponent = () => {
             paddingTop: "1%",
           }}
         >
-          <MyStatusAreaComponent onPostCreated={refetchProfilePosts} />
+          <MyStatusAreaComponent onPostCreated={handleProfilePostCreated} />
         </div>
       )}
 

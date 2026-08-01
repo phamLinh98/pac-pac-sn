@@ -8,6 +8,15 @@ export const ListUserById = createSlice({
             state.listUserById = action.payload;
             state.loading = false;
         },
+        addListByUserId: (state, action) => {
+            if (!Array.isArray(state.listUserById)) {
+                state.listUserById = [];
+            }
+
+            state.listUserById.unshift(action.payload);
+            state.loading = false;
+            state.error = "";
+        },
         logError: (state, action) => {
             state.error = action.payload;
             state.loading = false;
@@ -18,5 +27,5 @@ export const ListUserById = createSlice({
     }
 })
 
-export const { getListByUserId, logError, eventLoading } = ListUserById.actions;
+export const { getListByUserId, addListByUserId, logError, eventLoading } = ListUserById.actions;
 export default ListUserById.reducer;
