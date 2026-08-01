@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Card, Image, Modal, message } from "antd";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlusOutlined, SoundOutlined } from "@ant-design/icons";
 import { PiHeartbeatBold } from "react-icons/pi";
 import { ImReply } from "react-icons/im";
 import { RiUserUnfollowFill } from "react-icons/ri";
@@ -19,6 +19,8 @@ const ALLOWED_STORY_TYPES = new Set([
   "image/webp",
   "image/gif",
 ]);
+const DEFAULT_STORY_MUSIC_URL =
+  "https://www.nhaccuatui.com/mh/auto/0lliVALb8py8";
 
 export const AllStory = () => {
   const containerRef = useRef(null);
@@ -27,6 +29,7 @@ export const AllStory = () => {
   const [storyFile, setStoryFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [isPosting, setIsPosting] = useState(false);
+  const [playingStoryId, setPlayingStoryId] = useState(null);
 
   const {
     story,
@@ -110,6 +113,9 @@ export const AllStory = () => {
       okType: "danger",
       onOk: async () => {
         await deleteStory(item.id);
+        setPlayingStoryId((currentId) =>
+          Number(currentId) === Number(item.id) ? null : currentId
+        );
         message.success("Đã xóa story.");
       },
     });
@@ -169,12 +175,67 @@ export const AllStory = () => {
                     order: isOwner ? -1 : 0,
                   }}
                   cover={
-                    <ImageStatus
-                      image={imageUrl}
-                      width={150}
-                      height={250}
-                      active={false}
-                    />
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      aria-label={
+                        Number(playingStoryId) === Number(item.id)
+                          ? "Dừng nhạc story"
+                          : "Phát nhạc story"
+                      }
+                      onClick={() =>
+                        setPlayingStoryId((currentId) =>
+                          Number(currentId) === Number(item.id) ? null : item.id
+                        )
+                      }
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setPlayingStoryId((currentId) =>
+                            Number(currentId) === Number(item.id) ? null : item.id
+                          );
+                        }
+                      }}
+                      style={{ position: "relative", cursor: "pointer" }}
+                    >
+                      <ImageStatus
+                        image={imageUrl}
+                        width={150}
+                        height={250}
+                        active={false}
+                        preview={false}
+                      />
+
+                      <SoundOutlined
+                        style={{
+                          position: "absolute",
+                          right: 8,
+                          bottom: 8,
+                          padding: 7,
+                          borderRadius: "50%",
+                          color: "white",
+                          background:
+                            Number(playingStoryId) === Number(item.id)
+                              ? "#1677ff"
+                              : "rgba(0, 0, 0, 0.55)",
+                        }}
+                      />
+
+                      {Number(playingStoryId) === Number(item.id) && (
+                        <iframe
+                          title="Nhạc mặc định của story"
+                          src={DEFAULT_STORY_MUSIC_URL}
+                          allow="autoplay"
+                          style={{
+                            position: "absolute",
+                            width: 1,
+                            height: 1,
+                            opacity: 0,
+                            pointerEvents: "none",
+                          }}
+                        />
+                      )}
+                    </div>
                   }
                   actions={
                     isOwner
