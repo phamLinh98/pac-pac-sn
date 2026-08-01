@@ -1,10 +1,10 @@
-import { Layout, theme } from "antd";
+import { Avatar, Layout, theme } from "antd";
 import { GrHomeRounded } from "react-icons/gr";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { MenuLeftComponent } from "./MenuLeftComponent";
 import { PrivateAreaComponent } from "./PrivateAreaComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { FaPhotoVideo } from "react-icons/fa";
 import { PiGameController } from "react-icons/pi";
@@ -13,12 +13,16 @@ import NotificationIcon from "../SideComponent/ButtonNewNotification";
 import ChatHistoryPanel from "../SideComponent/ChatHistoryPanel";
 import NotificationsPanel from "../SideComponent/NotificationsPanel";
 import PropTypes from "prop-types";
+import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
+
+const MOBILE_BREAKPOINT = 430;
 
 PrivateAreaComponent.propTypes = {
     items: PropTypes.array.isRequired,
     onToggleMenu: PropTypes.func,
     collapsed: PropTypes.bool,
     backgroundImage: PropTypes.string,
+    isMobile: PropTypes.bool,
 };
 
 export const LayoutComponent = () => {
@@ -28,11 +32,39 @@ export const LayoutComponent = () => {
 
   // eslint-disable-next-line no-unused-vars
   const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches
+      : false
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      `(max-width: ${MOBILE_BREAKPOINT}px)`
+    );
+    const handleViewportChange = (event) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleViewportChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleViewportChange);
+    };
+  }, []);
+
   // Navigate to profile
   const navigate = useNavigate();
   const backToMenu = () => {
     navigate('/home')
   }
+
+  const loginUser = decodeJwt(localStorage.getItem("allow-login")) ?? {};
+  const loginUserId = Number(loginUser.id);
+  const moveToMyProfile = () => {
+    if (Number.isFinite(loginUserId) && loginUserId > 0) {
+      navigate(`/profile/${loginUserId}`);
+    }
+  };
 
   const headerBackgroundImage =
     "https://i.pinimg.com/vwebp/1200x/d9/b2/97/d9b29715b473dd0a5b37e1bc9929907b.webp";
@@ -44,6 +76,22 @@ export const LayoutComponent = () => {
   };
 
   const headerItem = [
+    ...(isMobile
+      ? [
+          {
+            key: "mobile-profile",
+            label: (
+              <Avatar
+                src={loginUser.avatar}
+                size={30}
+                style={{ cursor: "pointer" }}
+              />
+            ),
+            onClick: moveToMyProfile,
+            style: menuItemStyle,
+          },
+        ]
+      : []),
     {
       key: "1",
       label: <GrHomeRounded style={{ fontSize: 17 }} />,
@@ -79,10 +127,15 @@ export const LayoutComponent = () => {
 
   return (
     <Layout style={{ height: "200vh" }}>
-      <PrivateAreaComponent items={headerItem} collapsed={collapsed} backgroundImage={headerBackgroundImage}/>
+      <PrivateAreaComponent
+        items={headerItem}
+        collapsed={collapsed}
+        backgroundImage={headerBackgroundImage}
+        isMobile={isMobile}
+      />
       <Layout style={{ marginTop: 64 }}>
         {/* Left Sider */}
-        <Sider
+        {!isMobile && <Sider
           width={collapsed ? 0 : 200}
           style={{
             background: colorBgContainer,
@@ -95,14 +148,14 @@ export const LayoutComponent = () => {
           }}
         >
           <MenuLeftComponent collapsed={collapsed} />
-        </Sider>
+        </Sider>}
 
         {/* Content */}
         <Layout
           style={{
-            marginLeft: collapsed ? 0 : 200,
-            marginRight: collapsed ? 0 : 200,
-            padding: "0 24px 24px",
+            marginLeft: isMobile || collapsed ? 0 : 200,
+            marginRight: isMobile || collapsed ? 0 : 200,
+            padding: isMobile ? "0 8px 16px" : "0 24px 24px",
             height: "calc(100vh - 64px)", // Viewport height minus header
             transition: "margin-left 0.3s, margin-right 0.3s",
             display: "flex",            // Enable flexbox for Layout
@@ -123,7 +176,7 @@ export const LayoutComponent = () => {
         </Layout>
 
         {/* Right Sider */}
-        <Sider
+        {!isMobile && <Sider
           width={collapsed ? 0 : 200}
           style={{
             background: colorBgContainer,
@@ -136,7 +189,7 @@ export const LayoutComponent = () => {
           }}
         >
           <MenuRightComponent />
-        </Sider>
+        </Sider>}
       </Layout>
     </Layout>
   )

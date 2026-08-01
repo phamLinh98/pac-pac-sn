@@ -2,7 +2,7 @@
 import { Input, Layout, Menu } from "antd";
 const { Header } = Layout;
 
-export const PrivateAreaComponent = ({ items, backgroundImage }) => {
+export const PrivateAreaComponent = ({ items, backgroundImage, isMobile }) => {
 
   return (
     <Header
@@ -12,7 +12,7 @@ export const PrivateAreaComponent = ({ items, backgroundImage }) => {
         position: "fixed",
         width: "100%",
         zIndex: 1000,
-        padding: "0 24px",
+        padding: isMobile ? "0 8px" : "0 24px",
 
         backgroundImage: `
           linear-gradient(
@@ -26,8 +26,8 @@ export const PrivateAreaComponent = ({ items, backgroundImage }) => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <Input placeholder="Search User" style={{width:"15%"}}/>
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}> {/* Thay đổi ở đây */}
+      {!isMobile && <Input placeholder="Search User" style={{width:"15%"}}/>}
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", minWidth: 0 }}> {/* Thay đổi ở đây */}
         <Menu
           mode="horizontal"
           items={items}
