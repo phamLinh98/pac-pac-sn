@@ -159,115 +159,6 @@ const hasPostContent = (content) => {
   return Boolean(content.text.trim() || content.image.length > 0);
 };
 
-const isPlainObject = (value) => {
-  return Boolean(value && typeof value === "object" && !Array.isArray(value));
-};
-
-const firstArray = (...values) => {
-  return values.find((value) => Array.isArray(value));
-};
-
-const firstObject = (...values) => {
-  return values.find((value) => isPlainObject(value));
-};
-
-const normalizeId = (value) => {
-  const normalizedValue = Number(value);
-
-  return Number.isFinite(normalizedValue) ? normalizedValue : null;
-};
-
-const isSameUserId = (value, userId) => {
-  return normalizeId(value) === normalizeId(userId);
-};
-
-const isUserLikeRecord = (value) => {
-  if (!isPlainObject(value)) {
-    return false;
-  }
-
-  return Boolean(
-    value.name ||
-      value.user_name ||
-      value.email ||
-      value.avatar ||
-      value.background ||
-      value.background_image ||
-      Array.isArray(value.list_friend_id),
-  );
-};
-
-const findProfileUserById = (values, userId) => {
-  return values
-    .filter(isUserLikeRecord)
-    .find((item) => {
-      if (item.name || item.email || item.namecode) {
-        return isSameUserId(item.id, userId);
-      }
-
-      return isSameUserId(item.user_id, userId);
-    });
-};
-
-const normalizeProfilePayload = (payload, profileUserId) => {
-  const data = payload?.data;
-  const result = payload?.result;
-
-  const explicitUserCandidates = [
-    payload?.user,
-    payload?.profileUser,
-    payload?.profile,
-    payload?.userInfo,
-    payload?.account,
-    data?.user,
-    data?.profileUser,
-    data?.profile,
-    data?.userInfo,
-    result?.user,
-    result?.profileUser,
-    result?.profile,
-    result?.userInfo,
-  ];
-
-  const explicitUser =
-    findProfileUserById(explicitUserCandidates, profileUserId) ??
-    firstObject(...explicitUserCandidates);
-
-  const explicitPostList = firstArray(
-    payload?.posts,
-    payload?.postList,
-    payload?.list,
-    data?.posts,
-    data?.postList,
-    data?.list,
-    result?.posts,
-    result?.postList,
-    result?.list,
-  );
-
-  const legacyList = firstArray(payload, data, result);
-
-  const profilePostList = explicitPostList ?? legacyList ?? [];
-
-  const objectPayload = firstObject(data, result, payload);
-
-  const profileUser =
-    (explicitUser &&
-    findProfileUserById([explicitUser], profileUserId)
-      ? explicitUser
-      : null) ??
-    findProfileUserById(profilePostList, profileUserId) ??
-    (isUserLikeRecord(objectPayload) &&
-    findProfileUserById([objectPayload], profileUserId)
-      ? objectPayload
-      : null);
-
-  return {
-    profileUser,
-    profilePostList,
-  };
-};
-
 export const ProfileComponent = () => {
   const { id: profileIdParam } = useParams();
 
@@ -278,10 +169,15 @@ export const ProfileComponent = () => {
   const { listUserById, loading, refetchProfilePosts } =
     useFacadeMyProfileList(profileUserId);
 
-  const { profileUser, profilePostList } = normalizeProfilePayload(
-    listUserById,
-    profileUserId,
-  );
+  const safeListUserById = Array.isArray(listUserById)
+    ? listUserById
+    : Array.isArray(listUserById?.list)
+      ? listUserById.list
+      : Array.isArray(listUserById?.data)
+        ? listUserById.data
+        : [];
+
+  const profileUser = safeListUserById.length > 0 ? safeListUserById[0] : null;
 
   const containerRefs = useRef([]);
 
@@ -737,7 +633,7 @@ export const ProfileComponent = () => {
     console.log("Ẩn bài viết:", item.id);
   };
 
-  const normalizedPostList = profilePostList
+  const normalizedPostList = safeListUserById
     .map((item) => ({
       ...item,
 
