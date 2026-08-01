@@ -171,6 +171,16 @@ const firstObject = (...values) => {
   return values.find((value) => isPlainObject(value));
 };
 
+const normalizeId = (value) => {
+  const normalizedValue = Number(value);
+
+  return Number.isFinite(normalizedValue) ? normalizedValue : null;
+};
+
+const isSameUserId = (value, userId) => {
+  return normalizeId(value) === normalizeId(userId);
+};
+
 const isUserLikeRecord = (value) => {
   if (!isPlainObject(value)) {
     return false;
@@ -187,11 +197,23 @@ const isUserLikeRecord = (value) => {
   );
 };
 
-const normalizeProfilePayload = (payload) => {
+const findProfileUserById = (values, userId) => {
+  return values
+    .filter(isUserLikeRecord)
+    .find((item) => {
+      if (item.name || item.email || item.namecode) {
+        return isSameUserId(item.id, userId);
+      }
+
+      return isSameUserId(item.user_id, userId);
+    });
+};
+
+const normalizeProfilePayload = (payload, profileUserId) => {
   const data = payload?.data;
   const result = payload?.result;
 
-  const explicitUser = firstObject(
+  const explicitUserCandidates = [
     payload?.user,
     payload?.profileUser,
     payload?.profile,
@@ -205,7 +227,11 @@ const normalizeProfilePayload = (payload) => {
     result?.profileUser,
     result?.profile,
     result?.userInfo,
-  );
+  ];
+
+  const explicitUser =
+    findProfileUserById(explicitUserCandidates, profileUserId) ??
+    firstObject(...explicitUserCandidates);
 
   const explicitPostList = firstArray(
     payload?.posts,
@@ -226,9 +252,15 @@ const normalizeProfilePayload = (payload) => {
   const objectPayload = firstObject(data, result, payload);
 
   const profileUser =
-    explicitUser ??
-    profilePostList.find(isUserLikeRecord) ??
-    (isUserLikeRecord(objectPayload) ? objectPayload : null);
+    (explicitUser &&
+    findProfileUserById([explicitUser], profileUserId)
+      ? explicitUser
+      : null) ??
+    findProfileUserById(profilePostList, profileUserId) ??
+    (isUserLikeRecord(objectPayload) &&
+    findProfileUserById([objectPayload], profileUserId)
+      ? objectPayload
+      : null);
 
   return {
     profileUser,
@@ -246,7 +278,10 @@ export const ProfileComponent = () => {
   const { listUserById, loading, refetchProfilePosts } =
     useFacadeMyProfileList(profileUserId);
 
-  const { profileUser, profilePostList } = normalizeProfilePayload(listUserById);
+  const { profileUser, profilePostList } = normalizeProfilePayload(
+    listUserById,
+    profileUserId,
+  );
 
   const containerRefs = useRef([]);
 
