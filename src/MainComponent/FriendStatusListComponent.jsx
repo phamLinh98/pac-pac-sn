@@ -18,7 +18,7 @@ import { ImageStatus } from '../SideComponent/ImageStatus';
 import { LoadingComponent } from '../SideComponent/LoadingComponent';
 import { NotListComponent } from '../SideComponent/NoListComponent';
 import { FriendStatusContentDetailsComponent } from './FriendStatusContentDetailsComponent';
-import { useFacadeList } from '../reduxs/useFacadeList';
+import { useFacadeHomeList } from '../reduxs/useFacadeHomeList';
 import { formatTimeStamp } from '../configs/configTimeStamp';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
 
@@ -39,7 +39,7 @@ export const FriendStatusListComponent = () => {
     error,
     loading,
     hasLoaded,
-  } = useFacadeList(idToNumber);
+  } = useFacadeHomeList(idToNumber);
 
   const safeList = Array.isArray(list)
     ? list
@@ -105,11 +105,15 @@ export const FriendStatusListComponent = () => {
       typeof content === 'object' &&
       !Array.isArray(content)
     ) {
-      const images = Array.isArray(content.image)
-        ? content.image
-        : typeof content.image === 'string' &&
-            content.image.trim()
-          ? [content.image]
+      const rawImages =
+        content.image ??
+        content.images;
+
+      const images = Array.isArray(rawImages)
+        ? rawImages
+        : typeof rawImages === 'string' &&
+            rawImages.trim()
+          ? [rawImages]
           : [];
 
       return {
