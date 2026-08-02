@@ -172,7 +172,7 @@ const NotificationIcon = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Avatar src={getNotificationAvatar(notification)} size={32} />
               <span
-                onClick={() => moveToProfile(idToNumber)}
+                onClick={() => moveToProfile(notification.sender_id)}
                 style={{
                   cursor: "pointer",
                   fontWeight: 600,
