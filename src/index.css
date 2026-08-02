@@ -2,6 +2,7 @@ body,
 html {
   margin: 0;
   padding: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 body,
@@ -9,4 +10,23 @@ body,
   /* #root là container mặc định của React */
   min-width: 866px;
   /* min-height: 600px; */
+}
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root {
+  background: #141414;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+html[data-theme="light"] body,
+html[data-theme="light"] #root {
+  background: #ffffff;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+@media (max-width: 430px) {
+  body,
+  #root {
+    min-width: 0;
+  }
 }
