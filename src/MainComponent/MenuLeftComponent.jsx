@@ -93,6 +93,12 @@ export const MenuLeftComponent = ({ collapsed }) => {
         },
         {
           key: "setting-language",
+          style: {
+            height: 76,
+            lineHeight: "normal",
+            paddingTop: 8,
+            paddingBottom: 8,
+          },
           label: (
             <div
               onClick={(event) => event.stopPropagation()}
@@ -104,7 +110,8 @@ export const MenuLeftComponent = ({ collapsed }) => {
                 value={language}
                 onChange={setLanguage}
                 aria-label={t.language}
-                style={{ width: 120 }}
+                popupMatchSelectWidth={180}
+                style={{ width: 140 }}
                 options={[
                   { value: "ja", label: "日本語" },
                   { value: "en", label: "English" },
