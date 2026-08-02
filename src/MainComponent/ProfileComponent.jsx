@@ -59,6 +59,7 @@ import { useFacadeMyProfileList } from "../reduxs/useFacadeMyStatusProfile.jsx";
 import { checkValueInArrayGetData } from "../SideFunction/CheckValueInArray.js";
 
 import {
+  cancelFriendshipApi,
   deletePostApi,
   getFriendRequestsApi,
   sendFriendRequestApi,
@@ -217,6 +218,9 @@ export const ProfileComponent = () => {
   const [addFriend, setAddFriend] = useState(false);
   const [friendRequestStatus, setFriendRequestStatus] = useState(null);
   const [friendRequestDirection, setFriendRequestDirection] = useState(null);
+  const [friendRequestExists, setFriendRequestExists] = useState(false);
+  const [friendPopoverOpen, setFriendPopoverOpen] = useState(false);
+  const [isUnfriending, setIsUnfriending] = useState(false);
 
   const [isFollow, setIsFollow] = useState(false);
 
@@ -307,6 +311,7 @@ export const ProfileComponent = () => {
     ) {
       setFriendRequestStatus(null);
       setFriendRequestDirection(null);
+      setFriendRequestExists(false);
       setAddFriend(false);
       return undefined;
     }
@@ -346,12 +351,14 @@ export const ProfileComponent = () => {
 
         setFriendRequestStatus(status);
         setFriendRequestDirection(direction);
+        setFriendRequestExists(Boolean(relation));
         setAddFriend(status === "pending" && direction === "outgoing");
       } catch (error) {
         if (isActive) {
           console.error("Không thể tải trạng thái kết bạn:", error);
           setFriendRequestStatus(null);
           setFriendRequestDirection(null);
+          setFriendRequestExists(false);
           setAddFriend(false);
         }
       }
@@ -400,15 +407,18 @@ export const ProfileComponent = () => {
       if (requestStatus === "accepted") {
         setFriendRequestStatus("accepted");
         setFriendRequestDirection(null);
+        setFriendRequestExists(true);
         setAddFriend(false);
         window.dispatchEvent(new Event("friend-request-updated"));
       } else if (requestStatus === "pending" || requestStatus === "waiting") {
         setFriendRequestStatus("pending");
         setFriendRequestDirection("outgoing");
+        setFriendRequestExists(true);
         setAddFriend(true);
       } else {
         setFriendRequestStatus(null);
         setFriendRequestDirection(null);
+        setFriendRequestExists(false);
         setAddFriend(false);
       }
 
@@ -417,11 +427,41 @@ export const ProfileComponent = () => {
       setAddFriend(false);
       setFriendRequestStatus(null);
       setFriendRequestDirection(null);
+      setFriendRequestExists(false);
       message.error(
         error instanceof Error
           ? error.message
           : "Không thể gửi lời mời kết bạn."
       );
+    }
+  };
+
+  const handleCancelFriendship = async () => {
+    if (!Number.isFinite(profileUserId) || profileUserId <= 0) {
+      message.error("Không thể xác định user cần hủy kết bạn.");
+      return;
+    }
+
+    setIsUnfriending(true);
+
+    try {
+      const payload = await cancelFriendshipApi(profileUserId);
+
+      setFriendRequestStatus("");
+      setFriendRequestDirection(null);
+      setFriendRequestExists(true);
+      setAddFriend(false);
+      setFriendPopoverOpen(false);
+
+      window.dispatchEvent(new Event("friend-request-updated"));
+      await refetchProfilePosts?.();
+      message.success(payload?.message || "Đã hủy kết bạn.");
+    } catch (error) {
+      message.error(
+        error instanceof Error ? error.message : "Không thể hủy kết bạn."
+      );
+    } finally {
+      setIsUnfriending(false);
     }
   };
 
@@ -896,13 +936,28 @@ export const ProfileComponent = () => {
                       gap: "10px",
                     }}
                   >
-                    {checkIsFriend || friendRequestStatus === "accepted" ? (
-                      <Button
-                        icon={<FaUserFriends />}
-                        onClick={clickToAddFriend}
+                    {friendRequestStatus === "accepted" ||
+                    (checkIsFriend && !friendRequestExists) ? (
+                      <Popover
+                        trigger="click"
+                        placement="bottom"
+                        open={friendPopoverOpen}
+                        onOpenChange={setFriendPopoverOpen}
+                        content={
+                          <Button
+                            danger
+                            type="text"
+                            loading={isUnfriending}
+                            onClick={handleCancelFriendship}
+                          >
+                            Hủy kết bạn
+                          </Button>
+                        }
                       >
-                        Bạn bè
-                      </Button>
+                        <Button icon={<FaUserFriends />}>
+                          Bạn bè
+                        </Button>
+                      </Popover>
                     ) : (
                       <Button
                         type="primary"
