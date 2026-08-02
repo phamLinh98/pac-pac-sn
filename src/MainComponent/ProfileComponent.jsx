@@ -216,6 +216,7 @@ export const ProfileComponent = () => {
 
   const [addFriend, setAddFriend] = useState(false);
   const [friendRequestStatus, setFriendRequestStatus] = useState(null);
+  const [friendRequestDirection, setFriendRequestDirection] = useState(null);
 
   const [isFollow, setIsFollow] = useState(false);
 
@@ -305,6 +306,7 @@ export const ProfileComponent = () => {
       loginUserId === profileUserId
     ) {
       setFriendRequestStatus(null);
+      setFriendRequestDirection(null);
       setAddFriend(false);
       return undefined;
     }
@@ -336,12 +338,20 @@ export const ProfileComponent = () => {
         }
 
         const status = normalizeFriendRequestStatus(relation);
+        const direction = relation
+          ? Number(relation.sender_id) === loginUserId
+            ? "outgoing"
+            : "incoming"
+          : null;
+
         setFriendRequestStatus(status);
-        setAddFriend(status === "pending");
+        setFriendRequestDirection(direction);
+        setAddFriend(status === "pending" && direction === "outgoing");
       } catch (error) {
         if (isActive) {
           console.error("Không thể tải trạng thái kết bạn:", error);
           setFriendRequestStatus(null);
+          setFriendRequestDirection(null);
           setAddFriend(false);
         }
       }
@@ -375,7 +385,8 @@ export const ProfileComponent = () => {
 
     if (
       addFriend ||
-      friendRequestStatus === "pending" ||
+      (friendRequestStatus === "pending" &&
+        friendRequestDirection !== "incoming") ||
       friendRequestStatus === "accepted"
     ) {
       return;
@@ -388,12 +399,16 @@ export const ProfileComponent = () => {
 
       if (requestStatus === "accepted") {
         setFriendRequestStatus("accepted");
+        setFriendRequestDirection(null);
         setAddFriend(false);
+        window.dispatchEvent(new Event("friend-request-updated"));
       } else if (requestStatus === "pending" || requestStatus === "waiting") {
         setFriendRequestStatus("pending");
+        setFriendRequestDirection("outgoing");
         setAddFriend(true);
       } else {
         setFriendRequestStatus(null);
+        setFriendRequestDirection(null);
         setAddFriend(false);
       }
 
@@ -401,6 +416,7 @@ export const ProfileComponent = () => {
     } catch (error) {
       setAddFriend(false);
       setFriendRequestStatus(null);
+      setFriendRequestDirection(null);
       message.error(
         error instanceof Error
           ? error.message
@@ -890,10 +906,22 @@ export const ProfileComponent = () => {
                     ) : (
                       <Button
                         type="primary"
-                        icon={friendRequestStatus === "pending" ? <BsSendPlus /> : <IoIosPersonAdd />}
+                        icon={
+                          friendRequestStatus === "pending" &&
+                          friendRequestDirection === "incoming"
+                            ? <FaUserFriends />
+                            : friendRequestStatus === "pending"
+                              ? <BsSendPlus />
+                              : <IoIosPersonAdd />
+                        }
                         onClick={clickToAddFriend}
                       >
-                        {friendRequestStatus === "pending" ? "Đã gửi lời mời kết bạn" : "Kết bạn"}
+                        {friendRequestStatus === "pending" &&
+                        friendRequestDirection === "incoming"
+                          ? "Đồng ý kết bạn"
+                          : friendRequestStatus === "pending"
+                            ? "Đã gửi lời mời kết bạn"
+                            : "Kết bạn"}
                       </Button>
                     )}
 

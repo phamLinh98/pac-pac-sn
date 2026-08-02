@@ -115,6 +115,12 @@ const NotificationIcon = () => {
   // useEffect để gọi API khi component được mount
   useEffect(() => {
     fetchFriendRequests();
+
+    window.addEventListener('friend-request-updated', fetchFriendRequests);
+
+    return () => {
+      window.removeEventListener('friend-request-updated', fetchFriendRequests);
+    };
   }, [fetchFriendRequests]);
 
   // Hàm để hiển thị Modal
