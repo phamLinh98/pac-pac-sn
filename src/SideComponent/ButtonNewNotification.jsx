@@ -1,6 +1,7 @@
 import { useCallback, useState, useEffect } from 'react';
 import { IoMdPersonAdd } from 'react-icons/io';
 import { Popover, Modal, Button, Avatar, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { getFriendRequestsApi, sendFriendRequestApi } from '../api/restApiConfig';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
 
@@ -21,6 +22,7 @@ const normalizeFriendRequestList = (response) => {
 };
 
 const NotificationIcon = () => {
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]); // Lưu trữ danh sách thông báo từ API
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // Trạng thái loading
@@ -73,6 +75,17 @@ const NotificationIcon = () => {
     }
 
     return null;
+  };
+
+  const moveToProfile = (notification) => {
+    const senderId = getNotificationSenderId(notification);
+
+    if (!Number.isFinite(senderId)) {
+      message.error('Không thể xác định người gửi lời mời kết bạn.');
+      return;
+    }
+
+    navigate(`/profile/${senderId}`);
   };
 
   // Hàm lấy danh sách yêu cầu kết bạn
@@ -172,12 +185,17 @@ const NotificationIcon = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Avatar src={getNotificationAvatar(notification)} size={32} />
               <span
-                onClick={() => moveToProfile(notification.sender_id)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  moveToProfile(notification);
+                }}
                 style={{
                   cursor: "pointer",
                   fontWeight: 600,
                 }}
-              >{getNotificationName(notification)} đã gửi lời mời kết bạn</span>
+              >
+                {getNotificationName(notification)} đã gửi lời mời kết bạn
+              </span>
             </div>
             {/* Dòng 2: Button Đồng ý và Từ chối */}
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -259,7 +277,12 @@ const NotificationIcon = () => {
         {safeNotifications.map((notif) => (
           <div key={notif.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <Avatar src={getNotificationAvatar(notif)} size={32} />
-            <span>{getNotificationName(notif)}</span>
+            <span
+              onClick={() => moveToProfile(notif)}
+              style={{ cursor: "pointer", fontWeight: 600 }}
+            >
+              {getNotificationName(notif)}
+            </span>
           </div>
         ))}
       </Modal>
