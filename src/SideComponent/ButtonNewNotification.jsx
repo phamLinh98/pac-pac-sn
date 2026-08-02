@@ -171,7 +171,13 @@ const NotificationIcon = () => {
             {/* Dòng 1: Ảnh và Tên */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Avatar src={getNotificationAvatar(notification)} size={32} />
-              <span>{getNotificationName(notification)} đã gửi lời mời kết bạn</span>
+              <span
+                onClick={() => moveToProfile(idToNumber)}
+                style={{
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+              >{getNotificationName(notification)} đã gửi lời mời kết bạn</span>
             </div>
             {/* Dòng 2: Button Đồng ý và Từ chối */}
             <div style={{ display: 'flex', gap: '8px' }}>
