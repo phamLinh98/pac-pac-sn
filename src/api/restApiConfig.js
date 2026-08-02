@@ -471,6 +471,21 @@ export const getFriendRequestsApi =
     return getApi(`/send-friend/${userId}`);
   };
 
+export const searchUsersApi = async (keyword) => {
+  const normalizedKeyword = String(keyword ?? "").trim();
+
+  if (!normalizedKeyword) {
+    return [];
+  }
+
+  const response = await getApi(
+    `/search-user?q=${encodeURIComponent(normalizedKeyword)}`
+  );
+
+  const payload = await response.json().catch(() => []);
+  return Array.isArray(payload) ? payload : [];
+};
+
 export const cancelFriendshipApi = async (friendId) => {
   const url = `${envConfig.host}/friendship/${friendId}`;
   const requestOptions = {
