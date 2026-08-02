@@ -1,75 +1,91 @@
-import { Card, Row, Col } from "antd";
+import { useEffect, useState } from "react";
+import { Avatar, Card, Col, Empty, Row } from "antd";
 import { FaEye } from "react-icons/fa";
-import { MdAdd } from "react-icons/md";
-import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
-import { LoadingComponent } from "../SideComponent/LoadingComponent";
 import { useNavigate, useParams } from "react-router-dom";
-import { useFacadeList } from "../reduxs/useFacadeList";
-import { extractUniqueUsers } from "../SideFunction/GetListFriendById";
+
+import { getApi } from "../api/restApiConfig";
+import { LoadingComponent } from "../SideComponent/LoadingComponent";
 
 export const ListFriendEachAccount = () => {
-    const getUserFromLocalStorage = localStorage.getItem('allow-login');
-    const getData = decodeJwt(getUserFromLocalStorage);
-    const { id: profileIdParam } = useParams();
+  const { id: profileIdParam } = useParams();
+  const profileUserId = Number(profileIdParam);
+  const navigate = useNavigate();
 
-    const routeUserId = Number(profileIdParam);
-    const loginUserId = Number(getData?.id);
+  const [friends, setFriends] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    const idToNumber = Number.isFinite(routeUserId) && routeUserId > 0
-        ? routeUserId
-        : Number.isFinite(loginUserId) && loginUserId > 0
-            ? loginUserId
-            : null;
+  useEffect(() => {
+    if (!Number.isFinite(profileUserId) || profileUserId <= 0) {
+      setFriends([]);
+      setError("User id không hợp lệ");
+      return undefined;
+    }
 
-    const { list, loading } = useFacadeList(idToNumber)
-    // Đảm bảo list luôn là array
-    const safeList = Array.isArray(list) ? list : [];
-    const getListFriend = extractUniqueUsers(safeList);
-    const navigate = useNavigate();
+    let isActive = true;
 
-    const moveToProfile = (userId) => {
-        navigate(`/profile/${userId}`);
+    const fetchFriends = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await getApi(`/list-friend/${profileUserId}`);
+        const payload = await response.json().catch(() => []);
+
+        if (isActive) {
+          setFriends(Array.isArray(payload) ? payload : []);
+        }
+      } catch (requestError) {
+        if (isActive) {
+          setFriends([]);
+          setError(
+            requestError instanceof Error
+              ? requestError.message
+              : "Không thể tải danh sách bạn bè"
+          );
+        }
+      } finally {
+        if (isActive) {
+          setLoading(false);
+        }
       }
+    };
 
-    return (
-        <Row gutter={[16, 16]}>
-            {loading ? <LoadingComponent /> : getListFriend.map((friend, index) => (
-                <Col key={index} xs={24} sm={12} md={8} lg={6}>
-                    <Card
-                        size="small"
-                        title={
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <img
-                                    src={friend.avatar}
-                                    alt="avatar"
-                                    style={{
-                                        width: 30,
-                                        height: 30,
-                                        borderRadius: "50%",
-                                        marginRight: 8,
-                                    }}
-                                />
-                                <span
-                                    onClick={() => moveToProfile(friend.id)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    {friend.name.length > 10
-                                        ? `${friend.name.slice(0, 10)}...`
-                                        : friend.name}
-                                </span>
-                            </div>
-                        }
-                        extra={
-                            <div>
-                                <MdAdd style={{ paddingTop: "3px" }} /> | <FaEye style={{ paddingTop: "3px" }} />
-                            </div>
-                        }
-                        style={{ width: "100%" }}
-                    >
-                        <p style={{ margin: 0 }}>200 bạn chung</p>
-                    </Card>
-                </Col>
-            ))}
-        </Row>
-    )
+    fetchFriends();
+
+    return () => {
+      isActive = false;
+    };
+  }, [profileUserId]);
+
+  if (loading) {
+    return <LoadingComponent />;
+  }
+
+  if (friends.length === 0) {
+    return <Empty description={error || "Người dùng chưa có bạn bè"} />;
+  }
+
+  return (
+    <Row gutter={[16, 16]}>
+      {friends.map((friend) => (
+        <Col key={friend.id} xs={24} sm={12} md={8} lg={6}>
+          <Card
+            size="small"
+            hoverable
+            onClick={() => navigate(`/profile/${friend.id}`)}
+            title={
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <Avatar src={friend.avatar} size={32} />
+                <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {friend.name || "Người dùng"}
+                </span>
+              </div>
+            }
+            extra={<FaEye aria-label="Xem profile" />}
+          />
+        </Col>
+      ))}
+    </Row>
+  );
 };

@@ -3,6 +3,7 @@ import { FaRegFileImage, FaRegFileVideo, FaUserFriends } from 'react-icons/fa';
 import { BsFileEarmarkPost } from 'react-icons/bs';
 import { ProfileComponent } from './ProfileComponent';
 import { ListFriendEachAccount } from './ListFriendEachAccount';
+import { ProfileImagesComponent } from './ProfileImagesComponent';
 
 export const FriendOrMyProfileComponent = () => {
   const onChange = (key) => {
@@ -17,7 +18,7 @@ export const FriendOrMyProfileComponent = () => {
     {
       key: '2',
       label: <span><FaRegFileImage />Image</span>,
-      children: 'Thư mục ảnh của A',
+      children: <ProfileImagesComponent />,
     },
     {
       key: '3',
