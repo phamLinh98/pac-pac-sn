@@ -447,7 +447,7 @@ export const ProfileComponent = () => {
     try {
       const payload = await cancelFriendshipApi(profileUserId);
 
-      setFriendRequestStatus("");
+      setFriendRequestStatus("cancelled");
       setFriendRequestDirection(null);
       setFriendRequestExists(true);
       setAddFriend(false);
