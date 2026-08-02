@@ -495,6 +495,30 @@ export const cancelFriendshipApi = async (friendId) => {
   return response.json();
 };
 
+export const cancelFriendRequestApi = async (receiverId) => {
+  const url = `${envConfig.host}/friend-request/${receiverId}`;
+  const requestOptions = {
+    method: "DELETE",
+    credentials: "include",
+  };
+
+  let response = await fetch(url, requestOptions);
+
+  if (!response.ok && isAuthenticationError(response)) {
+    await refreshAccessToken();
+    response = await fetch(url, requestOptions);
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      (await readErrorResponse(response)) ||
+        `Không thể hủy yêu cầu kết bạn: ${response.status}`
+    );
+  }
+
+  return response.json();
+};
+
 export const createStoryApi = async (file) => {
   if (!(file instanceof File)) {
     throw new Error("Ảnh story không hợp lệ.");

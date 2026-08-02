@@ -59,6 +59,7 @@ import { useFacadeMyProfileList } from "../reduxs/useFacadeMyStatusProfile.jsx";
 import { checkValueInArrayGetData } from "../SideFunction/CheckValueInArray.js";
 
 import {
+  cancelFriendRequestApi,
   cancelFriendshipApi,
   deletePostApi,
   getFriendRequestsApi,
@@ -221,6 +222,8 @@ export const ProfileComponent = () => {
   const [friendRequestExists, setFriendRequestExists] = useState(false);
   const [friendPopoverOpen, setFriendPopoverOpen] = useState(false);
   const [isUnfriending, setIsUnfriending] = useState(false);
+  const [requestPopoverOpen, setRequestPopoverOpen] = useState(false);
+  const [isCancellingRequest, setIsCancellingRequest] = useState(false);
 
   const [isFollow, setIsFollow] = useState(false);
 
@@ -462,6 +465,36 @@ export const ProfileComponent = () => {
       );
     } finally {
       setIsUnfriending(false);
+    }
+  };
+
+  const handleCancelFriendRequest = async () => {
+    if (!Number.isFinite(profileUserId) || profileUserId <= 0) {
+      message.error("Không thể xác định user nhận lời mời.");
+      return;
+    }
+
+    setIsCancellingRequest(true);
+
+    try {
+      const payload = await cancelFriendRequestApi(profileUserId);
+
+      setFriendRequestStatus("cancelled");
+      setFriendRequestDirection(null);
+      setFriendRequestExists(true);
+      setAddFriend(false);
+      setRequestPopoverOpen(false);
+
+      window.dispatchEvent(new Event("friend-request-updated"));
+      message.success(payload?.message || "Đã hủy yêu cầu kết bạn.");
+    } catch (error) {
+      message.error(
+        error instanceof Error
+          ? error.message
+          : "Không thể hủy yêu cầu kết bạn."
+      );
+    } finally {
+      setIsCancellingRequest(false);
     }
   };
 
@@ -956,6 +989,28 @@ export const ProfileComponent = () => {
                       >
                         <Button icon={<FaUserFriends />}>
                           Bạn bè
+                        </Button>
+                      </Popover>
+                    ) : friendRequestStatus === "pending" &&
+                      friendRequestDirection === "outgoing" ? (
+                      <Popover
+                        trigger="click"
+                        placement="bottom"
+                        open={requestPopoverOpen}
+                        onOpenChange={setRequestPopoverOpen}
+                        content={
+                          <Button
+                            danger
+                            type="text"
+                            loading={isCancellingRequest}
+                            onClick={handleCancelFriendRequest}
+                          >
+                            Hủy yêu cầu
+                          </Button>
+                        }
+                      >
+                        <Button type="primary" icon={<BsSendPlus />}>
+                          Đã gửi lời mời kết bạn
                         </Button>
                       </Popover>
                     ) : (
