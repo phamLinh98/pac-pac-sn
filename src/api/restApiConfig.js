@@ -375,6 +375,28 @@ export const updateUserImageApi =
     }
   };
 
+export const getProfileMediaApi = async () => {
+  const response = await getApi('/profile-media');
+  const data = await response.json();
+  return Array.isArray(data) ? data : [];
+};
+
+export const updateProfileImageApi = async ({ imageType, file, imageKey }) => {
+  const formData = new FormData();
+  formData.append('imageType', imageType);
+  if (file instanceof File) formData.append('image', file);
+  if (imageKey) formData.append('imageKey', imageKey);
+
+  const requestOptions = { method: 'PUT', credentials: 'include', body: formData };
+  let response = await fetch(`${envConfig.host}/profile-image`, requestOptions);
+  if (!response.ok && isAuthenticationError(response)) {
+    await refreshAccessToken();
+    response = await fetch(`${envConfig.host}/profile-image`, requestOptions);
+  }
+  if (!response.ok) throw new Error(await readErrorResponse(response));
+  return response.json();
+};
+
 export const createNewUser =
   async (info) => {
     try {

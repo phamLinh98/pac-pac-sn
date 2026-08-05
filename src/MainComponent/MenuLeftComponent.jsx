@@ -31,6 +31,7 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const getUserFromLocalStorage = localStorage.getItem('allow-login');
   const getData = decodeJwt(getUserFromLocalStorage);
   const { id, name, avatar } = getData;
+  const currentAvatar = localStorage.getItem(`pac-pac-profile-avatar-${id}`) || avatar;
 
   const routeUserId = Number(routeProfileId);
   const targetProfileId = Number.isFinite(routeUserId) && routeUserId > 0
@@ -46,7 +47,7 @@ export const MenuLeftComponent = ({ collapsed }) => {
       key: "sub1",
       icon: (
         <ImageStatus
-          image={avatar ? avatar : ''}
+          image={currentAvatar || ''}
           width={30}
           height={30}
           style={{

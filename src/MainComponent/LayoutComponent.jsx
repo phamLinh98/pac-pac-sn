@@ -59,6 +59,7 @@ export const LayoutComponent = () => {
   }
 
   const loginUser = decodeJwt(localStorage.getItem("allow-login")) ?? {};
+  const currentAvatar = localStorage.getItem(`pac-pac-profile-avatar-${loginUser.id}`) || loginUser.avatar;
   const loginUserId = Number(loginUser.id);
   const moveToMyProfile = () => {
     if (Number.isFinite(loginUserId) && loginUserId > 0) {
@@ -82,7 +83,7 @@ export const LayoutComponent = () => {
             key: "mobile-profile",
             label: (
               <Avatar
-                src={loginUser.avatar}
+                src={currentAvatar}
                 size={30}
                 style={{ cursor: "pointer" }}
               />

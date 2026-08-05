@@ -231,6 +231,26 @@ export const ProfileComponent = () => {
 
   const [openBG, setOpenBG] = useState(false);
 
+  const [profileImages, setProfileImages] = useState({ avatar: "", background: "" });
+
+  useEffect(() => {
+    setProfileImages({
+      avatar: profileUser?.avatar || DEFAULT_AVATAR,
+      background: profileUser?.background || profileUser?.background_image || DEFAULT_BACKGROUND,
+    });
+  }, [profileUser?.avatar, profileUser?.background, profileUser?.background_image, profileUserId]);
+
+  const handleProfileImageUpdated = (updatedUser) => {
+    setProfileImages((current) => ({
+      avatar: updatedUser?.avatar || current.avatar,
+      background: updatedUser?.background || current.background,
+    }));
+
+    if (updatedUser?.avatar) {
+      localStorage.setItem(`pac-pac-profile-avatar-${loginUserId}`, updatedUser.avatar);
+    }
+  };
+
   const [openPostMenuId, setOpenPostMenuId] = useState(null);
 
   const [editingPostId, setEditingPostId] = useState(null);
@@ -850,9 +870,7 @@ export const ProfileComponent = () => {
               }}
               alt="Ảnh bìa"
               src={
-                profileUser?.background ||
-                profileUser?.background_image ||
-                DEFAULT_BACKGROUND
+                profileImages.background || DEFAULT_BACKGROUND
               }
               preview
             />
@@ -891,7 +909,7 @@ export const ProfileComponent = () => {
                         active
                         size={64}
                         icon={<UserOutlined />}
-                        image={profileUser.avatar || DEFAULT_AVATAR}
+                        image={profileImages.avatar || DEFAULT_AVATAR}
                         style={{
                           width: "64px",
                           height: "64px",
@@ -943,13 +961,15 @@ export const ProfileComponent = () => {
                           <ModalComponent
                             open={openAvatar}
                             hideModal={hideModalAvatar}
-                            id={loginUserId}
+                            imageType="avatar"
+                            onUpdated={handleProfileImageUpdated}
                           />
 
                           <ModalComponent
                             open={openBG}
                             hideModal={hideModalBG}
-                            id={loginUserId}
+                            imageType="background"
+                            onUpdated={handleProfileImageUpdated}
                           />
                         </div>
                       )}
@@ -1142,7 +1162,7 @@ export const ProfileComponent = () => {
                           active
                           width="26px"
                           height="25px"
-                          image={item.avatar || DEFAULT_AVATAR}
+                          image={(isOwnPost ? profileImages.avatar : item.avatar) || DEFAULT_AVATAR}
                           style={{
                             width: "26px",
                             height: "25px",
