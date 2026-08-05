@@ -20,7 +20,9 @@ const ALLOWED_STORY_TYPES = new Set([
   "image/gif",
 ]);
 const DEFAULT_STORY_MUSIC_URL =
-  "https://www.nhaccuatui.com/mh/auto/0lliVALb8py8";
+  "https://www.nhaccuatui.com/song/0lliVALb8py8?autoplay=true";
+const DEFAULT_STORY_MUSIC_PAGE =
+  "https://www.nhaccuatui.com/song/0lliVALb8py8";
 
 export const AllStory = () => {
   const containerRef = useRef(null);
@@ -30,6 +32,7 @@ export const AllStory = () => {
   const [previewUrl, setPreviewUrl] = useState("");
   const [isPosting, setIsPosting] = useState(false);
   const [playingStoryId, setPlayingStoryId] = useState(null);
+  const [viewingStory, setViewingStory] = useState(null);
 
   const {
     story,
@@ -121,6 +124,16 @@ export const AllStory = () => {
     });
   };
 
+  const openStoryViewer = (item) => {
+    setViewingStory(item);
+    setPlayingStoryId(item.id);
+  };
+
+  const closeStoryViewer = () => {
+    setViewingStory(null);
+    setPlayingStoryId(null);
+  };
+
   return (
     <div style={{ width: "95%", overflowX: "hidden", position: "relative" }}>
       <div
@@ -180,20 +193,14 @@ export const AllStory = () => {
                       tabIndex={0}
                       aria-label={
                         Number(playingStoryId) === Number(item.id)
-                          ? "Dừng nhạc story"
-                          : "Phát nhạc story"
+                          ? "Story đang được mở"
+                          : "Xem story và phát nhạc"
                       }
-                      onClick={() =>
-                        setPlayingStoryId((currentId) =>
-                          Number(currentId) === Number(item.id) ? null : item.id
-                        )
-                      }
+                      onClick={() => openStoryViewer(item)}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
                           event.preventDefault();
-                          setPlayingStoryId((currentId) =>
-                            Number(currentId) === Number(item.id) ? null : item.id
-                          );
+                          openStoryViewer(item);
                         }
                       }}
                       style={{ position: "relative", cursor: "pointer" }}
@@ -221,20 +228,6 @@ export const AllStory = () => {
                         }}
                       />
 
-                      {Number(playingStoryId) === Number(item.id) && (
-                        <iframe
-                          title="Nhạc mặc định của story"
-                          src={DEFAULT_STORY_MUSIC_URL}
-                          allow="autoplay"
-                          style={{
-                            position: "absolute",
-                            width: 1,
-                            height: 1,
-                            opacity: 0,
-                            pointerEvents: "none",
-                          }}
-                        />
-                      )}
                     </div>
                   }
                   actions={
@@ -243,7 +236,10 @@ export const AllStory = () => {
                           <DeleteOutlined
                             key="delete"
                             style={{ color: "red", fontSize: "1.2rem" }}
-                            onClick={() => handleDeleteStory(item)}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleDeleteStory(item);
+                            }}
                           />,
                         ]
                       : [
@@ -264,6 +260,47 @@ export const AllStory = () => {
           )}
         </div>
       </div>
+
+      <Modal
+        title={viewingStory ? `Story của ${Number(viewingStory.user_id) === loginUserId ? "Bạn" : viewingStory.user_name || "Người dùng"}` : "Story"}
+        open={Boolean(viewingStory)}
+        onCancel={closeStoryViewer}
+        footer={null}
+        centered
+        width={620}
+        destroyOnClose
+      >
+        {viewingStory && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ textAlign: "center", background: "#000", borderRadius: 8, overflow: "hidden" }}>
+              <Image
+                src={viewingStory.image_url || viewingStory.image}
+                alt="Story"
+                style={{ width: "100%", maxHeight: "65vh", objectFit: "contain" }}
+              />
+            </div>
+
+            <div style={{ border: "1px solid #d9d9d9", borderRadius: 8, overflow: "hidden" }}>
+              <iframe
+                title="Nhạc mặc định của story"
+                src={DEFAULT_STORY_MUSIC_URL}
+                allow="autoplay; encrypted-media"
+                referrerPolicy="strict-origin-when-cross-origin"
+                style={{ display: "block", width: "100%", height: 180, border: 0 }}
+              />
+            </div>
+
+            <Button
+              icon={<SoundOutlined />}
+              href={DEFAULT_STORY_MUSIC_PAGE}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Mở nhạc trên NhacCuaTui nếu trình duyệt chặn âm thanh
+            </Button>
+          </div>
+        )}
+      </Modal>
 
       <Modal
         title="Đăng story mới"
