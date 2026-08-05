@@ -2,7 +2,7 @@ import { Button, Popover } from 'antd';
 
 // EmojiPopover Component
 // eslint-disable-next-line react/prop-types
-export const EmojiPopover = ({ handleAddComment, isSubmitting, setCommentText, commentText }) => {
+export const EmojiPopover = ({ isSubmitting, setCommentText, commentText }) => {
   // Array of emojis provided
   const emojis = ['😀', '😃', '😄', '😁', '😜', '😝', '😍', '😑', '🙄', '🤗', '😘', '😱', '🤧', '😰', '😠', '😖', '🤒', '😤', '🤪', '🥵', '😱','🥶','😎','🤩','👍'];
 

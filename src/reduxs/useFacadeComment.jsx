@@ -8,7 +8,7 @@ export const useFacadeComment = (listId) => {
 
     useEffect(() => {
         dispatch(getCommentThunkFunction(listId));
-    }, [listId, dispatch, getCommentThunkFunction]);
+    }, [listId, dispatch]);
 
     return {
         listComment,

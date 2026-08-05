@@ -28,21 +28,6 @@ const ChatHistoryPanel = () => {
         setIsModalVisible(false);
     };
 
-    const data = [
-        {
-            message: "Mai mày rảnh không?"
-        },
-        {
-            message: "Gửi tao mượn 100K?"
-        },
-        {
-            message: "Biết thế?"
-        },
-        {
-            message: "Có cl ấy?"
-        },
-    ];
-
     // Nội dung của Popover với bố cục Flex
     const popoverContent = (
         <div style={{ display: 'flex', flexDirection: 'column', width: '350px' }}>

@@ -8,7 +8,7 @@ export const useFacadeFriendListOnline = (userId) => {
 
     useEffect(() => {
         dispatch(getThunkFriendList(userId));
-    }, [userId, dispatch, getThunkFriendList]);
+    }, [userId, dispatch]);
 
     return {
         listFriendListOnline,

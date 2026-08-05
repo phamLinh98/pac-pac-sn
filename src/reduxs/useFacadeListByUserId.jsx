@@ -7,7 +7,7 @@ export const useFacadeListByUserId = (userId) => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getListByUserIdThunk(userId))
-    }, [userId, dispatch, getListByUserIdThunk]);
+    }, [userId, dispatch]);
     return {
         listUserById,
         error,

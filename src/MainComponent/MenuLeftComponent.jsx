@@ -8,6 +8,7 @@ import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { ImageStatus } from "../SideComponent/ImageStatus";
 import { MdAccountCircle } from "react-icons/md";
 import { useAppSettings } from "../contexts/AppSettingsContext";
+import { logoutClearToken as logoutApi } from "../api/restApiConfig";
 
 // eslint-disable-next-line react/prop-types
 export const MenuLeftComponent = ({ collapsed }) => {
@@ -18,9 +19,13 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const navigate = useNavigate();
   const { id: routeProfileId } = useParams();
 
-  const logoutClearToken = () => {
-    localStorage.removeItem('allow-login');
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await logoutApi("/logout");
+    } finally {
+      localStorage.removeItem("allow-login");
+      navigate("/login");
+    }
   }
 
   const getUserFromLocalStorage = localStorage.getItem('allow-login');
@@ -133,7 +138,7 @@ export const MenuLeftComponent = ({ collapsed }) => {
       key: "sub6",
       icon: <GrLogout />,
       label: t.logout,
-      onClick: logoutClearToken
+      onClick: handleLogout
     }
   ];
 

@@ -49,7 +49,7 @@ const refreshAccessToken = async () => {
   const refreshResponse = await fetch(
     `${envConfig.host}/refesh-token`,
     {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type":
           "application/json",
@@ -232,7 +232,7 @@ export const refeshTokenWhenExpired =
         `${envConfig.host}${route}`;
 
       const requestOptions = {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type":
             "application/json",
@@ -289,7 +289,7 @@ export const logoutClearToken =
       const response = await fetch(
         url,
         {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type":
               "application/json",
