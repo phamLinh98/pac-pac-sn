@@ -1,4 +1,4 @@
-import { Avatar, Layout, theme } from "antd";
+import { Avatar, Button, Divider, Layout, Popover, Select, Switch, theme } from "antd";
 import { GrHomeRounded } from "react-icons/gr";
 import { Content } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
@@ -14,6 +14,11 @@ import ChatHistoryPanel from "../SideComponent/ChatHistoryPanel";
 import NotificationsPanel from "../SideComponent/NotificationsPanel";
 import PropTypes from "prop-types";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
+import { IoSettingsOutline } from "react-icons/io5";
+import { GrLogout } from "react-icons/gr";
+import { MdAccountCircle } from "react-icons/md";
+import { useAppSettings } from "../contexts/AppSettingsContext";
+import { logoutClearToken as logoutApi } from "../api/restApiConfig";
 
 const MOBILE_BREAKPOINT = 430;
 
@@ -32,6 +37,8 @@ export const LayoutComponent = () => {
 
   // eslint-disable-next-line no-unused-vars
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileAccountOpen, setMobileAccountOpen] = useState(false);
+  const { themeMode, setThemeMode, language, setLanguage, t } = useAppSettings();
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== "undefined"
       ? window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches
@@ -63,9 +70,70 @@ export const LayoutComponent = () => {
   const loginUserId = Number(loginUser.id);
   const moveToMyProfile = () => {
     if (Number.isFinite(loginUserId) && loginUserId > 0) {
+      setMobileAccountOpen(false);
       navigate(`/profile/${loginUserId}`);
     }
   };
+
+  const handleLogout = async () => {
+    try {
+      await logoutApi("/logout");
+    } finally {
+      localStorage.removeItem("allow-login");
+      localStorage.removeItem(`pac-pac-profile-avatar-${loginUserId}`);
+      setMobileAccountOpen(false);
+      navigate("/login");
+    }
+  };
+
+  const mobileAccountContent = (
+    <div onClick={(event) => event.stopPropagation()} style={{ width: 250 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "4px 4px 10px" }}>
+        <Avatar src={currentAvatar} size={42} />
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {loginUser.name || "User"}
+          </div>
+          <small style={{ opacity: 0.65 }}>ID: {loginUserId}</small>
+        </div>
+      </div>
+
+      <Button type="text" block icon={<MdAccountCircle />} onClick={moveToMyProfile} style={{ textAlign: "left" }}>
+        Profile
+      </Button>
+
+      <Divider style={{ margin: "8px 0" }} />
+      <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 600, marginBottom: 10 }}>
+        <IoSettingsOutline /> {t.setting}
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>
+        <span>{t.theme}</span>
+        <Switch
+          size="small"
+          checked={themeMode === "dark"}
+          checkedChildren={t.dark}
+          unCheckedChildren={t.light}
+          onChange={(checked) => setThemeMode(checked ? "dark" : "light")}
+        />
+      </div>
+      <Select
+        size="small"
+        value={language}
+        onChange={setLanguage}
+        style={{ width: "100%" }}
+        options={[
+          { value: "ja", label: "日本語" },
+          { value: "en", label: "English" },
+          { value: "vi", label: "Tiếng Việt" },
+        ]}
+      />
+
+      <Divider style={{ margin: "10px 0" }} />
+      <Button danger type="text" block icon={<GrLogout />} onClick={handleLogout} style={{ textAlign: "left" }}>
+        {t.logout}
+      </Button>
+    </div>
+  );
 
   const headerBackgroundImage =
     "https://i.pinimg.com/vwebp/1200x/d9/b2/97/d9b29715b473dd0a5b37e1bc9929907b.webp";
@@ -82,13 +150,20 @@ export const LayoutComponent = () => {
           {
             key: "mobile-profile",
             label: (
-              <Avatar
-                src={currentAvatar}
-                size={30}
-                style={{ cursor: "pointer" }}
-              />
+              <Popover
+                trigger="click"
+                placement="bottomLeft"
+                open={mobileAccountOpen}
+                onOpenChange={setMobileAccountOpen}
+                content={mobileAccountContent}
+              >
+                <Avatar
+                  src={currentAvatar}
+                  size={30}
+                  style={{ cursor: "pointer" }}
+                />
+              </Popover>
             ),
-            onClick: moveToMyProfile,
             style: menuItemStyle,
           },
         ]
