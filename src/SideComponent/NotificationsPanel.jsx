@@ -1,69 +1,147 @@
-import { useState } from 'react';
-import { Popover, Button } from 'antd';
-import { GrNotification } from "react-icons/gr";
-import { List, Avatar } from 'antd';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Avatar, Badge, Button, Empty, List, Popover, Spin, message } from 'antd';
+import { GrNotification } from 'react-icons/gr';
+import { useNavigate } from 'react-router-dom';
+import {
+    getCommentNotificationsApi,
+    markAllCommentNotificationsAsReadApi,
+    markNotificationAsReadApi,
+} from '../api/restApiConfig';
+
+const formatNotificationTime = (value) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return new Intl.DateTimeFormat('vi-VN', {
+        dateStyle: 'short',
+        timeStyle: 'short',
+    }).format(date);
+};
 
 const NotificationsPanel = () => {
-    // eslint-disable-next-line no-unused-vars
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    // Hàm để hiển thị Modal
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
+    const navigate = useNavigate();
+    const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
 
-    const data = [
-        {
-            title: 'A đã bình luận về bài viết',
-        },
-        {
-            title: 'B đã bình luận về bài viết',
-        },
-        {
-            title: 'C đã bình luận về bài viết',
-        },
-        {
-            title: 'D đã bình luận về bài viết',
-        },
-    ];
+    const fetchNotifications = useCallback(async ({ silent = false } = {}) => {
+        if (!silent) setLoading(true);
+        try {
+            const result = await getCommentNotificationsApi();
+            setNotifications(Array.isArray(result) ? result : []);
+        } catch (error) {
+            if (!silent) message.error(error.message || 'Không thể tải thông báo');
+        } finally {
+            if (!silent) setLoading(false);
+        }
+    }, []);
 
+    useEffect(() => {
+        fetchNotifications();
+        const refresh = () => fetchNotifications({ silent: true });
+        const intervalId = window.setInterval(refresh, 30000);
+        window.addEventListener('focus', refresh);
+        window.addEventListener('comment-notification-updated', refresh);
+        return () => {
+            window.clearInterval(intervalId);
+            window.removeEventListener('focus', refresh);
+            window.removeEventListener('comment-notification-updated', refresh);
+        };
+    }, [fetchNotifications]);
 
-    // Hàm để đóng Modal
-    // Nội dung của Popover với bố cục Flex
-    const popoverContent = (
-        <div style={{ display: 'flex', flexDirection: 'column', width: '350px' }}>
-            <List
-                itemLayout="horizontal"
-                dataSource={data}
-                renderItem={(item, index) => (
-                    <List.Item>
-                        <List.Item.Meta
-                            avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-                            title={<a href="https://ant.design">{item.title}</a>}
-                            description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                        />
-                    </List.Item>
-                )}
-            />
-            <Button type="primary" onClick={showModal} style={{ marginTop: '8px' }}>
-                Xem tất cả
-            </Button>
-        </div>
+    const unreadCount = useMemo(
+        () => notifications.filter((item) => !item.is_read).length,
+        [notifications]
     );
 
-    const listChatStyle = () => <>
-        <div style={{ textAlign: "center" }}>Danh Sách Thông Báo</div>
-    </>
+    const openNotification = async (notification) => {
+        if (!notification.is_read) {
+            try {
+                await markNotificationAsReadApi(notification.id);
+                setNotifications((current) => current.map((item) =>
+                    item.id === notification.id ? { ...item, is_read: true } : item
+                ));
+            } catch (error) {
+                message.error(error.message || 'Không thể cập nhật thông báo');
+                return;
+            }
+        }
+        setOpen(false);
+        navigate(`/profile/${notification.receiver_user_id}`, {
+            state: { highlightedPostId: notification.post_id },
+        });
+    };
+
+    const markAllAsRead = async () => {
+        try {
+            await markAllCommentNotificationsAsReadApi();
+            setNotifications((current) => current.map((item) => ({ ...item, is_read: true })));
+        } catch (error) {
+            message.error(error.message || 'Không thể cập nhật thông báo');
+        }
+    };
+
+    const popoverContent = (
+        <div style={{ width: 360, maxWidth: '82vw' }}>
+            {loading ? (
+                <div style={{ padding: 32, textAlign: 'center' }}><Spin /></div>
+            ) : notifications.length === 0 ? (
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Chưa có thông báo bình luận" />
+            ) : (
+                <List
+                    style={{ maxHeight: 420, overflowY: 'auto' }}
+                    itemLayout="horizontal"
+                    dataSource={notifications}
+                    renderItem={(item) => (
+                        <List.Item
+                            onClick={() => openNotification(item)}
+                            style={{
+                                cursor: 'pointer',
+                                paddingInline: 8,
+                                background: item.is_read ? 'transparent' : 'rgba(22, 119, 255, 0.08)',
+                            }}
+                        >
+                            <List.Item.Meta
+                                avatar={<Avatar src={item.sender_avatar}>{item.sender_name?.[0]}</Avatar>}
+                                title={<span><strong>{item.sender_name || 'Người dùng'}</strong> đã bình luận bài viết của bạn</span>}
+                                description={
+                                    <div>
+                                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            {item.comment_content || 'Bình luận mới'}
+                                        </div>
+                                        <small>{formatNotificationTime(item.created_at)}</small>
+                                    </div>
+                                }
+                            />
+                            {!item.is_read && <Badge status="processing" />}
+                        </List.Item>
+                    )}
+                />
+            )}
+            {unreadCount > 0 && (
+                <Button type="link" block onClick={markAllAsRead} style={{ marginTop: 8 }}>
+                    Đánh dấu tất cả đã đọc
+                </Button>
+            )}
+        </div>
+    );
 
     return (
         <div style={{ position: 'relative', display: 'inline-block' }}>
             <Popover
                 content={popoverContent}
-                title={listChatStyle}
+                title="Thông báo bình luận"
                 placement="bottom"
                 trigger="click"
+                open={open}
+                onOpenChange={(nextOpen) => {
+                    setOpen(nextOpen);
+                    if (nextOpen) fetchNotifications();
+                }}
             >
                 <div style={{ cursor: 'pointer' }}>
-                    <GrNotification style={{ fontSize: '17px' }} />
+                    <Badge count={unreadCount} size="small" overflowCount={99}>
+                        <GrNotification style={{ fontSize: 17, color: 'white' }} />
+                    </Badge>
                 </div>
             </Popover>
         </div>

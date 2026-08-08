@@ -739,6 +739,45 @@ export const addComment = async (
 
 /*
  * =========================================================
+ * Comment notifications
+ * =========================================================
+ */
+
+const notificationMutation = async (route) => {
+  const url = `${envConfig.host}${route}`;
+  const requestOptions = {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  };
+
+  let response = await fetch(url, requestOptions);
+  if (!response.ok && isAuthenticationError(response)) {
+    await refreshAccessToken();
+    response = await fetch(url, requestOptions);
+  }
+  if (!response.ok) {
+    throw new Error(
+      (await readErrorResponse(response)) ||
+      `Cập nhật thông báo thất bại: ${response.status}`
+    );
+  }
+  return response.json();
+};
+
+export const getCommentNotificationsApi = async (limit = 30) => {
+  const response = await getApi(`/notifications/comments?limit=${limit}`);
+  return response.json();
+};
+
+export const markNotificationAsReadApi = (notificationId) =>
+  notificationMutation(`/notifications/${notificationId}/read`);
+
+export const markAllCommentNotificationsAsReadApi = () =>
+  notificationMutation('/notifications/read-all');
+
+/*
+ * =========================================================
  * Upload post images
  * =========================================================
  */

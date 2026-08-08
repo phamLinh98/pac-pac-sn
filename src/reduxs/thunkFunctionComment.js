@@ -24,7 +24,7 @@ export const addCommentThunkFunction = (content, userId, listId) => {
     return async (dispatch) => {
         dispatch(eventLoading(true));
         try {
-            await addCommentAPI(content, userId, listId);
+            const createdComment = await addCommentAPI(content, userId, listId);
 
             // Lấy thông tin user từ JWT token
             const getUserFromLocalStorage = localStorage.getItem('allow-login');
@@ -32,6 +32,7 @@ export const addCommentThunkFunction = (content, userId, listId) => {
 
             // Tạo comment object với đầy đủ thông tin để hiển thị ngay lập tức
             const newComment = {
+                ...createdComment,
                 post_id: listId,
                 content: content,
                 user_id: userId,
@@ -41,9 +42,11 @@ export const addCommentThunkFunction = (content, userId, listId) => {
             };
 
             dispatch(addComment(newComment));
+            window.dispatchEvent(new Event('comment-notification-updated'));
         } catch (error) {
             console.log('error', error);
             dispatch(logError(error.message || 'Không thể thêm bình luận'));
+            throw error;
         } finally {
             dispatch(eventLoading(false));
         }
