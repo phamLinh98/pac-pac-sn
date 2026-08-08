@@ -864,7 +864,7 @@ export const ProfileComponent = () => {
 
       normalizedContent: normalizeContent(item?.content),
     }))
-    .filter((item) => hasPostContent(item.normalizedContent));
+    .filter((item) => item.is_shared_post || hasPostContent(item.normalizedContent));
 
   return (
     <>
