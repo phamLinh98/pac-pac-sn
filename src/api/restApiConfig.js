@@ -778,6 +778,50 @@ export const markAllCommentNotificationsAsReadApi = () =>
 
 /*
  * =========================================================
+ * Chat
+ * =========================================================
+ */
+
+const chatRequest = async (route, { method = 'GET', body } = {}) => {
+  if (method === 'GET') {
+    const response = await getApi(route);
+    return response.json();
+  }
+
+  const url = `${envConfig.host}${route}`;
+  const requestOptions = {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  };
+  let response = await fetch(url, requestOptions);
+  if (!response.ok && isAuthenticationError(response)) {
+    await refreshAccessToken();
+    response = await fetch(url, requestOptions);
+  }
+  if (!response.ok) {
+    throw new Error((await readErrorResponse(response)) || `Chat API lỗi: ${response.status}`);
+  }
+  if (response.status === 204) return null;
+  return response.json();
+};
+
+export const getChatsApi = () => chatRequest('/chats');
+export const createDirectChatApi = (userId) => chatRequest('/chats/direct', { method: 'POST', body: { userId } });
+export const createGroupChatApi = (name, memberIds) => chatRequest('/chats/group', { method: 'POST', body: { name, memberIds } });
+export const getChatMessagesApi = (chatId) => chatRequest(`/chats/${chatId}/messages?limit=100`);
+export const sendChatMessageApi = (chatId, chatMessage) => chatRequest(`/chats/${chatId}/messages`, { method: 'POST', body: { message: chatMessage } });
+export const markChatReadApi = (chatId, messageId) => chatRequest(`/chats/${chatId}/read`, { method: 'PATCH', body: { messageId } });
+export const addChatMembersApi = (chatId, memberIds) => chatRequest(`/chats/${chatId}/members`, { method: 'POST', body: { memberIds } });
+export const leaveChatGroupApi = (chatId) => chatRequest(`/chats/${chatId}/members/me`, { method: 'DELETE' });
+export const getFriendsApi = async (userId) => {
+  const response = await getApi(`/list-friend/${userId}`);
+  return response.json();
+};
+
+/*
+ * =========================================================
  * Upload post images
  * =========================================================
  */
