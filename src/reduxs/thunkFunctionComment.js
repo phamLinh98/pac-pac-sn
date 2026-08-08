@@ -20,11 +20,11 @@ export const getCommentThunkFunction = (listId) => {
 };
 
 // Redux thunk cho việc thêm comment mới
-export const addCommentThunkFunction = (content, userId, listId) => {
+export const addCommentThunkFunction = (content, userId, listId, imageFile = null) => {
     return async (dispatch) => {
         dispatch(eventLoading(true));
         try {
-            const createdComment = await addCommentAPI(content, userId, listId);
+            const createdComment = await addCommentAPI(content, userId, listId, imageFile);
 
             // Lấy thông tin user từ JWT token
             const getUserFromLocalStorage = localStorage.getItem('allow-login');
@@ -34,11 +34,11 @@ export const addCommentThunkFunction = (content, userId, listId) => {
             const newComment = {
                 ...createdComment,
                 post_id: listId,
-                content: content,
+                content: createdComment?.content ?? content,
                 user_id: userId,
                 user_name: userData?.name || userData?.user_name || 'Anonymous',
                 avatar: userData?.avatar || '',
-                created_at: new Date().toISOString(),
+                created_at: createdComment?.created_at ?? new Date().toISOString(),
             };
 
             dispatch(addComment(newComment));

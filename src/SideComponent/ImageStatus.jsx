@@ -6,6 +6,7 @@ export const ImageStatus = ({ image, width, height, style, active, preview }) =>
     <div style={{
       position: 'relative',
       display: 'inline-block',
+      flexShrink: 0,
       overflow: 'hidden', // Đảm bảo chấm tròn không tràn ra ngoài
     }}>
       <Image

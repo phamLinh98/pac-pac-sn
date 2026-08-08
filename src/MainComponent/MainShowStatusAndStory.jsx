@@ -1,7 +1,6 @@
 import { Space } from "antd";
 import { MyStatusAreaComponent } from "./MyStatusAreaComponent";
 import { FriendStatusListComponent } from "./FriendStatusListComponent";
-import { AllStory } from "../SideComponent/Story";
 import { useDispatch } from "react-redux";
 import { addListStatus } from "../reduxs/reduxListStatus";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";

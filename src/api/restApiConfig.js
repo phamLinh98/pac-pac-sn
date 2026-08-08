@@ -683,10 +683,11 @@ export const getApiListUserStatus =
 export const addComment = async (
   content,
   userId,
-  listId
+  listId,
+  imageFile = null
 ) => {
   if (
-    !content ||
+    (!content && !imageFile) ||
     !userId ||
     !listId
   ) {
@@ -699,20 +700,23 @@ export const addComment = async (
     const url =
       `${envConfig.host}/add-comment/${userId}/${listId}`;
 
-    const response = await fetch(
+    const formData = new FormData();
+    formData.append('content', content || '');
+    if (imageFile) formData.append('image', imageFile);
+
+    let response = await fetch(
       url,
       {
         method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify({
-          content,
-        }),
+        body: formData,
         credentials: "include",
       }
     );
+
+    if (response.status === 401) {
+      await refreshAccessToken();
+      response = await fetch(url, { method: 'POST', body: formData, credentials: 'include' });
+    }
 
     if (!response.ok) {
       const errorMessage =
