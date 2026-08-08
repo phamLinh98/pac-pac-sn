@@ -840,6 +840,8 @@ const chatRequest = async (route, { method = 'GET', body } = {}) => {
 };
 
 export const getChatsApi = () => chatRequest('/chats');
+export const sendPresenceHeartbeatApi = () => chatRequest('/presence/heartbeat', { method: 'POST' });
+export const getFriendPresenceApi = () => chatRequest('/friends/presence');
 export const createDirectChatApi = (userId) => chatRequest('/chats/direct', { method: 'POST', body: { userId } });
 export const createGroupChatApi = (name, memberIds) => chatRequest('/chats/group', { method: 'POST', body: { name, memberIds } });
 export const getChatMessagesApi = (chatId) => chatRequest(`/chats/${chatId}/messages?limit=100`);

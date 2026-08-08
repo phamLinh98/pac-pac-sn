@@ -20,6 +20,7 @@ import { MdAccountCircle } from "react-icons/md";
 import { useAppSettings } from "../contexts/AppSettingsContext";
 import { logoutClearToken as logoutApi } from "../api/restApiConfig";
 import MobileUserSearch from "../SideComponent/MobileUserSearch";
+import PresenceHeartbeat from "../SideComponent/PresenceHeartbeat";
 
 const MOBILE_BREAKPOINT = 430;
 
@@ -211,6 +212,7 @@ export const LayoutComponent = () => {
 
   return (
     <Layout style={{ height: "200vh" }}>
+      <PresenceHeartbeat />
       <PrivateAreaComponent
         items={headerItem}
         collapsed={collapsed}
