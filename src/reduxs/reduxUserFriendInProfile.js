@@ -2,11 +2,23 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const ListUserById = createSlice({
     name: "ListByUserId",
-    initialState: { listUserById: [], error: '', loading: false },
+    initialState: {
+        listUserById: [],
+        error: '',
+        loading: false,
+        requestedUserId: null,
+        loadedUserId: null,
+    },
     reducers: {
         getListByUserId: (state, action) => {
-            state.listUserById = action.payload;
+            const { userId, posts } = action.payload;
+            if (state.requestedUserId !== userId) {
+                return;
+            }
+            state.listUserById = posts;
+            state.loadedUserId = userId;
             state.loading = false;
+            state.error = '';
         },
         addListByUserId: (state, action) => {
             if (!Array.isArray(state.listUserById)) {
@@ -18,11 +30,20 @@ export const ListUserById = createSlice({
             state.error = "";
         },
         logError: (state, action) => {
-            state.error = action.payload;
+            const { userId, error } = action.payload;
+            if (state.requestedUserId !== userId) {
+                return;
+            }
+            state.error = error;
             state.loading = false;
         },
-        eventLoading: (state,action) => {
-            state.loading = action.payload;
+        eventLoading: (state, action) => {
+            const userId = action.payload;
+            state.requestedUserId = userId;
+            state.listUserById = [];
+            state.loadedUserId = null;
+            state.error = '';
+            state.loading = true;
         }
     }
 })

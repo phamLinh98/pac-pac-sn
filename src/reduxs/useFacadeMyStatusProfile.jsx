@@ -4,7 +4,7 @@ import { getThunkMyProfileList } from "./thunkUserProfileStatus";
 import { addListByUserId } from "./reduxUserFriendInProfile";
 
 export const useFacadeMyProfileList = (id) => {
-    const { listUserById, error, loading } = useSelector(state => state.reduxListUserByIdByProfile);
+    const { listUserById, error, loading, loadedUserId } = useSelector(state => state.reduxListUserByIdByProfile);
     const dispatch = useDispatch();
     const refetchProfilePosts = useCallback(() => {
         if (!Number.isFinite(id) || id <= 0) {
@@ -23,7 +23,7 @@ export const useFacadeMyProfileList = (id) => {
     }, [refetchProfilePosts]);
 
     return {
-        listUserById,
+        listUserById: loadedUserId === id ? listUserById : [],
         error,
         loading,
         refetchProfilePosts,

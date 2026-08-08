@@ -8,16 +8,17 @@ import {
 // Redux thunk cho list status
 export const getThunkMyProfileList = (userId) => {
   return async (dispatch) => {
-    dispatch(eventLoading(true));
+    dispatch(eventLoading(userId));
     try {
       const data = await getApiListUserStatus(`/list-user/${userId}`);
       const response = await data.json();
-      dispatch(getListByUserId(response));
+      dispatch(getListByUserId({ userId, posts: response }));
     } catch (error) {
       console.log("error", error);
-      dispatch(logError(error.message || "Không thể tải danh sách"));
-    } finally {
-      dispatch(eventLoading(false));
+      dispatch(logError({
+        userId,
+        error: error.message || "Không thể tải danh sách",
+      }));
     }
   };
 };

@@ -268,10 +268,12 @@ export const ProfileComponent = () => {
   const [localPostOverrides, setLocalPostOverrides] = useState({});
 
   useEffect(() => {
-    const refreshAfterShare = () => refetchProfilePosts?.();
+    const refreshAfterShare = () => {
+      if (isOwnProfile) refetchProfilePosts?.();
+    };
     window.addEventListener('post-shared', refreshAfterShare);
     return () => window.removeEventListener('post-shared', refreshAfterShare);
-  }, [refetchProfilePosts]);
+  }, [isOwnProfile, refetchProfilePosts]);
 
   useEffect(() => {
     if (!editingPostId) {
