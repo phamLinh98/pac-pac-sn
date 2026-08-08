@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Avatar, Badge, Button, Empty, Input, List, Modal, Popover, Segmented,
+  Avatar, Badge, Button, Empty, Image, Input, List, Modal, Popover, Segmented,
   Select, Space, Spin, Typography, message,
 } from 'antd';
 import { SiMessenger } from 'react-icons/si';
-import { IoArrowBack, IoPeopleOutline, IoPersonAddOutline, IoSend } from 'react-icons/io5';
+import { IoArrowBack, IoImageOutline, IoPeopleOutline, IoPersonAddOutline, IoSend } from 'react-icons/io5';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
 import {
   addChatMembersApi, createDirectChatApi, createGroupChatApi, getChatMessagesApi,
-  getChatsApi, getFriendsApi, leaveChatGroupApi, markChatReadApi, sendChatMessageApi,
+  getChatsApi, getFriendsApi, leaveChatGroupApi, markChatReadApi, sendChatImageApi, sendChatMessageApi,
 } from '../api/restApiConfig';
 
 const { Text } = Typography;
@@ -34,6 +34,7 @@ const ChatHistoryPanel = () => {
   const [loadingChats, setLoadingChats] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [sending, setSending] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const [createType, setCreateType] = useState('DIRECT');
   const [selectedFriendIds, setSelectedFriendIds] = useState([]);
@@ -43,6 +44,7 @@ const ChatHistoryPanel = () => {
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia('(max-width: 700px)').matches);
   const messageEndRef = useRef(null);
+  const imageInputRef = useRef(null);
 
   const selectedChat = chats.find((chat) => Number(chat.id) === Number(selectedChatId));
   const totalUnread = useMemo(() => chats.reduce((sum, chat) => sum + Number(chat.unread_count || 0), 0), [chats]);
@@ -155,6 +157,26 @@ const ChatHistoryPanel = () => {
     } finally { setSending(false); }
   };
 
+  const sendImage = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file || !selectedChatId || uploadingImage) return;
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
+      return message.warning('Chỉ hỗ trợ ảnh JPEG, PNG, WEBP hoặc GIF');
+    }
+    if (file.size > 5 * 1024 * 1024) return message.warning('Ảnh không được vượt quá 5 MB');
+    setUploadingImage(true);
+    try {
+      const created = await sendChatImageApi(selectedChatId, file);
+      setMessages((current) => [...current.filter((item) => item.id !== created.id), created]);
+      await loadChats(true);
+    } catch (error) {
+      message.error(error.message || 'Không thể gửi ảnh');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const createChat = async () => {
     try {
       let created;
@@ -205,7 +227,7 @@ const ChatHistoryPanel = () => {
           background: !compact && Number(chat.id) === Number(selectedChatId) ? 'rgba(22,119,255,.1)' : undefined }}>
           <List.Item.Meta avatar={<Badge count={chat.unread_count} size="small"><Avatar src={chat.display_avatar}>{chat.chat_type === 'GROUP' ? <IoPeopleOutline /> : chat.display_name?.[0]}</Avatar></Badge>}
             title={<Text strong ellipsis>{chat.display_name}</Text>}
-            description={<Text type="secondary" ellipsis>{chat.last_message || 'Bắt đầu trò chuyện'}</Text>} />
+            description={<Text type="secondary" ellipsis>{chat.last_message_type === 'IMAGE' ? '📷 Hình ảnh' : (chat.last_message || 'Bắt đầu trò chuyện')}</Text>} />
           {!compact && <Text type="secondary" style={{ fontSize: 11 }}>{shortTime(chat.last_message_at)}</Text>}
         </List.Item>
       )}
@@ -252,7 +274,16 @@ const ChatHistoryPanel = () => {
                   return <div key={item.id} style={{ display: 'flex', justifyContent: mine ? 'flex-end' : 'flex-start', gap: 7, marginBottom: 10 }}>
                     {!mine && <Avatar size={28} src={item.sender_avatar}>{item.sender_name?.[0]}</Avatar>}
                     <div style={{ maxWidth: '72%' }}>{!mine && selectedChat.chat_type === 'GROUP' && <div style={{ fontSize: 11, color: '#777' }}>{item.sender_name}</div>}
-                      <div style={{ padding: '8px 12px', borderRadius: 16, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', background: mine ? '#1677ff' : '#fff', color: mine ? '#fff' : '#111' }}>{item.is_deleted ? 'Tin nhắn đã bị xóa' : item.message}</div>
+                      {item.is_deleted ? (
+                        <div style={{ padding: '8px 12px', borderRadius: 16, background: mine ? '#1677ff' : '#fff', color: mine ? '#fff' : '#111' }}>Tin nhắn đã bị xóa</div>
+                      ) : item.message_type === 'IMAGE' ? (
+                        <div style={{ padding: 4, borderRadius: 14, background: mine ? '#1677ff' : '#fff' }}>
+                          <Image src={item.media_url} alt="Ảnh trong cuộc trò chuyện" style={{ display: 'block', maxWidth: isMobile ? 220 : 320, maxHeight: 360, objectFit: 'contain', borderRadius: 10 }} />
+                          {item.message && <div style={{ padding: '6px 8px', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', color: mine ? '#fff' : '#111' }}>{item.message}</div>}
+                        </div>
+                      ) : (
+                        <div style={{ padding: '8px 12px', borderRadius: 16, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', background: mine ? '#1677ff' : '#fff', color: mine ? '#fff' : '#111' }}>{item.message}</div>
+                      )}
                       <div style={{ fontSize: 10, color: '#888', textAlign: mine ? 'right' : 'left' }}>{shortTime(item.created_at)}</div>
                     </div>
                   </div>;
@@ -260,6 +291,8 @@ const ChatHistoryPanel = () => {
               <div ref={messageEndRef} />
             </div>
             <Space.Compact style={{ padding: isMobile ? 8 : 12, paddingBottom: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 12, width: '100%' }}>
+              <input ref={imageInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={sendImage} style={{ display: 'none' }} />
+              <Button aria-label="Gửi ảnh" icon={<IoImageOutline />} loading={uploadingImage} disabled={sending} onClick={() => imageInputRef.current?.click()} />
               <Input value={draft} maxLength={5000} placeholder="Nhập tin nhắn..." onChange={(event) => setDraft(event.target.value)} onPressEnter={(event) => { if (!event.shiftKey) sendMessage(); }} />
               <Button type="primary" icon={<IoSend />} loading={sending} disabled={!draft.trim()} onClick={sendMessage}>Gửi</Button>
             </Space.Compact>

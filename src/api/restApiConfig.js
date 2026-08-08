@@ -812,6 +812,22 @@ export const createDirectChatApi = (userId) => chatRequest('/chats/direct', { me
 export const createGroupChatApi = (name, memberIds) => chatRequest('/chats/group', { method: 'POST', body: { name, memberIds } });
 export const getChatMessagesApi = (chatId) => chatRequest(`/chats/${chatId}/messages?limit=100`);
 export const sendChatMessageApi = (chatId, chatMessage) => chatRequest(`/chats/${chatId}/messages`, { method: 'POST', body: { message: chatMessage } });
+export const sendChatImageApi = async (chatId, file, caption = '') => {
+  const formData = new FormData();
+  formData.append('image', file);
+  if (caption) formData.append('caption', caption);
+  const url = `${envConfig.host}/chats/${chatId}/images`;
+  const options = { method: 'POST', credentials: 'include', body: formData };
+  let response = await fetch(url, options);
+  if (!response.ok && isAuthenticationError(response)) {
+    await refreshAccessToken();
+    response = await fetch(url, options);
+  }
+  if (!response.ok) {
+    throw new Error((await readErrorResponse(response)) || `Gửi ảnh thất bại: ${response.status}`);
+  }
+  return response.json();
+};
 export const markChatReadApi = (chatId, messageId) => chatRequest(`/chats/${chatId}/read`, { method: 'PATCH', body: { messageId } });
 export const addChatMembersApi = (chatId, memberIds) => chatRequest(`/chats/${chatId}/members`, { method: 'POST', body: { memberIds } });
 export const leaveChatGroupApi = (chatId) => chatRequest(`/chats/${chatId}/members/me`, { method: 'DELETE' });
