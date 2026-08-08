@@ -1184,7 +1184,7 @@ export const ProfileComponent = () => {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: "5px",
+                          gap: "10px",
                           minWidth: 0,
                           flex: 1,
                         }}
@@ -1220,6 +1220,8 @@ export const ProfileComponent = () => {
                             style={{
                               color: "blue",
                               fontWeight: 500,
+                              maxWidth: "100%",
+                              overflowWrap: "anywhere",
                             }}
                           >
                             {isOwnPost ? "Bạn" : ownerName}

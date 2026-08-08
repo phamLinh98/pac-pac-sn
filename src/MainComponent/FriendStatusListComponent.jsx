@@ -210,7 +210,7 @@ export const FriendStatusListComponent = () => {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '5px',
+                    gap: '10px',
                     minWidth: 0,
                     flex: 1,
                   }}
@@ -263,6 +263,9 @@ export const FriendStatusListComponent = () => {
                         color: 'blue',
                         cursor: 'pointer',
                         fontWeight: 500,
+                        maxWidth: '100%',
+                        overflowWrap: 'anywhere',
+                        textAlign: 'left',
                       }}
                     >
                       {item.user_id !==

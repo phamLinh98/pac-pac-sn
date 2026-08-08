@@ -100,7 +100,7 @@ const ChatHistoryPanel = () => {
   }, []);
   useEffect(() => {
     loadChats();
-    const notificationTimer = window.setInterval(() => loadChats(true), 5000);
+    const notificationTimer = window.setInterval(() => loadChats(true), 2000);
     const refreshOnFocus = () => loadChats(true);
     window.addEventListener('focus', refreshOnFocus);
     return () => {
@@ -116,7 +116,7 @@ const ChatHistoryPanel = () => {
   useEffect(() => {
     if (!modalOpen || !selectedChatId) return undefined;
     loadMessages(selectedChatId);
-    const messageTimer = window.setInterval(() => loadMessages(selectedChatId, true), 3000);
+    const messageTimer = window.setInterval(() => loadMessages(selectedChatId, true), 1500);
     return () => window.clearInterval(messageTimer);
   }, [modalOpen, selectedChatId, loadMessages]);
   useEffect(() => { messageEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);

@@ -38,12 +38,20 @@ const NotificationsPanel = () => {
     useEffect(() => {
         fetchNotifications();
         const refresh = () => fetchNotifications({ silent: true });
-        const intervalId = window.setInterval(refresh, 30000);
+        // Đồng bộ gần realtime trên cả desktop/mobile. Backend hiện chạy serverless nên
+        // WebSocket lâu dài không ổn định; polling ngắn + refresh khi tab hoạt động lại
+        // cho kết quả nhất quán mà không buộc người dùng F5.
+        const intervalId = window.setInterval(refresh, 2000);
+        const refreshWhenVisible = () => {
+            if (document.visibilityState === 'visible') refresh();
+        };
         window.addEventListener('focus', refresh);
+        document.addEventListener('visibilitychange', refreshWhenVisible);
         window.addEventListener('comment-notification-updated', refresh);
         return () => {
             window.clearInterval(intervalId);
             window.removeEventListener('focus', refresh);
+            document.removeEventListener('visibilitychange', refreshWhenVisible);
             window.removeEventListener('comment-notification-updated', refresh);
         };
     }, [fetchNotifications]);

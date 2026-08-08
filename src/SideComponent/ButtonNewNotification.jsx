@@ -115,11 +115,19 @@ const NotificationIcon = () => {
   // useEffect để gọi API khi component được mount
   useEffect(() => {
     fetchFriendRequests();
-
+    const intervalId = window.setInterval(fetchFriendRequests, 2000);
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') fetchFriendRequests();
+    };
     window.addEventListener('friend-request-updated', fetchFriendRequests);
+    window.addEventListener('focus', fetchFriendRequests);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
 
     return () => {
+      window.clearInterval(intervalId);
       window.removeEventListener('friend-request-updated', fetchFriendRequests);
+      window.removeEventListener('focus', fetchFriendRequests);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
     };
   }, [fetchFriendRequests]);
 

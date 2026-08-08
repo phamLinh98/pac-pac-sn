@@ -2,3 +2,29 @@ input::placeholder {
   padding-left: 2px;
   /* Cách trái cho placeholder */
 }
+
+.story-card {
+  width: 150px;
+}
+
+.story-card .ant-card-cover > div {
+  height: 250px;
+}
+
+@media (max-width: 700px) {
+  .story-card {
+    width: 90px;
+  }
+
+  .story-card .ant-card-cover > div {
+    height: 150px;
+  }
+
+  .story-card .ant-card-body {
+    padding: 8px 5px;
+  }
+
+  .story-card .ant-card-meta-title {
+    font-size: 12px;
+  }
+}

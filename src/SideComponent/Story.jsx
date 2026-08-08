@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Card, Image, Modal, message } from "antd";
-import { DeleteOutlined, PlusOutlined, SoundOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { PiHeartbeatBold } from "react-icons/pi";
 import { ImReply } from "react-icons/im";
 import { RiUserUnfollowFill } from "react-icons/ri";
@@ -19,11 +19,6 @@ const ALLOWED_STORY_TYPES = new Set([
   "image/webp",
   "image/gif",
 ]);
-const DEFAULT_STORY_MUSIC_URL =
-  "https://www.nhaccuatui.com/song/0lliVALb8py8?autoplay=true";
-const DEFAULT_STORY_MUSIC_PAGE =
-  "https://www.nhaccuatui.com/song/0lliVALb8py8";
-
 export const AllStory = () => {
   const containerRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -31,7 +26,6 @@ export const AllStory = () => {
   const [storyFile, setStoryFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [isPosting, setIsPosting] = useState(false);
-  const [playingStoryId, setPlayingStoryId] = useState(null);
   const [viewingStory, setViewingStory] = useState(null);
 
   const {
@@ -116,9 +110,6 @@ export const AllStory = () => {
       okType: "danger",
       onOk: async () => {
         await deleteStory(item.id);
-        setPlayingStoryId((currentId) =>
-          Number(currentId) === Number(item.id) ? null : currentId
-        );
         message.success("Đã xóa story.");
       },
     });
@@ -126,12 +117,10 @@ export const AllStory = () => {
 
   const openStoryViewer = (item) => {
     setViewingStory(item);
-    setPlayingStoryId(item.id);
   };
 
   const closeStoryViewer = () => {
     setViewingStory(null);
-    setPlayingStoryId(null);
   };
 
   return (
@@ -150,12 +139,13 @@ export const AllStory = () => {
           <Card
             hoverable
             onClick={() => setIsModalOpen(true)}
-            style={{ width: 150, marginRight: 5, marginBottom: 5, order: -2 }}
+            className="story-card"
+            style={{ marginRight: 5, marginBottom: 5, order: -2 }}
             cover={
               <div
                 style={{
-                  width: 150,
-                  height: 250,
+                  width: "100%",
+                  height: "100%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -182,19 +172,18 @@ export const AllStory = () => {
                   key={item.id}
                   hoverable
                   style={{
-                    width: 150,
+                    width: undefined,
                     marginRight: 5,
                     marginBottom: 5,
                     order: isOwner ? -1 : 0,
                   }}
+                  className="story-card"
                   cover={
                     <div
                       role="button"
                       tabIndex={0}
                       aria-label={
-                        Number(playingStoryId) === Number(item.id)
-                          ? "Story đang được mở"
-                          : "Xem story và phát nhạc"
+                          "Xem story"
                       }
                       onClick={() => openStoryViewer(item)}
                       onKeyDown={(event) => {
@@ -207,25 +196,10 @@ export const AllStory = () => {
                     >
                       <ImageStatus
                         image={imageUrl}
-                        width={150}
-                        height={250}
+                        width="100%"
+                        height="100%"
                         active={false}
                         preview={false}
-                      />
-
-                      <SoundOutlined
-                        style={{
-                          position: "absolute",
-                          right: 8,
-                          bottom: 8,
-                          padding: 7,
-                          borderRadius: "50%",
-                          color: "white",
-                          background:
-                            Number(playingStoryId) === Number(item.id)
-                              ? "#1677ff"
-                              : "rgba(0, 0, 0, 0.55)",
-                        }}
                       />
 
                     </div>
@@ -280,24 +254,6 @@ export const AllStory = () => {
               />
             </div>
 
-            <div style={{ border: "1px solid #d9d9d9", borderRadius: 8, overflow: "hidden" }}>
-              <iframe
-                title="Nhạc mặc định của story"
-                src={DEFAULT_STORY_MUSIC_URL}
-                allow="autoplay; encrypted-media"
-                referrerPolicy="strict-origin-when-cross-origin"
-                style={{ display: "block", width: "100%", height: 180, border: 0 }}
-              />
-            </div>
-
-            <Button
-              icon={<SoundOutlined />}
-              href={DEFAULT_STORY_MUSIC_PAGE}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Mở nhạc trên NhacCuaTui nếu trình duyệt chặn âm thanh
-            </Button>
           </div>
         )}
       </Modal>
