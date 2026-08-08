@@ -5,6 +5,7 @@ import { FriendOrMyProfileComponent } from "../MainComponent/FriendOrMyProfileCo
 import { LoginComponent } from "../MainComponent/LoginComponent";
 import AuthGuard from "../MainComponent/ProtectedRouteComponent";
 import { CreateNewAccountComponent } from "../MainComponent/CreateNewAccountComponent";
+import { ListFriendEachAccount } from "../MainComponent/ListFriendEachAccount";
 
 // Define your routes
 export const router = createBrowserRouter(
@@ -24,6 +25,10 @@ export const router = createBrowserRouter(
         {
           path: "/profile/:id",
           element: <FriendOrMyProfileComponent />
+        },
+        {
+          path: "/friends",
+          element: <ListFriendEachAccount showTitle />
         }
       ],
     },

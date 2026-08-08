@@ -5,10 +5,13 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { getApi } from "../api/restApiConfig";
 import { LoadingComponent } from "../SideComponent/LoadingComponent";
+import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 
-export const ListFriendEachAccount = () => {
+// eslint-disable-next-line react/prop-types
+export const ListFriendEachAccount = ({ userId: requestedUserId, showTitle = false }) => {
   const { id: profileIdParam } = useParams();
-  const profileUserId = Number(profileIdParam);
+  const loginUser = decodeJwt(localStorage.getItem('allow-login')) || {};
+  const profileUserId = Number(requestedUserId || profileIdParam || loginUser.id);
   const navigate = useNavigate();
 
   const [friends, setFriends] = useState([]);
@@ -67,25 +70,33 @@ export const ListFriendEachAccount = () => {
   }
 
   return (
-    <Row gutter={[16, 16]}>
+    <div>
+      {showTitle && <h2 style={{ margin: '8px 0 18px' }}>Bạn bè của bạn</h2>}
+      <Row gutter={[16, 16]}>
       {friends.map((friend) => (
         <Col key={friend.id} xs={24} sm={12} md={8} lg={6}>
           <Card
             size="small"
             hoverable
-            onClick={() => navigate(`/profile/${friend.id}`)}
             title={
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <Avatar src={friend.avatar} size={32} />
-                <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/profile/${friend.id}`)}
+                  style={{ minWidth: 0, padding: 0, border: 0, background: 'none', color: '#1677ff', cursor: 'pointer', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'left' }}
+                >
                   {friend.name || "Người dùng"}
-                </span>
+                </button>
               </div>
             }
             extra={<FaEye aria-label="Xem profile" />}
-          />
+          >
+            <span style={{ color: '#777' }}>{Array.isArray(friend.list_friend_id) ? friend.list_friend_id.length : 0} bạn bè</span>
+          </Card>
         </Col>
       ))}
-    </Row>
+      </Row>
+    </div>
   );
 };

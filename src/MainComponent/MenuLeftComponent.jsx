@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { Menu, Select, Switch } from "antd";
+import { Avatar, Menu, Select, Switch } from "antd";
 import { FaUserFriends } from "react-icons/fa";
 import { GrGroup, GrLogout } from "react-icons/gr";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
-import { ImageStatus } from "../SideComponent/ImageStatus";
 import { MdAccountCircle } from "react-icons/md";
 import { useAppSettings } from "../contexts/AppSettingsContext";
 import { logoutClearToken as logoutApi } from "../api/restApiConfig";
@@ -17,7 +16,6 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
   const [selectedKeys, setSelectedKeys] = useState(["1"]);
   const navigate = useNavigate();
-  const { id: routeProfileId } = useParams();
 
   const handleLogout = async () => {
     try {
@@ -33,11 +31,6 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const { id, name, avatar } = getData;
   const currentAvatar = localStorage.getItem(`pac-pac-profile-avatar-${id}`) || avatar;
 
-  const routeUserId = Number(routeProfileId);
-  const targetProfileId = Number.isFinite(routeUserId) && routeUserId > 0
-    ? routeUserId
-    : id;
-
   const moveToProfile = (userId) => {
     navigate(`/profile/${userId}`);
   }
@@ -45,30 +38,21 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const items2 = [
     {
       key: "sub1",
-      icon: (
-        <ImageStatus
-          image={currentAvatar || ''}
-          width={30}
-          height={30}
-          style={{
-            borderRadius: '100%',
-            marginTop: '8px',
-            marginRight: '10px',
-          }}
-          preview={false}
-        />
-      ),
       label: (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <p style={{ margin: '0 0 0 5px' }}>{name}</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minHeight: 42 }}>
+          <Avatar src={currentAvatar || ''} size={32} style={{ flex: '0 0 32px' }}>
+            {name?.[0]}
+          </Avatar>
+          <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</span>
         </div>
       ),
-      onClick: () => moveToProfile(targetProfileId)
+      onClick: () => moveToProfile(id)
     },
     {
       key: "sub2",
       icon: <FaUserFriends />, // Correct usage
       label: t.friends,
+      onClick: () => navigate('/friends'),
     },
     {
       key: "sub3",
