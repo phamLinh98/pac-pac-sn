@@ -20,11 +20,11 @@ export const getCommentThunkFunction = (listId) => {
 };
 
 // Redux thunk cho việc thêm comment mới
-export const addCommentThunkFunction = (content, userId, listId, imageFile = null) => {
+export const addCommentThunkFunction = (content, userId, listId, imageFile = null, options = {}) => {
     return async (dispatch) => {
         dispatch(eventLoading(true));
         try {
-            const createdComment = await addCommentAPI(content, userId, listId, imageFile);
+            const createdComment = await addCommentAPI(content, userId, listId, imageFile, options);
 
             // Lấy thông tin user từ JWT token
             const getUserFromLocalStorage = localStorage.getItem('allow-login');

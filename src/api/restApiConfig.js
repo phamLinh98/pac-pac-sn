@@ -684,7 +684,8 @@ export const addComment = async (
   content,
   userId,
   listId,
-  imageFile = null
+  imageFile = null,
+  { parentCommentId = null, mentionUserIds = [] } = {}
 ) => {
   if (
     (!content && !imageFile) ||
@@ -703,6 +704,8 @@ export const addComment = async (
     const formData = new FormData();
     formData.append('content', content || '');
     if (imageFile) formData.append('image', imageFile);
+    if (parentCommentId) formData.append('parentCommentId', String(parentCommentId));
+    formData.append('mentionUserIds', JSON.stringify(mentionUserIds));
 
     let response = await fetch(
       url,
@@ -740,6 +743,31 @@ export const addComment = async (
     throw error;
   }
 };
+
+const commentActionRequest = async (route, { method = 'POST', body } = {}) => {
+  const requestOptions = {
+    method,
+    credentials: 'include',
+    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    body: body ? JSON.stringify(body) : undefined,
+  };
+  let response = await fetch(`${envConfig.host}${route}`, requestOptions);
+  if (response.status === 401) {
+    await refreshAccessToken();
+    response = await fetch(`${envConfig.host}${route}`, requestOptions);
+  }
+  if (!response.ok) throw new Error(await readErrorResponse(response) || 'Không thể cập nhật bình luận');
+  return response.json();
+};
+
+export const toggleCommentLikeApi = (commentId) =>
+  commentActionRequest(`/comments/${commentId}/like`);
+
+export const updateCommentApi = (commentId, content) =>
+  commentActionRequest(`/comments/${commentId}`, { method: 'PATCH', body: { content } });
+
+export const deleteCommentApi = (commentId) =>
+  commentActionRequest(`/comments/${commentId}`, { method: 'DELETE' });
 
 /*
  * =========================================================
