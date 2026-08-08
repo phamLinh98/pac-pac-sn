@@ -44,7 +44,7 @@ export const MainShowStatusAndStory = () => {
       }}
     >
       {/* Story of friends */}
-      <AllStory />
+      {/* <AllStory /> */}
 
       {/* My status */}
       <MyStatusAreaComponent onPostCreated={handlePostCreated} />
