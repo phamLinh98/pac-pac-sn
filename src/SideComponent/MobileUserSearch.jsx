@@ -31,9 +31,9 @@ const MobileUserSearch = () => {
         if (active) setOptions(users.map((user) => ({
           value: String(user.id),
           userId: Number(user.id),
-          label: <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          label: <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
             <Avatar src={user.avatar} size={28} />
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.name || 'Người dùng'}</span>
+            <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name || 'Người dùng'}</span>
           </div>,
         })));
       } catch {
@@ -58,12 +58,13 @@ const MobileUserSearch = () => {
     onOpenChange={setOpen}
     trigger="click"
     placement="bottomLeft"
-    content={<div style={{ width: 'min(82vw, 330px)' }}>
+    content={<div style={{ width: 'min(50vw, 220px)' }}>
       <AutoComplete
         value={keyword}
         options={options}
         onSearch={setKeyword}
         onSelect={selectUser}
+        popupMatchSelectWidth
         notFoundContent={loading ? <Spin size="small" /> : keyword.trim().length >= 2 ? 'Không tìm thấy user' : 'Nhập ít nhất 2 ký tự'}
         style={{ width: '100%' }}
       >
