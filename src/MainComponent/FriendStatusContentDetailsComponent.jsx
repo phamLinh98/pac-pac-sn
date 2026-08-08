@@ -1,6 +1,5 @@
 import { Button, Modal, Space } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import { VscShare } from 'react-icons/vsc';
 import { ImageStatus } from '../SideComponent/ImageStatus';
 import { CommentListInDetailComponent } from '../SideComponent/CommentListInStatus';
 import { useDispatch } from 'react-redux';
@@ -8,9 +7,10 @@ import { getCommentThunkFunction } from '../reduxs/thunkFunctionComment';
 import { RiChatSmileAiLine } from 'react-icons/ri';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { PostLikeButton } from '../SideComponent/PostLikeButton';
+import { PostShareButton } from '../SideComponent/PostShareButton';
 
 // eslint-disable-next-line react/prop-types
-export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count, title, like, shared, image, postId }) => {
+export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count, title, like, shared, image, postId, shareDisabled = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [commentCount, setCommentCount] = useState(Number(comment_count) || 0);
   const dispatch = useDispatch();
@@ -116,10 +116,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
           }}
         >
           <PostLikeButton postId={postId} initialCount={like} initialLiked={likeStatus} />
-          <Button>
-            <VscShare />
-            <span>{shared}</span>Share
-          </Button>
+          <PostShareButton postId={postId} initialCount={shared} disabled={shareDisabled} />
         </Space>
         <CommentListInDetailComponent postId={postId} />
       </Modal>

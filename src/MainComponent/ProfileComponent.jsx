@@ -27,7 +27,6 @@ import { IoIosPersonAdd } from "react-icons/io";
 import { FiSend } from "react-icons/fi";
 
 
-import { VscShare } from "react-icons/vsc";
 
 import { MdRemoveRedEye, MdDeleteOutline } from "react-icons/md";
 
@@ -67,6 +66,8 @@ import {
   uploadPostImagesApi,
 } from "../api/restApiConfig";
 import { PostLikeButton } from "../SideComponent/PostLikeButton";
+import { PostShareButton } from "../SideComponent/PostShareButton";
+import { SharedPostPreview } from "../SideComponent/SharedPostPreview";
 
 const { Meta } = Card;
 const { TextArea } = Input;
@@ -265,6 +266,12 @@ export const ProfileComponent = () => {
   const [originalPostImages, setOriginalPostImages] = useState([]);
 
   const [localPostOverrides, setLocalPostOverrides] = useState({});
+
+  useEffect(() => {
+    const refreshAfterShare = () => refetchProfilePosts?.();
+    window.addEventListener('post-shared', refreshAfterShare);
+    return () => window.removeEventListener('post-shared', refreshAfterShare);
+  }, [refetchProfilePosts]);
 
   useEffect(() => {
     if (!editingPostId) {
@@ -1212,10 +1219,10 @@ export const ProfileComponent = () => {
                             }}
                           >
                             {item.created_at
-                              ? `đã đăng tải bài viết (${formatTimeStamp(
+                              ? `${item.is_shared_post ? 'đã chia sẻ bài viết' : 'đã đăng tải bài viết'} (${formatTimeStamp(
                                   item.created_at,
                                 )})`
-                              : "đã đăng tải bài viết"}
+                              : (item.is_shared_post ? 'đã chia sẻ bài viết' : 'đã đăng tải bài viết')}
                           </span>
                         </div>
                       </div>
@@ -1261,7 +1268,7 @@ export const ProfileComponent = () => {
                                 Xem lịch sử bài viết
                               </Button>
 
-                              {isOwnPost && (
+                              {isOwnPost && !item.is_shared_post && (
                                 <Button
                                   type="text"
                                   block
@@ -1361,8 +1368,10 @@ export const ProfileComponent = () => {
                       />
                     </div>
                   ) : (
-                    displayContent.text && <p>{displayContent.text}</p>
+                    !item.is_shared_post && displayContent.text && <p>{displayContent.text}</p>
                   )}
+
+                  {!isEditing && <SharedPostPreview post={item} />}
 
                   <div
                     style={{
@@ -1500,19 +1509,16 @@ export const ProfileComponent = () => {
 
                         <FriendStatusContentDetailsComponent
                           comment_count={item.comment ?? 0}
-                          title={displayContent.text}
+                          title={item.is_shared_post ? normalizeContent(item.original_content).text : displayContent.text}
                           like={item.like ?? 0}
                           shared={item.shared ?? 0}
-                          image={displayContent.image}
+                          image={item.is_shared_post ? normalizeContent(item.original_content).image : displayContent.image}
                           postId={item.id}
                           likeStatus={Boolean(item.likestatus)}
+                          shareDisabled={item.is_shared_post && !item.original_post_exists}
                         />
 
-                        <Button>
-                          <VscShare />
-                          <span>{item.shared ?? 0}</span>
-                          Share
-                        </Button>
+                        <PostShareButton postId={item.id} initialCount={item.shared} disabled={item.is_shared_post && !item.original_post_exists} />
                       </Space>
                     )}
                   </div>

@@ -10,7 +10,6 @@ import {
   HistoryOutlined,
   EyeInvisibleOutlined,
 } from '@ant-design/icons';
-import { VscShare } from 'react-icons/vsc';
 import { useNavigate } from 'react-router-dom';
 
 import { ImageStatus } from '../SideComponent/ImageStatus';
@@ -21,6 +20,8 @@ import { useFacadeHomeList } from '../reduxs/useFacadeHomeList';
 import { formatTimeStamp } from '../configs/configTimeStamp';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
 import { PostLikeButton } from '../SideComponent/PostLikeButton';
+import { PostShareButton } from '../SideComponent/PostShareButton';
+import { SharedPostPreview } from '../SideComponent/SharedPostPreview';
 
 export const FriendStatusListComponent = () => {
   const token = localStorage.getItem('allow-login');
@@ -169,6 +170,9 @@ export const FriendStatusListComponent = () => {
       {safeList.map((item, index) => {
         const content =
           getPostContent(item);
+        const originalContent = item.is_shared_post
+          ? getPostContent({ content: item.original_content })
+          : content;
 
         const ownerName =
           item.user_name ||
@@ -271,10 +275,10 @@ export const FriendStatusListComponent = () => {
                       }}
                     >
                       {createdAt
-                        ? `đã đăng tải bài viết (${formatTimeStamp(
+                        ? `${item.is_shared_post ? 'đã chia sẻ bài viết' : 'đã đăng tải bài viết'} (${formatTimeStamp(
                             createdAt
                           )})`
-                        : 'đã đăng tải bài viết'}
+                        : (item.is_shared_post ? 'đã chia sẻ bài viết' : 'đã đăng tải bài viết')}
                     </span>
                   </div>
                 </div>
@@ -389,7 +393,8 @@ export const FriendStatusListComponent = () => {
                   : 0,
             }}
           >
-            <p>{content.title}</p>
+            {!item.is_shared_post && <p>{content.title}</p>}
+            <SharedPostPreview post={item} />
 
             <div
               style={{
@@ -468,27 +473,20 @@ export const FriendStatusListComponent = () => {
                   comment_count={
                     item.comment ?? 0
                   }
-                  title={content.title}
+                  title={originalContent.title}
                   like={item.like ?? 0}
                   shared={
                     item.shared ?? 0
                   }
-                  image={images}
+                  image={originalContent.image || images}
                   postId={item.id}
                   likeStatus={Boolean(
                     item.likestatus
                   )}
+                  shareDisabled={item.is_shared_post && !item.original_post_exists}
                 />
 
-                <Button>
-                  <VscShare />
-
-                  <span>
-                    {item.shared ?? 0}
-                  </span>
-
-                  Share
-                </Button>
+                <PostShareButton postId={item.id} initialCount={item.shared} disabled={item.is_shared_post && !item.original_post_exists} />
               </Space>
             </div>
           </Card>

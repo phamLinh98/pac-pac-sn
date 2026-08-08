@@ -102,11 +102,11 @@ const NotificationsPanel = () => {
                         >
                             <List.Item.Meta
                                 avatar={<Avatar src={item.sender_avatar}>{item.sender_name?.[0]}</Avatar>}
-                                title={<span><strong>{item.sender_name || 'Người dùng'}</strong> {item.notification_type === 'LIKE' ? 'đã thích bài viết của bạn' : 'đã bình luận bài viết của bạn'}</span>}
+                                title={<span><strong>{item.sender_name || 'Người dùng'}</strong> {item.notification_type === 'LIKE' ? 'đã thích bài viết của bạn' : item.notification_type === 'SHARE' ? 'đã chia sẻ bài viết của bạn' : 'đã bình luận bài viết của bạn'}</span>}
                                 description={
                                     <div>
                                         <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                            {item.notification_type === 'LIKE' ? 'Lượt thích mới' : (item.comment_content || 'Bình luận mới')}
+                                            {item.notification_type === 'LIKE' ? 'Lượt thích mới' : item.notification_type === 'SHARE' ? 'Lượt chia sẻ mới' : (item.comment_content || 'Bình luận mới')}
                                         </div>
                                         <small>{formatNotificationTime(item.created_at)}</small>
                                     </div>
