@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const ListUserById = createSlice({
-    name: "ListByUserId",
+    // Namespace riêng để action của reduxListByUserId không ghi đè profile.
+    name: "ProfilePostsByUserId",
     initialState: {
         listUserById: [],
         error: '',
