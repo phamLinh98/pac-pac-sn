@@ -4,7 +4,7 @@ import {
   Select, Space, Spin, Typography, message,
 } from 'antd';
 import { SiMessenger } from 'react-icons/si';
-import { IoPeopleOutline, IoPersonAddOutline, IoSend } from 'react-icons/io5';
+import { IoArrowBack, IoPeopleOutline, IoPersonAddOutline, IoSend } from 'react-icons/io5';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
 import {
   addChatMembersApi, createDirectChatApi, createGroupChatApi, getChatMessagesApi,
@@ -40,6 +40,8 @@ const ChatHistoryPanel = () => {
   const [groupName, setGroupName] = useState('');
   const [memberOpen, setMemberOpen] = useState(false);
   const [newMemberIds, setNewMemberIds] = useState([]);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 700px)').matches);
   const messageEndRef = useRef(null);
 
   const selectedChat = chats.find((chat) => Number(chat.id) === Number(selectedChatId));
@@ -87,13 +89,28 @@ const ChatHistoryPanel = () => {
     }
   }, []);
 
-  useEffect(() => { loadChats(); }, [loadChats]);
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 700px)');
+    const handleChange = (event) => setIsMobile(event.matches);
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+  useEffect(() => {
+    loadChats();
+    const notificationTimer = window.setInterval(() => loadChats(true), 5000);
+    const refreshOnFocus = () => loadChats(true);
+    window.addEventListener('focus', refreshOnFocus);
+    return () => {
+      window.clearInterval(notificationTimer);
+      window.removeEventListener('focus', refreshOnFocus);
+    };
+  }, [loadChats]);
   useEffect(() => {
     if (!modalOpen) return undefined;
     loadFriends();
-    const chatTimer = window.setInterval(() => loadChats(true), 5000);
-    return () => window.clearInterval(chatTimer);
-  }, [modalOpen, loadChats, loadFriends]);
+    return undefined;
+  }, [modalOpen, loadFriends]);
   useEffect(() => {
     if (!modalOpen || !selectedChatId) return undefined;
     loadMessages(selectedChatId);
@@ -107,6 +124,22 @@ const ChatHistoryPanel = () => {
     setModalOpen(true);
     setPopoverOpen(false);
   };
+
+  useEffect(() => {
+    const openDirectChat = async (event) => {
+      const otherUserId = Number(event.detail?.userId);
+      if (!Number.isInteger(otherUserId) || otherUserId <= 0 || otherUserId === currentUserId) return;
+      try {
+        const created = await createDirectChatApi(otherUserId);
+        await loadChats(true);
+        openChat(created.id);
+      } catch (error) {
+        message.error(error.message || 'Không thể mở cuộc trò chuyện');
+      }
+    };
+    window.addEventListener('open-direct-chat', openDirectChat);
+    return () => window.removeEventListener('open-direct-chat', openDirectChat);
+  }, [currentUserId, loadChats]);
 
   const sendMessage = async () => {
     const content = draft.trim();
@@ -185,19 +218,32 @@ const ChatHistoryPanel = () => {
       <Badge count={totalUnread} size="small" overflowCount={99}><SiMessenger style={{ fontSize: 17, color: 'white', cursor: 'pointer' }} /></Badge>
     </Popover>
 
-    <Modal title="Messenger" open={modalOpen} onCancel={() => setModalOpen(false)} footer={null} width={920} styles={{ body: { padding: 0 } }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(220px, 32%) 1fr', height: '65vh', minHeight: 480 }}>
-        <div style={{ borderRight: '1px solid #eee', overflowY: 'auto' }}>
+    <Modal
+      title={isMobile && selectedChat ? null : 'Messenger'}
+      open={modalOpen}
+      onCancel={() => setModalOpen(false)}
+      footer={null}
+      width={isMobile ? '100vw' : 920}
+      style={isMobile ? { top: 0, margin: 0, paddingBottom: 0, maxWidth: '100vw' } : undefined}
+      styles={{
+        content: isMobile ? { height: '100dvh', borderRadius: 0, padding: 0 } : undefined,
+        header: isMobile ? { padding: '14px 16px', margin: 0 } : undefined,
+        body: { padding: 0 },
+      }}
+    >
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(220px, 32%) 1fr', height: isMobile ? (selectedChat ? '100dvh' : 'calc(100dvh - 54px)') : '65vh', minHeight: isMobile ? 0 : 480 }}>
+        <div style={{ borderRight: isMobile ? 0 : '1px solid #eee', overflowY: 'auto', display: isMobile && selectedChat ? 'none' : 'block' }}>
           <Button type="text" block icon={<IoPersonAddOutline />} onClick={() => setCreateOpen(true)}>Cuộc trò chuyện mới</Button>
           {chatList(false)}
         </div>
-        {!selectedChat ? <Empty style={{ margin: 'auto' }} description="Chọn một cuộc trò chuyện" /> :
-          <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-            <div style={{ padding: '10px 14px', borderBottom: '1px solid #eee', display: 'flex', alignItems: 'center', gap: 10 }}>
+        {!selectedChat ? (!isMobile && <Empty style={{ margin: 'auto' }} description="Chọn một cuộc trò chuyện" />) :
+          <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, minHeight: 0 }}>
+            <div style={{ padding: '10px 12px', borderBottom: '1px solid #eee', display: 'flex', alignItems: 'center', gap: 8, minHeight: 54 }}>
+              {isMobile && <Button type="text" shape="circle" aria-label="Quay lại danh sách chat" icon={<IoArrowBack />} onClick={() => { setSelectedChatId(null); setMessages([]); }} />}
               <Avatar src={selectedChat.display_avatar}>{selectedChat.display_name?.[0]}</Avatar>
-              <div style={{ flex: 1 }}><Text strong>{selectedChat.display_name}</Text>{selectedChat.chat_type === 'GROUP' && <div><Text type="secondary">{selectedChat.members?.length || 0} thành viên</Text></div>}</div>
-              {canManageMembers && <Button size="small" onClick={() => setMemberOpen(true)}>Thêm người</Button>}
-              {selectedChat.chat_type === 'GROUP' && <Button size="small" danger onClick={leaveGroup}>Rời nhóm</Button>}
+              <div style={{ flex: 1, minWidth: 0 }}><Text strong ellipsis style={{ display: 'block' }}>{selectedChat.display_name}</Text>{selectedChat.chat_type === 'GROUP' && <Text type="secondary" style={{ fontSize: 11 }}>{selectedChat.members?.length || 0} thành viên</Text>}</div>
+              {canManageMembers && <Button size="small" onClick={() => setMemberOpen(true)}>{isMobile ? '+' : 'Thêm người'}</Button>}
+              {selectedChat.chat_type === 'GROUP' && <Button size="small" danger onClick={leaveGroup}>{isMobile ? 'Rời' : 'Rời nhóm'}</Button>}
             </div>
             <div style={{ flex: 1, overflowY: 'auto', padding: 16, background: '#f5f7fb' }}>
               {loadingMessages ? <div style={{ textAlign: 'center' }}><Spin /></div> : messages.length === 0 ? <Empty description="Chưa có tin nhắn" /> :
@@ -213,7 +259,7 @@ const ChatHistoryPanel = () => {
                 })}
               <div ref={messageEndRef} />
             </div>
-            <Space.Compact style={{ padding: 12, width: '100%' }}>
+            <Space.Compact style={{ padding: isMobile ? 8 : 12, paddingBottom: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 12, width: '100%' }}>
               <Input value={draft} maxLength={5000} placeholder="Nhập tin nhắn..." onChange={(event) => setDraft(event.target.value)} onPressEnter={(event) => { if (!event.shiftKey) sendMessage(); }} />
               <Button type="primary" icon={<IoSend />} loading={sending} disabled={!draft.trim()} onClick={sendMessage}>Gửi</Button>
             </Space.Compact>
@@ -221,13 +267,13 @@ const ChatHistoryPanel = () => {
       </div>
     </Modal>
 
-    <Modal title="Tạo cuộc trò chuyện" open={createOpen} onCancel={() => setCreateOpen(false)} onOk={createChat} okText="Tạo" cancelText="Hủy">
+    <Modal title="Tạo cuộc trò chuyện" open={createOpen} onCancel={() => setCreateOpen(false)} onOk={createChat} okText="Tạo" cancelText="Hủy" width={isMobile ? 'calc(100vw - 24px)' : 520}>
       <Segmented block value={createType} onChange={(value) => { setCreateType(value); setSelectedFriendIds([]); }} options={[{ label: 'Chat 1-1', value: 'DIRECT' }, { label: 'Nhóm', value: 'GROUP' }]} />
       {createType === 'GROUP' && <Input style={{ marginTop: 16 }} maxLength={255} value={groupName} onChange={(event) => setGroupName(event.target.value)} placeholder="Tên nhóm" />}
       <Select style={{ width: '100%', marginTop: 16 }} mode={createType === 'GROUP' ? 'multiple' : undefined} value={createType === 'GROUP' ? selectedFriendIds : selectedFriendIds[0]} options={memberOptions} placeholder="Chọn bạn bè" onChange={(value) => setSelectedFriendIds(Array.isArray(value) ? value : [value])} />
     </Modal>
 
-    <Modal title="Thêm thành viên" open={memberOpen} onCancel={() => setMemberOpen(false)} onOk={addMembers} okButtonProps={{ disabled: !newMemberIds.length }} okText="Thêm" cancelText="Hủy">
+    <Modal title="Thêm thành viên" open={memberOpen} onCancel={() => setMemberOpen(false)} onOk={addMembers} okButtonProps={{ disabled: !newMemberIds.length }} okText="Thêm" cancelText="Hủy" width={isMobile ? 'calc(100vw - 24px)' : 520}>
       <Select mode="multiple" style={{ width: '100%' }} value={newMemberIds} options={addableMemberOptions} onChange={setNewMemberIds} placeholder="Chọn thành viên" />
     </Modal>
   </div>;

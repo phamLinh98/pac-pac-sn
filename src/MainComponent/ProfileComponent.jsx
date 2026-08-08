@@ -522,6 +522,16 @@ export const ProfileComponent = () => {
     setIsFollow((previousValue) => !previousValue);
   };
 
+  const openDirectMessage = () => {
+    if (!Number.isFinite(profileUserId) || profileUserId <= 0 || profileUserId === loginUserId) {
+      message.error('Không thể mở cuộc trò chuyện với user này.');
+      return;
+    }
+    window.dispatchEvent(new CustomEvent('open-direct-chat', {
+      detail: { userId: profileUserId },
+    }));
+  };
+
   const handleProfilePostCreated = (payload) => {
     const post = payload?.post ?? payload;
 
@@ -1063,7 +1073,7 @@ export const ProfileComponent = () => {
                       {isFollow ? "Đã theo dõi" : "Theo dõi"}
                     </Button>
 
-                    <Button type="dashed" icon={<FiSend />}>
+                    <Button type="dashed" icon={<FiSend />} onClick={openDirectMessage}>
                       Nhắn tin
                     </Button>
                   </div>
