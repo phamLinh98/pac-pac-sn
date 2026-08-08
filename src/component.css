@@ -12,6 +12,26 @@ input::placeholder {
 }
 
 @media (max-width: 700px) {
+  .responsive-post-image {
+    max-width: calc(100vw - 48px);
+    overflow: visible !important;
+  }
+
+  .responsive-post-image .ant-image {
+    width: auto !important;
+    height: auto !important;
+    max-width: 100%;
+  }
+
+  .responsive-post-image .ant-image-img {
+    display: block;
+    width: auto !important;
+    height: auto !important;
+    max-width: calc(100vw - 48px) !important;
+    max-height: 72vh;
+    object-fit: contain;
+  }
+
   .story-card {
     width: 90px;
   }

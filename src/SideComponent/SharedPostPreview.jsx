@@ -34,7 +34,7 @@ export const SharedPostPreview = ({ post }) => {
     </div>
     {content.text && <p style={{ whiteSpace: 'pre-wrap' }}>{content.text}</p>}
     {content.image.length > 0 && <div style={{ display: 'flex', gap: 6, overflowX: 'auto' }}>
-      {content.image.map((image, index) => <ImageStatus key={`${post.id}-original-${index}`} image={image} width={150} height={220} />)}
+      {content.image.map((image, index) => <ImageStatus className="responsive-post-image" key={`${post.id}-original-${index}`} image={image} width={150} height={220} />)}
     </div>}
   </div>;
 };

@@ -1,9 +1,9 @@
 import { Image, Button } from "antd";
 
 // eslint-disable-next-line react/prop-types
-export const ImageStatus = ({ image, width, height, style, active, preview }) => {
+export const ImageStatus = ({ image, width, height, style, active, preview, className }) => {
   return (
-    <div style={{
+    <div className={className} style={{
       position: 'relative',
       display: 'inline-block',
       flexShrink: 0,

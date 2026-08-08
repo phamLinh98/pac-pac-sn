@@ -454,6 +454,7 @@ export const FriendStatusListComponent = () => {
                         }}
                       >
                         <ImageStatus
+                          className="responsive-post-image"
                           image={
                             imageUrl ||
                             'https://i.pinimg.com/736x/8a/a9/33/8aa933d3cd8b23171598ed577c426f78.jpg'

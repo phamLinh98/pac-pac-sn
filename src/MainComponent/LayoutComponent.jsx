@@ -19,6 +19,7 @@ import { GrLogout } from "react-icons/gr";
 import { MdAccountCircle } from "react-icons/md";
 import { useAppSettings } from "../contexts/AppSettingsContext";
 import { logoutClearToken as logoutApi } from "../api/restApiConfig";
+import MobileUserSearch from "../SideComponent/MobileUserSearch";
 
 const MOBILE_BREAKPOINT = 430;
 
@@ -167,6 +168,13 @@ export const LayoutComponent = () => {
             style: menuItemStyle,
           },
         ]
+      : []),
+    ...(isMobile
+      ? [{
+          key: "mobile-search",
+          label: <MobileUserSearch />,
+          style: menuItemStyle,
+        }]
       : []),
     {
       key: "1",

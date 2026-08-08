@@ -1430,6 +1430,7 @@ export const ProfileComponent = () => {
                               }}
                             >
                               <ImageStatus
+                                className={!isEditing ? "responsive-post-image" : undefined}
                                 image={imageItem.url}
                                 width={150}
                                 height={250}
