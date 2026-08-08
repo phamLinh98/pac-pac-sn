@@ -38,6 +38,10 @@ export const addCommentThunkFunction = (content, userId, listId, imageFile = nul
                 user_id: userId,
                 user_name: userData?.name || userData?.user_name || 'Anonymous',
                 avatar: userData?.avatar || '',
+                image_url: createdComment?.image_url || null,
+                parent_comment_id: createdComment?.parent_comment_id || null,
+                like_count: 0,
+                is_liked: false,
                 created_at: createdComment?.created_at ?? new Date().toISOString(),
             };
 

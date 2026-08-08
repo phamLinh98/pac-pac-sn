@@ -1,68 +1,106 @@
 /* eslint-disable react/prop-types */
-import { useDispatch } from "react-redux";
-import { Button, Image, Input, List, Space, message, } from 'antd';
-import { LoadingComponent } from "./LoadingComponent";
-import { TbMessageReply } from "react-icons/tb";
-import { IoImageOutline, IoCloseCircle } from "react-icons/io5";
-import { formatTimeStamp } from "../configs/configTimeStamp";
-import { NotListComponent } from "./NoListComponent";
-import { useNavigate } from "react-router-dom";
-import { ImageStatus } from "./ImageStatus";
-import { useEffect, useRef, useState } from "react";
-import { addCommentThunkFunction } from "../reduxs/thunkFunctionComment";
-import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
-import { EmojiPopover } from "./Popover";
-import { useFacadeComment } from "../reduxs/useFacadeComment";
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Button, Image, List, Mentions, Modal, Space, message } from 'antd';
+import { IoCloseCircle, IoImageOutline } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
+import { deleteCommentApi, searchUsersApi, toggleCommentLikeApi, updateCommentApi } from '../api/restApiConfig';
+import { formatTimeStamp } from '../configs/configTimeStamp';
+import { addCommentThunkFunction, getCommentThunkFunction } from '../reduxs/thunkFunctionComment';
+import { useFacadeComment } from '../reduxs/useFacadeComment';
+import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
+import { ImageStatus } from './ImageStatus';
+import { LoadingComponent } from './LoadingComponent';
+import { NotListComponent } from './NoListComponent';
 
-// Main Component
+const supportedImages = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
 export const CommentListInDetailComponent = ({ postId }) => {
-  //const { listComment, loading } = useSelector(state => state.reduxComment);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userData = decodeJwt(localStorage.getItem('allow-login')) || {};
+  const userId = Number(userData.id);
+  const { listComment, loading } = useFacadeComment(postId);
   const [commentText, setCommentText] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [commentImage, setCommentImage] = useState(null);
   const [commentImagePreview, setCommentImagePreview] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mentionOptions, setMentionOptions] = useState([]);
+  const [selectedMentions, setSelectedMentions] = useState([]);
+  const [parentCommentId, setParentCommentId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editingText, setEditingText] = useState('');
   const imageInputRef = useRef(null);
-  const { listComment, loading } = useFacadeComment(postId);
+  const searchTimerRef = useRef(null);
 
   useEffect(() => () => {
     if (commentImagePreview) URL.revokeObjectURL(commentImagePreview);
+    window.clearTimeout(searchTimerRef.current);
   }, [commentImagePreview]);
 
+  const reload = () => dispatch(getCommentThunkFunction(postId));
 
-  // Lấy thông tin user từ localStorage
-  const getUserFromLocalStorage = localStorage.getItem('allow-login');
-  const userData = decodeJwt(getUserFromLocalStorage);
-  const { id: userId } = userData;
+  const resetComposer = () => {
+    setCommentText('');
+    setCommentImage(null);
+    setCommentImagePreview('');
+    setSelectedMentions([]);
+    setParentCommentId(null);
+  };
 
-  const goToProfileUser = (userId) => {
-    navigate(`/profile/${userId}`);
+  const handleMentionSearch = (keyword) => {
+    window.clearTimeout(searchTimerRef.current);
+    if (!keyword.trim()) return setMentionOptions([]);
+    searchTimerRef.current = window.setTimeout(async () => {
+      try {
+        const users = await searchUsersApi(keyword);
+        setMentionOptions(users.map((user) => ({
+          key: String(user.id),
+          value: user.name,
+          label: user.name,
+          userId: Number(user.id),
+          avatar: user.avatar,
+        })));
+      } catch {
+        setMentionOptions([]);
+      }
+    }, 250);
+  };
+
+  const handleMentionSelect = (option) => {
+    setSelectedMentions((current) => current.some((item) => item.id === option.userId)
+      ? current
+      : [...current, { id: option.userId, name: option.value }]);
+  };
+
+  const handleTextChange = (value) => {
+    setCommentText(value);
+    setSelectedMentions((current) => current.filter((item) => value.includes(`@${item.name}`)));
+  };
+
+  const handleReply = (comment) => {
+    const mention = { id: Number(comment.user_id), name: comment.user_name };
+    setParentCommentId(Number(comment.id));
+    setSelectedMentions([mention]);
+    setCommentText(`@${comment.user_name} `);
+    document.querySelector(`[data-comment-composer="${postId}"] textarea`)?.focus();
   };
 
   const handleAddComment = async () => {
-    if (!commentText.trim() && !commentImage) {
-      message.warning('Vui lòng nhập nội dung hoặc chọn ảnh');
-      return;
-    }
-
-    if (!postId || !userId) {
-      message.error('Thiếu thông tin cần thiết để thêm bình luận');
-      return;
-    }
-
+    if (!commentText.trim() && !commentImage) return message.warning('Vui lòng nhập nội dung hoặc chọn ảnh');
+    if (!postId || !userId) return message.error('Thiếu thông tin để thêm bình luận');
     setIsSubmitting(true);
-
     try {
-      await dispatch(addCommentThunkFunction(commentText, userId, postId, commentImage));
-      setCommentText('');
-      setCommentImage(null);
-      setCommentImagePreview('');
+      await dispatch(addCommentThunkFunction(commentText, userId, postId, commentImage, {
+        parentCommentId,
+        mentionUserIds: selectedMentions.map((item) => item.id),
+      }));
+      resetComposer();
+      await reload();
       message.success('Bình luận đã được thêm');
     } catch (error) {
-      console.error('Error adding comment:', error);
-      message.error('Có lỗi xảy ra khi thêm bình luận');
+      message.error(error?.message || 'Không thể thêm bình luận');
     } finally {
       setIsSubmitting(false);
     }
@@ -72,143 +110,100 @@ export const CommentListInDetailComponent = ({ postId }) => {
     const file = event.target.files?.[0];
     event.target.value = '';
     if (!file) return;
-    if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
-      message.warning('Chỉ hỗ trợ ảnh JPEG, PNG, WEBP hoặc GIF');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      message.warning('Ảnh bình luận không được vượt quá 5 MB');
-      return;
-    }
+    if (!supportedImages.includes(file.type)) return message.warning('Chỉ hỗ trợ JPEG, PNG, WEBP hoặc GIF');
+    if (file.size > 5 * 1024 * 1024) return message.warning('Ảnh không được vượt quá 5 MB');
     setCommentImage(file);
     setCommentImagePreview(URL.createObjectURL(file));
   };
 
-  return (
-    <>
-      <div
-        id="scrollableDiv"
-        style={{
-          height: 150,
-          overflow: 'auto',
-          padding: '0 16px',
-          border: '1px solid rgba(140, 140, 140, 0.35)',
-        }}
-      >
-        {loading ? (
-          <LoadingComponent />
-        ) : listComment.length === 0 ? (
-          <div style={{ paddingTop: "2%" }}>
-            <NotListComponent description="Bài viết chưa có bình luận" />
-          </div>
-        ) : (
-          <List
-            dataSource={listComment}
-            renderItem={(item) => (
-              <List.Item key={item.id}>
-                <List.Item.Meta
-                  avatar={
-                    <ImageStatus
-                      image={item.avatar}
-                      width='20px'
-                      height='20px'
-                      active={true}
-                      style={{
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '5px',
-                        border: '3px solid #0000FF',
-                        boxSizing: 'border-box',
-                        overflow: 'hidden',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    />
-                  }
-                  title={
-                    <span>
-                      <a
-                        onClick={() => goToProfileUser(item.user_id)}
-                        style={{ textDecoration: 'none', color: 'blue' }}
-                      >
-                        {item.user_name}
-                      </a>
-                      <span style={{ fontSize: '0.7rem', color: 'gray' }}>
-                        {` (${formatTimeStamp(item.created_at)})`}
-                      </span>
-                    </span>
-                  }
-                  description={
-                    <div>
-                      {item.content && <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{item.content}</div>}
-                      {item.image_url && (
-                        <Image
-                          src={item.image_url}
-                          alt="Ảnh bình luận"
-                          style={{ marginTop: item.content ? 6 : 0, maxWidth: 220, maxHeight: 220, objectFit: 'contain', borderRadius: 8 }}
-                        />
-                      )}
-                    </div>
-                  }
-                />
-                <div>Reply <TbMessageReply /></div>
-              </List.Item>
-            )}
-          />
-        )}
-      </div>
-      <div style={{ paddingTop: "2%" }}>
-        {commentImagePreview && (
-          <div style={{ position: 'relative', display: 'inline-block', marginBottom: 8 }}>
-            <Image src={commentImagePreview} alt="Ảnh chuẩn bị bình luận" width={72} height={72} preview={false} style={{ objectFit: 'cover', borderRadius: 8 }} />
-            <Button
-              type="text"
-              shape="circle"
-              size="small"
-              aria-label="Bỏ ảnh"
-              icon={<IoCloseCircle />}
-              onClick={() => { setCommentImage(null); setCommentImagePreview(''); }}
-              style={{ position: 'absolute', top: -10, right: -10, background: '#fff' }}
+  const handleLike = async (comment) => {
+    try {
+      await toggleCommentLikeApi(comment.id);
+      await reload();
+    } catch (error) { message.error(error.message || 'Không thể thích bình luận'); }
+  };
+
+  const saveEdit = async (comment) => {
+    if (!editingText.trim() && !comment.image_url) return message.warning('Bình luận không thể để trống');
+    try {
+      await updateCommentApi(comment.id, editingText);
+      setEditingId(null);
+      await reload();
+      message.success('Đã chỉnh sửa bình luận');
+    } catch (error) { message.error(error.message || 'Không thể sửa bình luận'); }
+  };
+
+  const confirmDelete = (comment) => Modal.confirm({
+    title: 'Xóa bình luận?',
+    content: 'Nội dung và ảnh của bình luận sẽ bị xóa vĩnh viễn.',
+    okText: 'Xóa',
+    cancelText: 'Hủy',
+    okButtonProps: { danger: true },
+    onOk: async () => {
+      await deleteCommentApi(comment.id);
+      await reload();
+      message.success('Đã xóa bình luận');
+    },
+  });
+
+  return <>
+    <div style={{ maxHeight: 320, overflow: 'auto', padding: '0 12px', border: '1px solid rgba(140,140,140,.35)' }}>
+      {loading ? <LoadingComponent /> : listComment.length === 0
+        ? <NotListComponent description="Bài viết chưa có bình luận" />
+        : <List dataSource={listComment} renderItem={(item) => {
+          const mine = Number(item.user_id) === userId;
+          return <List.Item key={item.id} style={{ alignItems: 'flex-start' }}>
+            <List.Item.Meta
+              avatar={<ImageStatus image={item.avatar} width="28px" height="28px" active style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }} />}
+              title={<span>
+                <button type="button" onClick={() => navigate(`/profile/${item.user_id}`)} style={{ border: 0, padding: 0, background: 'none', color: 'blue', cursor: 'pointer', fontWeight: 600 }}>{item.user_name}</button>
+                <small style={{ color: 'gray', marginLeft: 6 }}>{formatTimeStamp(item.created_at)}{item.updated_at && item.updated_at !== item.created_at ? ' · đã chỉnh sửa' : ''}</small>
+              </span>}
+              description={<div>
+                {editingId === item.id ? <Space.Compact style={{ width: '100%' }}>
+                  <Mentions value={editingText} maxLength={2000} autoSize onChange={setEditingText} />
+                  <Button type="primary" onClick={() => saveEdit(item)}>Lưu</Button>
+                  <Button onClick={() => setEditingId(null)}>Hủy</Button>
+                </Space.Compact> : <>
+                  {item.content && <div style={{ color: '#222', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{item.content}</div>}
+                  {item.image_url && <Image src={item.image_url} alt="Ảnh bình luận" style={{ marginTop: item.content ? 6 : 0, maxWidth: 220, maxHeight: 220, objectFit: 'contain', borderRadius: 8 }} />}
+                  <div style={{ display: 'flex', gap: 14, marginTop: 5, fontSize: 12 }}>
+                    <button type="button" onClick={() => handleLike(item)} style={{ border: 0, padding: 0, background: 'none', cursor: 'pointer', color: item.is_liked ? '#1677ff' : '#666', fontWeight: item.is_liked ? 600 : 400 }}>Like{Number(item.like_count) ? ` (${item.like_count})` : ''}</button>
+                    <button type="button" onClick={() => handleReply(item)} style={{ border: 0, padding: 0, background: 'none', cursor: 'pointer', color: '#666' }}>Reply</button>
+                    {mine && <button type="button" onClick={() => { setEditingId(item.id); setEditingText(item.content || ''); }} style={{ border: 0, padding: 0, background: 'none', cursor: 'pointer', color: '#666' }}>Chỉnh sửa</button>}
+                    {mine && <button type="button" onClick={() => confirmDelete(item)} style={{ border: 0, padding: 0, background: 'none', cursor: 'pointer', color: '#d4380d' }}>Xóa</button>}
+                  </div>
+                </>}
+              </div>}
             />
-          </div>
-        )}
-        <Space.Compact
-          style={{
-            width: '100%',
-          }}
-        >
-          <Input
-            placeholder="Nhập bình luận"
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            onPressEnter={handleAddComment}
-            disabled={isSubmitting}
-          />
-          <input ref={imageInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageChange} style={{ display: 'none' }} />
-          <Button
-            size="large"
-            aria-label="Thêm ảnh bình luận"
-            icon={<IoImageOutline />}
-            onClick={() => imageInputRef.current?.click()}
-            disabled={isSubmitting}
-          />
-          <EmojiPopover
-            handleAddComment={handleAddComment}
-            isSubmitting={isSubmitting}
-            setCommentText={setCommentText}
-            commentText={commentText}
-          />
-          <Button
-            size="large"
-            onClick={handleAddComment}
-            loading={isSubmitting}
-            disabled={(!commentText.trim() && !commentImage) || isSubmitting}
-          >
-            Bình Luận
-          </Button>
-        </Space.Compact>
+          </List.Item>;
+        }} />}
+    </div>
+
+    <div data-comment-composer={postId} style={{ paddingTop: 10 }}>
+      {parentCommentId && <div style={{ marginBottom: 6, fontSize: 12, color: '#666' }}>Đang trả lời bình luận <Button type="link" size="small" onClick={() => { setParentCommentId(null); setSelectedMentions([]); setCommentText(''); }}>Hủy</Button></div>}
+      {commentImagePreview && <div style={{ position: 'relative', display: 'inline-block', marginBottom: 8 }}>
+        <Image src={commentImagePreview} width={72} height={72} preview={false} style={{ objectFit: 'cover', borderRadius: 8 }} />
+        <Button type="text" shape="circle" size="small" icon={<IoCloseCircle />} onClick={() => { setCommentImage(null); setCommentImagePreview(''); }} style={{ position: 'absolute', top: -10, right: -10, background: '#fff' }} />
+      </div>}
+      <div style={{ display: 'flex', alignItems: 'flex-end', width: '100%' }}>
+        <Mentions
+          value={commentText}
+          options={mentionOptions}
+          onChange={handleTextChange}
+          onSearch={handleMentionSearch}
+          onSelect={handleMentionSelect}
+          onPressEnter={(event) => { if (!event.shiftKey) { event.preventDefault(); handleAddComment(); } }}
+          placeholder="Nhập bình luận, dùng @ để nhắc tên"
+          maxLength={2000}
+          autoSize={{ minRows: 1, maxRows: 4 }}
+          style={{ flex: 1 }}
+          disabled={isSubmitting}
+        />
+        <input ref={imageInputRef} type="file" accept={supportedImages.join(',')} onChange={handleImageChange} style={{ display: 'none' }} />
+        <Button icon={<IoImageOutline />} onClick={() => imageInputRef.current?.click()} disabled={isSubmitting} />
+        <Button type="primary" onClick={handleAddComment} loading={isSubmitting} disabled={(!commentText.trim() && !commentImage) || isSubmitting}>Gửi</Button>
       </div>
-    </>
-  );
+    </div>
+  </>;
 };

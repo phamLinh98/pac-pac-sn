@@ -17,6 +17,15 @@ const formatNotificationTime = (value) => {
     }).format(date);
 };
 
+const notificationText = (type) => ({
+    LIKE: 'đã thích bài viết của bạn',
+    SHARE: 'đã chia sẻ bài viết của bạn',
+    COMMENT: 'đã bình luận bài viết của bạn',
+    COMMENT_LIKE: 'đã thích bình luận của bạn',
+    REPLY: 'đã trả lời bình luận của bạn',
+    MENTION: 'đã nhắc đến bạn trong một bình luận',
+}[type] || 'đã tương tác với bài viết của bạn');
+
 const NotificationsPanel = () => {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
@@ -74,7 +83,7 @@ const NotificationsPanel = () => {
             }
         }
         setOpen(false);
-        navigate(`/profile/${notification.receiver_user_id}`, {
+        navigate(`/profile/${notification.post_owner_user_id || notification.receiver_user_id}`, {
             state: { highlightedPostId: notification.post_id },
         });
     };
@@ -110,11 +119,11 @@ const NotificationsPanel = () => {
                         >
                             <List.Item.Meta
                                 avatar={<Avatar src={item.sender_avatar}>{item.sender_name?.[0]}</Avatar>}
-                                title={<span><strong>{item.sender_name || 'Người dùng'}</strong> {item.notification_type === 'LIKE' ? 'đã thích bài viết của bạn' : item.notification_type === 'SHARE' ? 'đã chia sẻ bài viết của bạn' : 'đã bình luận bài viết của bạn'}</span>}
+                                title={<span><strong>{item.sender_name || 'Người dùng'}</strong> {notificationText(item.notification_type)}</span>}
                                 description={
                                     <div>
                                         <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                            {item.notification_type === 'LIKE' ? 'Lượt thích mới' : item.notification_type === 'SHARE' ? 'Lượt chia sẻ mới' : (item.comment_content || 'Bình luận mới')}
+                                            {item.notification_type === 'LIKE' ? 'Lượt thích mới' : item.notification_type === 'SHARE' ? 'Lượt chia sẻ mới' : item.notification_type === 'COMMENT_LIKE' ? 'Lượt thích bình luận mới' : (item.comment_content || 'Bình luận mới')}
                                         </div>
                                         <small>{formatNotificationTime(item.created_at)}</small>
                                     </div>
