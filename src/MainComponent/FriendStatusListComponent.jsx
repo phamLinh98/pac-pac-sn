@@ -119,8 +119,7 @@ export const FriendStatusListComponent = () => {
 
       return {
         title:
-          content.text ||
-          'Không có nội dung',
+          content.text || '',
         image: images,
       };
     }
@@ -393,7 +392,7 @@ export const FriendStatusListComponent = () => {
                   : 0,
             }}
           >
-            {!item.is_shared_post && <p>{content.title}</p>}
+            {content.title && <p style={{ whiteSpace: 'pre-wrap' }}>{content.title}</p>}
             <SharedPostPreview post={item} />
 
             <div

@@ -1370,7 +1370,7 @@ export const ProfileComponent = () => {
                       />
                     </div>
                   ) : (
-                    !item.is_shared_post && displayContent.text && <p>{displayContent.text}</p>
+                    displayContent.text && <p style={{ whiteSpace: 'pre-wrap' }}>{displayContent.text}</p>
                   )}
 
                   {!isEditing && <SharedPostPreview post={item} />}

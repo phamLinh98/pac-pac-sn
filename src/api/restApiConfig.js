@@ -823,8 +823,8 @@ export const getFriendsApi = async (userId) => {
 export const togglePostLikeApi = (postId) =>
   chatRequest(`/posts/${postId}/like`, { method: 'POST' });
 
-export const sharePostApi = (postId) =>
-  chatRequest(`/posts/${postId}/share`, { method: 'POST' });
+export const sharePostApi = (postId, text = '') =>
+  chatRequest(`/posts/${postId}/share`, { method: 'POST', body: { text } });
 
 /*
  * =========================================================
