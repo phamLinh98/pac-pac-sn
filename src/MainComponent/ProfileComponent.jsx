@@ -26,7 +26,6 @@ import { IoIosPersonAdd } from "react-icons/io";
 
 import { FiSend } from "react-icons/fi";
 
-import { GiChestnutLeaf } from "react-icons/gi";
 
 import { VscShare } from "react-icons/vsc";
 
@@ -67,6 +66,7 @@ import {
   updatePostApi,
   uploadPostImagesApi,
 } from "../api/restApiConfig";
+import { PostLikeButton } from "../SideComponent/PostLikeButton";
 
 const { Meta } = Card;
 const { TextArea } = Input;
@@ -1496,23 +1496,7 @@ export const ProfileComponent = () => {
                           justifyContent: "flex-end",
                         }}
                       >
-                        <Button
-                          style={{
-                            color: item.likestatus ? "red" : "#000000",
-                            backgroundColor: "#FFFFFF",
-                            border: `1px solid ${
-                              item.likestatus ? "red" : "#D9D9D9"
-                            }`,
-                          }}
-                        >
-                          <GiChestnutLeaf
-                            style={{
-                              color: item.likestatus ? "red" : "#000000",
-                            }}
-                          />
-                          <span>{item.like ?? 0}</span>
-                          Like
-                        </Button>
+                        <PostLikeButton postId={item.id} initialCount={item.like} initialLiked={item.likestatus} />
 
                         <FriendStatusContentDetailsComponent
                           comment_count={item.comment ?? 0}

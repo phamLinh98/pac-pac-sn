@@ -1,5 +1,5 @@
 import { Button, Modal, Space } from 'antd';
-import { useRef, useState } from 'react'; // Import useEffect
+import { useEffect, useRef, useState } from 'react';
 import { VscShare } from 'react-icons/vsc';
 import { ImageStatus } from '../SideComponent/ImageStatus';
 import { CommentListInDetailComponent } from '../SideComponent/CommentListInStatus';
@@ -7,12 +7,24 @@ import { useDispatch } from 'react-redux';
 import { getCommentThunkFunction } from '../reduxs/thunkFunctionComment';
 import { RiChatSmileAiLine } from 'react-icons/ri';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import { GiChestnutLeaf } from 'react-icons/gi';
+import { PostLikeButton } from '../SideComponent/PostLikeButton';
 
 // eslint-disable-next-line react/prop-types
 export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count, title, like, shared, image, postId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [commentCount, setCommentCount] = useState(Number(comment_count) || 0);
   const dispatch = useDispatch();
+
+  useEffect(() => setCommentCount(Number(comment_count) || 0), [comment_count, postId]);
+  useEffect(() => {
+    const updateCount = (event) => {
+      if (event.detail?.type === 'comment' && Number(event.detail?.postId) === Number(postId)) {
+        setCommentCount((current) => current + 1);
+      }
+    };
+    window.addEventListener('post-engagement-updated', updateCount);
+    return () => window.removeEventListener('post-engagement-updated', updateCount);
+  }, [postId]);
 
   const showModal = (postId) => {
     setIsModalOpen(true);
@@ -31,7 +43,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
       {/* Before Open Modal */}
       <Button onClick={() => showModal(postId)}>
         <RiChatSmileAiLine />
-        <span>{comment_count}</span>Comment
+        <span>{commentCount}</span>Comment
       </Button>
 
       {/* After Open Modal */}
@@ -103,14 +115,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
             paddingBottom: '5px',
           }}
         >
-          <Button style={{
-            color: likeStatus ? 'red' : '#FFFFF',
-            backgroundColor: "white",
-            border: `1px solid ${likeStatus ? 'red' : '#FFFFF'}`
-          }}>
-            <GiChestnutLeaf style={{ color: likeStatus ? 'red' : '#FFFFF' }} />
-            <span>{like}</span>Like
-          </Button>
+          <PostLikeButton postId={postId} initialCount={like} initialLiked={likeStatus} />
           <Button>
             <VscShare />
             <span>{shared}</span>Share

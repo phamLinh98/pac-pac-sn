@@ -43,6 +43,9 @@ export const addCommentThunkFunction = (content, userId, listId) => {
 
             dispatch(addComment(newComment));
             window.dispatchEvent(new Event('comment-notification-updated'));
+            window.dispatchEvent(new CustomEvent('post-engagement-updated', {
+                detail: { type: 'comment', postId: Number(listId) },
+            }));
         } catch (error) {
             console.log('error', error);
             dispatch(logError(error.message || 'Không thể thêm bình luận'));

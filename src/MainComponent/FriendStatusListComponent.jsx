@@ -11,7 +11,6 @@ import {
   EyeInvisibleOutlined,
 } from '@ant-design/icons';
 import { VscShare } from 'react-icons/vsc';
-import { GiChestnutLeaf } from 'react-icons/gi';
 import { useNavigate } from 'react-router-dom';
 
 import { ImageStatus } from '../SideComponent/ImageStatus';
@@ -21,6 +20,7 @@ import { FriendStatusContentDetailsComponent } from './FriendStatusContentDetail
 import { useFacadeHomeList } from '../reduxs/useFacadeHomeList';
 import { formatTimeStamp } from '../configs/configTimeStamp';
 import { decodeJwt } from '../SideFunction/VerifyJwtGetUserInfo';
+import { PostLikeButton } from '../SideComponent/PostLikeButton';
 
 export const FriendStatusListComponent = () => {
   const token = localStorage.getItem('allow-login');
@@ -462,35 +462,7 @@ export const FriendStatusListComponent = () => {
                     'flex-end',
                 }}
               >
-                <Button
-                  style={{
-                    color: item.likestatus
-                      ? 'red'
-                      : '#595959',
-                    backgroundColor:
-                      'white',
-                    border: `1px solid ${
-                      item.likestatus
-                        ? 'red'
-                        : '#d9d9d9'
-                    }`,
-                  }}
-                >
-                  <GiChestnutLeaf
-                    style={{
-                      color:
-                        item.likestatus
-                          ? 'red'
-                          : '#595959',
-                    }}
-                  />
-
-                  <span>
-                    {item.like ?? 0}
-                  </span>
-
-                  <span>Like</span>
-                </Button>
+                <PostLikeButton postId={item.id} initialCount={item.like} initialLiked={item.likestatus} />
 
                 <FriendStatusContentDetailsComponent
                   comment_count={

@@ -85,7 +85,7 @@ const NotificationsPanel = () => {
             {loading ? (
                 <div style={{ padding: 32, textAlign: 'center' }}><Spin /></div>
             ) : notifications.length === 0 ? (
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Chưa có thông báo bình luận" />
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Chưa có thông báo" />
             ) : (
                 <List
                     style={{ maxHeight: 420, overflowY: 'auto' }}
@@ -102,11 +102,11 @@ const NotificationsPanel = () => {
                         >
                             <List.Item.Meta
                                 avatar={<Avatar src={item.sender_avatar}>{item.sender_name?.[0]}</Avatar>}
-                                title={<span><strong>{item.sender_name || 'Người dùng'}</strong> đã bình luận bài viết của bạn</span>}
+                                title={<span><strong>{item.sender_name || 'Người dùng'}</strong> {item.notification_type === 'LIKE' ? 'đã thích bài viết của bạn' : 'đã bình luận bài viết của bạn'}</span>}
                                 description={
                                     <div>
                                         <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                            {item.comment_content || 'Bình luận mới'}
+                                            {item.notification_type === 'LIKE' ? 'Lượt thích mới' : (item.comment_content || 'Bình luận mới')}
                                         </div>
                                         <small>{formatNotificationTime(item.created_at)}</small>
                                     </div>
@@ -129,7 +129,7 @@ const NotificationsPanel = () => {
         <div style={{ position: 'relative', display: 'inline-block' }}>
             <Popover
                 content={popoverContent}
-                title="Thông báo bình luận"
+                title="Thông báo"
                 placement="bottom"
                 trigger="click"
                 open={open}

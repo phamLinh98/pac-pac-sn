@@ -820,6 +820,9 @@ export const getFriendsApi = async (userId) => {
   return response.json();
 };
 
+export const togglePostLikeApi = (postId) =>
+  chatRequest(`/posts/${postId}/like`, { method: 'POST' });
+
 /*
  * =========================================================
  * Upload post images
