@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
-import { Button, Input, Modal, message } from 'antd';
+import { Alert, Avatar, Button, Input, Modal, message } from 'antd';
 import { VscShare } from 'react-icons/vsc';
 import { sharePostApi } from '../api/restApiConfig';
+import { ImageStatus } from './ImageStatus';
 
-export const PostShareButton = ({ postId, initialCount = 0, disabled = false }) => {
+export const PostShareButton = ({ postId, initialCount = 0, disabled = false, preview }) => {
   const [shareCount, setShareCount] = useState(Number(initialCount) || 0);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -66,6 +67,27 @@ export const PostShareButton = ({ postId, initialCount = 0, disabled = false }) 
         maxLength={2000}
         showCount
       />
+      <div style={{ marginTop: 18 }}>
+        <div style={{ fontWeight: 600, marginBottom: 8 }}>Nội dung bạn sẽ chia sẻ</div>
+        {preview?.unavailable ? (
+          <Alert type="warning" showIcon message="Bài đăng không còn tồn tại" />
+        ) : (
+          <div style={{ border: '1px solid #d9d9d9', borderRadius: 10, padding: 12, background: '#fafafa', maxHeight: '42vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <Avatar src={preview?.authorAvatar}>{preview?.authorName?.[0]}</Avatar>
+              <strong>{preview?.authorName || 'Người dùng'}</strong>
+            </div>
+            {preview?.text && <p style={{ whiteSpace: 'pre-wrap' }}>{preview.text}</p>}
+            {Array.isArray(preview?.images) && preview.images.length > 0 && (
+              <div style={{ display: 'flex', gap: 6, overflowX: 'auto' }}>
+                {preview.images.map((image, index) => (
+                  <ImageStatus key={`${postId}-share-preview-${index}`} image={image} width={120} height={160} />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </Modal>
   </>;
 };

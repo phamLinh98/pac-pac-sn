@@ -1135,6 +1135,18 @@ export const ProfileComponent = () => {
 
               const ownerName = item.name || item.user_name || "Người dùng";
 
+              const shareOriginalContent = item.is_shared_post
+                ? normalizeContent(item.original_content)
+                : displayContent;
+
+              const sharePreview = {
+                unavailable: item.is_shared_post && !item.original_post_exists,
+                authorName: item.is_shared_post ? item.original_author_name : ownerName,
+                authorAvatar: item.is_shared_post ? item.original_author_avatar : item.avatar,
+                text: shareOriginalContent.text,
+                images: shareOriginalContent.image,
+              };
+
               const postOwnerId = Number(item.user_id);
 
               const isOwnPost =
@@ -1518,9 +1530,10 @@ export const ProfileComponent = () => {
                           postId={item.id}
                           likeStatus={Boolean(item.likestatus)}
                           shareDisabled={item.is_shared_post && !item.original_post_exists}
+                          sharePreview={sharePreview}
                         />
 
-                        <PostShareButton postId={item.id} initialCount={item.shared} disabled={item.is_shared_post && !item.original_post_exists} />
+                        <PostShareButton postId={item.id} initialCount={item.shared} disabled={item.is_shared_post && !item.original_post_exists} preview={sharePreview} />
                       </Space>
                     )}
                   </div>

@@ -10,7 +10,7 @@ import { PostLikeButton } from '../SideComponent/PostLikeButton';
 import { PostShareButton } from '../SideComponent/PostShareButton';
 
 // eslint-disable-next-line react/prop-types
-export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count, title, like, shared, image, postId, shareDisabled = false }) => {
+export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count, title, like, shared, image, postId, shareDisabled = false, sharePreview }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [commentCount, setCommentCount] = useState(Number(comment_count) || 0);
   const dispatch = useDispatch();
@@ -116,7 +116,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
           }}
         >
           <PostLikeButton postId={postId} initialCount={like} initialLiked={likeStatus} />
-          <PostShareButton postId={postId} initialCount={shared} disabled={shareDisabled} />
+          <PostShareButton postId={postId} initialCount={shared} disabled={shareDisabled} preview={sharePreview} />
         </Space>
         <CommentListInDetailComponent postId={postId} />
       </Modal>

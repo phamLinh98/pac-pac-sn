@@ -184,6 +184,13 @@ export const FriendStatusListComponent = () => {
 
         const images =
           content.image || [];
+        const sharePreview = {
+          unavailable: item.is_shared_post && !item.original_post_exists,
+          authorName: item.is_shared_post ? item.original_author_name : ownerName,
+          authorAvatar: item.is_shared_post ? item.original_author_avatar : item.avatar,
+          text: originalContent.title,
+          images: originalContent.image || [],
+        };
 
         return (
           <Card
@@ -483,9 +490,10 @@ export const FriendStatusListComponent = () => {
                     item.likestatus
                   )}
                   shareDisabled={item.is_shared_post && !item.original_post_exists}
+                  sharePreview={sharePreview}
                 />
 
-                <PostShareButton postId={item.id} initialCount={item.shared} disabled={item.is_shared_post && !item.original_post_exists} />
+                <PostShareButton postId={item.id} initialCount={item.shared} disabled={item.is_shared_post && !item.original_post_exists} preview={sharePreview} />
               </Space>
             </div>
           </Card>
