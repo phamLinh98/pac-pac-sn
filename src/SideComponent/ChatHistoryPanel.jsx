@@ -44,6 +44,8 @@ const ChatHistoryPanel = () => {
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia('(max-width: 700px)').matches);
   const messageEndRef = useRef(null);
+  const messageScrollRef = useRef(null);
+  const shouldStickToBottomRef = useRef(true);
   const imageInputRef = useRef(null);
 
   const selectedChat = chats.find((chat) => Number(chat.id) === Number(selectedChatId));
@@ -119,9 +121,24 @@ const ChatHistoryPanel = () => {
     const messageTimer = window.setInterval(() => loadMessages(selectedChatId, true), 1500);
     return () => window.clearInterval(messageTimer);
   }, [modalOpen, selectedChatId, loadMessages]);
-  useEffect(() => { messageEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+  useEffect(() => {
+    if (!shouldStickToBottomRef.current) return;
+    const frame = window.requestAnimationFrame(() => {
+      const container = messageScrollRef.current;
+      if (container) container.scrollTop = container.scrollHeight;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [messages]);
+
+  const handleMessageScroll = () => {
+    const container = messageScrollRef.current;
+    if (!container) return;
+    const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+    shouldStickToBottomRef.current = distanceFromBottom <= 80;
+  };
 
   const openChat = (chatId) => {
+    shouldStickToBottomRef.current = true;
     setSelectedChatId(Number(chatId));
     setModalOpen(true);
     setPopoverOpen(false);
@@ -149,6 +166,7 @@ const ChatHistoryPanel = () => {
     setSending(true);
     try {
       const created = await sendChatMessageApi(selectedChatId, content);
+      shouldStickToBottomRef.current = true;
       setMessages((current) => [...current.filter((item) => item.id !== created.id), created]);
       setDraft('');
       await loadChats(true);
@@ -168,6 +186,7 @@ const ChatHistoryPanel = () => {
     setUploadingImage(true);
     try {
       const created = await sendChatImageApi(selectedChatId, file);
+      shouldStickToBottomRef.current = true;
       setMessages((current) => [...current.filter((item) => item.id !== created.id), created]);
       await loadChats(true);
     } catch (error) {
@@ -261,13 +280,13 @@ const ChatHistoryPanel = () => {
         {!selectedChat ? (!isMobile && <Empty style={{ margin: 'auto' }} description="Chọn một cuộc trò chuyện" />) :
           <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, minHeight: 0 }}>
             <div style={{ padding: '10px 12px', borderBottom: '1px solid #eee', display: 'flex', alignItems: 'center', gap: 8, minHeight: 54 }}>
-              {isMobile && <Button type="text" shape="circle" aria-label="Quay lại danh sách chat" icon={<IoArrowBack />} onClick={() => { setSelectedChatId(null); setMessages([]); }} />}
+              {isMobile && <Button type="text" shape="circle" aria-label="Quay lại danh sách chat" icon={<IoArrowBack />} onClick={() => { shouldStickToBottomRef.current = true; setSelectedChatId(null); setMessages([]); }} />}
               <Avatar src={selectedChat.display_avatar}>{selectedChat.display_name?.[0]}</Avatar>
               <div style={{ flex: 1, minWidth: 0 }}><Text strong ellipsis style={{ display: 'block' }}>{selectedChat.display_name}</Text>{selectedChat.chat_type === 'GROUP' && <Text type="secondary" style={{ fontSize: 11 }}>{selectedChat.members?.length || 0} thành viên</Text>}</div>
               {canManageMembers && <Button size="small" onClick={() => setMemberOpen(true)}>{isMobile ? '+' : 'Thêm người'}</Button>}
               {selectedChat.chat_type === 'GROUP' && <Button size="small" danger onClick={leaveGroup}>{isMobile ? 'Rời' : 'Rời nhóm'}</Button>}
             </div>
-            <div style={{ flex: 1, overflowY: 'auto', padding: 16, background: '#f5f7fb' }}>
+            <div ref={messageScrollRef} onScroll={handleMessageScroll} style={{ flex: 1, overflowY: 'auto', padding: 16, background: '#f5f7fb', overflowAnchor: 'none' }}>
               {loadingMessages ? <div style={{ textAlign: 'center' }}><Spin /></div> : messages.length === 0 ? <Empty description="Chưa có tin nhắn" /> :
                 messages.map((item) => {
                   const mine = Number(item.sender_id) === currentUserId;
