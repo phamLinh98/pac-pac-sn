@@ -16,7 +16,7 @@ import { NotListComponent } from './NoListComponent';
 
 const supportedImages = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
-export const CommentListInDetailComponent = ({ postId }) => {
+export const CommentListInDetailComponent = ({ postId, highlightedCommentId = null }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userData = decodeJwt(localStorage.getItem('allow-login')) || {};
@@ -38,6 +38,14 @@ export const CommentListInDetailComponent = ({ postId }) => {
     if (commentImagePreview) URL.revokeObjectURL(commentImagePreview);
     window.clearTimeout(searchTimerRef.current);
   }, [commentImagePreview]);
+
+  useEffect(() => {
+    if (!highlightedCommentId || !listComment.some((item) => Number(item.id) === Number(highlightedCommentId))) return;
+    const timer = window.setTimeout(() => {
+      document.querySelector(`[data-comment-id="${highlightedCommentId}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+    return () => window.clearTimeout(timer);
+  }, [highlightedCommentId, listComment]);
 
   const reload = () => dispatch(getCommentThunkFunction(postId));
 
@@ -152,7 +160,8 @@ export const CommentListInDetailComponent = ({ postId }) => {
         ? <NotListComponent description="Bài viết chưa có bình luận" />
         : <List dataSource={listComment} renderItem={(item) => {
           const mine = Number(item.user_id) === userId;
-          return <List.Item key={item.id} style={{ alignItems: 'flex-start' }}>
+          const highlighted = Number(item.id) === Number(highlightedCommentId);
+          return <List.Item data-comment-id={item.id} key={item.id} style={{ alignItems: 'flex-start', margin: '2px 0', paddingInline: 6, borderRadius: 8, background: highlighted ? '#fff7cc' : undefined, boxShadow: highlighted ? 'inset 3px 0 #faad14' : undefined }}>
             <List.Item.Meta
               avatar={<ImageStatus image={item.avatar} width="28px" height="28px" active style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }} />}
               title={<span>

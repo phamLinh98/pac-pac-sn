@@ -34,7 +34,7 @@ import { BsSendPlus } from "react-icons/bs";
 
 import { FaUserFriends } from "react-icons/fa";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { ImageStatus, ImageStatusAvatar } from "../SideComponent/ImageStatus";
 
@@ -167,6 +167,11 @@ export const ProfileComponent = () => {
   const { id: profileIdParam } = useParams();
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const notificationPostId = Number(location.state?.highlightedPostId);
+  const notificationCommentId = Number(location.state?.highlightedCommentId) || null;
+  const notificationType = location.state?.notificationType || null;
+  const notificationTargetKey = location.state?.notificationTargetKey || null;
 
   const profileUserId = Number(profileIdParam);
 
@@ -1170,6 +1175,8 @@ export const ProfileComponent = () => {
               return (
                 <Card
                   key={postKey}
+                  id={`post-${item.id}`}
+                  style={Number(item.id) === notificationPostId ? { borderColor: '#1677ff', boxShadow: '0 0 0 2px rgba(22,119,255,.15)' } : undefined}
                   title={
                     <div
                       style={{
@@ -1534,6 +1541,10 @@ export const ProfileComponent = () => {
                           likeStatus={Boolean(item.likestatus)}
                           shareDisabled={item.is_shared_post && !item.original_post_exists}
                           sharePreview={sharePreview}
+                          autoOpen={Number(item.id) === notificationPostId}
+                          highlightedCommentId={Number(item.id) === notificationPostId ? notificationCommentId : null}
+                          notificationType={Number(item.id) === notificationPostId ? notificationType : null}
+                          notificationTargetKey={Number(item.id) === notificationPostId ? notificationTargetKey : null}
                         />
 
                         <PostShareButton postId={item.id} initialCount={item.shared} disabled={item.is_shared_post && !item.original_post_exists} preview={sharePreview} />

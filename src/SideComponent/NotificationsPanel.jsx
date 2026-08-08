@@ -84,7 +84,12 @@ const NotificationsPanel = () => {
         }
         setOpen(false);
         navigate(`/profile/${notification.post_owner_user_id || notification.receiver_user_id}`, {
-            state: { highlightedPostId: notification.post_id },
+            state: {
+                highlightedPostId: Number(notification.post_id),
+                highlightedCommentId: notification.comment_id ? Number(notification.comment_id) : null,
+                notificationType: notification.notification_type,
+                notificationTargetKey: Number(notification.id),
+            },
         });
     };
 

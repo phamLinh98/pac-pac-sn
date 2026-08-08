@@ -10,10 +10,12 @@ import { PostLikeButton } from '../SideComponent/PostLikeButton';
 import { PostShareButton } from '../SideComponent/PostShareButton';
 
 // eslint-disable-next-line react/prop-types
-export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count, title, like, shared, image, postId, shareDisabled = false, sharePreview }) => {
+export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count, title, like, shared, image, postId, shareDisabled = false, sharePreview, autoOpen = false, highlightedCommentId = null, notificationType = null, notificationTargetKey = null }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [commentCount, setCommentCount] = useState(Number(comment_count) || 0);
   const dispatch = useDispatch();
+  const wrapperRef = useRef(null);
+  const interactionRef = useRef(null);
 
   useEffect(() => setCommentCount(Number(comment_count) || 0), [comment_count, postId]);
   useEffect(() => {
@@ -25,6 +27,17 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
     window.addEventListener('post-engagement-updated', updateCount);
     return () => window.removeEventListener('post-engagement-updated', updateCount);
   }, [postId]);
+
+  useEffect(() => {
+    if (!autoOpen) return;
+    setIsModalOpen(true);
+    dispatch(getCommentThunkFunction(postId));
+    const timer = window.setTimeout(() => {
+      wrapperRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (notificationType === 'LIKE') interactionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [autoOpen, dispatch, highlightedCommentId, notificationTargetKey, notificationType, postId]);
 
   const showModal = (postId) => {
     setIsModalOpen(true);
@@ -39,7 +52,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
 
   const containerRef = useRef(null);
   return (
-    <>
+    <div ref={wrapperRef} style={{ display: 'inline-block' }}>
       {/* Before Open Modal */}
       <Button onClick={() => showModal(postId)}>
         <RiChatSmileAiLine />
@@ -106,6 +119,7 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
 
         {/* Like/Share */}
         <Space
+          ref={interactionRef}
           style={{
             flex: 1,
             minWidth: 0,
@@ -118,8 +132,8 @@ export const FriendStatusContentDetailsComponent = ({ likeStatus, comment_count,
           <PostLikeButton postId={postId} initialCount={like} initialLiked={likeStatus} />
           <PostShareButton postId={postId} initialCount={shared} disabled={shareDisabled} preview={sharePreview} />
         </Space>
-        <CommentListInDetailComponent postId={postId} />
+        <CommentListInDetailComponent postId={postId} highlightedCommentId={highlightedCommentId} />
       </Modal>
-    </>
+    </div>
   );
 };
