@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { IoMdPersonAdd } from 'react-icons/io';
 import { Popover, Modal, Button, Avatar, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +26,7 @@ const NotificationIcon = () => {
   const [notifications, setNotifications] = useState([]); // Lưu trữ danh sách thông báo từ API
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // Trạng thái loading
+  const requestInFlightRef = useRef(false);
   // Đảm bảo notifications luôn là array
   const safeNotifications = Array.isArray(notifications) ? notifications : [];
   const numberAdd = safeNotifications.filter((notification) => {
@@ -89,10 +90,12 @@ const NotificationIcon = () => {
   };
 
   // Hàm lấy danh sách yêu cầu kết bạn
-  const fetchFriendRequests = useCallback(async () => {
-    setIsLoading(true);
+  const fetchFriendRequests = useCallback(async ({ silent = false } = {}) => {
+    if (requestInFlightRef.current || !Number.isFinite(idToNumber) || idToNumber <= 0) return true;
+    requestInFlightRef.current = true;
+    if (!silent) setIsLoading(true);
     try {
-      const data = await getFriendRequestsApi(idToNumber);
+      const data = await getFriendRequestsApi();
       const response = await data.json().catch(() => null);
       const normalizedNotifications = normalizeFriendRequestList(response).filter((notification) => {
         const status = String(notification?.status || '').toLowerCase();
@@ -105,28 +108,46 @@ const NotificationIcon = () => {
         );
       });
       setNotifications(normalizedNotifications);
+      return true;
     } catch (error) {
-      console.error('Lỗi khi lấy yêu cầu kết bạn:', error);
+      console.warn('Tạm thời chưa thể tải lời mời kết bạn:', error?.message || error);
+      return false;
     } finally {
-      setIsLoading(false);
+      requestInFlightRef.current = false;
+      if (!silent) setIsLoading(false);
     }
   }, [idToNumber]);
 
   // useEffect để gọi API khi component được mount
   useEffect(() => {
-    fetchFriendRequests();
-    const intervalId = window.setInterval(fetchFriendRequests, 2000);
-    const refreshWhenVisible = () => {
-      if (document.visibilityState === 'visible') fetchFriendRequests();
+    let stopped = false;
+    let timeoutId;
+
+    const runAndSchedule = async ({ silent = true } = {}) => {
+      window.clearTimeout(timeoutId);
+      const success = await fetchFriendRequests({ silent });
+      if (!stopped) {
+        timeoutId = window.setTimeout(
+          () => runAndSchedule({ silent: true }),
+          success ? 30000 : 120000
+        );
+      }
     };
-    window.addEventListener('friend-request-updated', fetchFriendRequests);
-    window.addEventListener('focus', fetchFriendRequests);
+
+    runAndSchedule({ silent: false });
+    const refreshNow = () => runAndSchedule({ silent: true });
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') refreshNow();
+    };
+    window.addEventListener('friend-request-updated', refreshNow);
+    window.addEventListener('focus', refreshNow);
     document.addEventListener('visibilitychange', refreshWhenVisible);
 
     return () => {
-      window.clearInterval(intervalId);
-      window.removeEventListener('friend-request-updated', fetchFriendRequests);
-      window.removeEventListener('focus', fetchFriendRequests);
+      stopped = true;
+      window.clearTimeout(timeoutId);
+      window.removeEventListener('friend-request-updated', refreshNow);
+      window.removeEventListener('focus', refreshNow);
       document.removeEventListener('visibilitychange', refreshWhenVisible);
     };
   }, [fetchFriendRequests]);

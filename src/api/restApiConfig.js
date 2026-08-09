@@ -489,8 +489,8 @@ export const sendFriendRequestApi =
   };
 
 export const getFriendRequestsApi =
-  async (userId) => {
-    return getApi(`/send-friend/${userId}`);
+  async () => {
+    return getApi('/friend-requests');
   };
 
 export const searchUsersApi = async (keyword) => {
