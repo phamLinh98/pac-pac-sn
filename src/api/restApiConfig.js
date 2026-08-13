@@ -393,6 +393,22 @@ export const updateAccountApi = async (account) => {
   return data;
 };
 
+export const updateProfileInfoApi = async (profileInfo) => {
+  const requestOptions = {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(profileInfo),
+  };
+  let response = await fetch(`${envConfig.host}/profile-info`, requestOptions);
+  if (!response.ok && isAuthenticationError(response)) {
+    await refreshAccessToken();
+    response = await fetch(`${envConfig.host}/profile-info`, requestOptions);
+  }
+  if (!response.ok) throw new Error(await readErrorResponse(response));
+  return response.json();
+};
+
 export const getProfileMediaApi = async () => {
   const response = await getApi('/profile-media');
   const data = await response.json();

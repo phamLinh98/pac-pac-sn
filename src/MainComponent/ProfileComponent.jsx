@@ -16,7 +16,11 @@ import {
   EditOutlined,
   EyeInvisibleOutlined,
   HistoryOutlined,
+  EnvironmentOutlined,
+  FileTextOutlined,
+  MoreOutlined,
   PlusOutlined,
+  ReadOutlined,
   SaveOutlined,
   UnorderedListOutlined,
   UserOutlined,
@@ -63,6 +67,7 @@ import {
   getFriendRequestsApi,
   sendFriendRequestApi,
   updatePostApi,
+  updateProfileInfoApi,
   uploadPostImagesApi,
 } from "../api/restApiConfig";
 import { PostLikeButton } from "../SideComponent/PostLikeButton";
@@ -236,6 +241,50 @@ export const ProfileComponent = () => {
   const [openAvatar, setOpenAvatar] = useState(false);
 
   const [openBG, setOpenBG] = useState(false);
+
+  const [profileInfo, setProfileInfo] = useState({ address: "", education: "", bios: "" });
+  const [profileInfoDraft, setProfileInfoDraft] = useState({ address: "", education: "", bios: "" });
+  const [editingProfileInfo, setEditingProfileInfo] = useState(false);
+  const [savingProfileInfo, setSavingProfileInfo] = useState(false);
+
+  useEffect(() => {
+    const nextInfo = {
+      address: profileUser?.address || "",
+      education: profileUser?.education || "",
+      bios: profileUser?.bios || "",
+    };
+    setProfileInfo(nextInfo);
+    setProfileInfoDraft(nextInfo);
+  }, [profileUser?.address, profileUser?.education, profileUser?.bios, profileUserId]);
+
+  const startEditingProfileInfo = () => {
+    setProfileInfoDraft(profileInfo);
+    setEditingProfileInfo(true);
+  };
+
+  const cancelEditingProfileInfo = () => {
+    setProfileInfoDraft(profileInfo);
+    setEditingProfileInfo(false);
+  };
+
+  const saveProfileInfo = async () => {
+    try {
+      setSavingProfileInfo(true);
+      const result = await updateProfileInfoApi(profileInfoDraft);
+      const updatedInfo = result?.profileInfo ?? profileInfoDraft;
+      setProfileInfo({
+        address: updatedInfo.address || "",
+        education: updatedInfo.education || "",
+        bios: updatedInfo.bios || "",
+      });
+      setEditingProfileInfo(false);
+      message.success("Đã cập nhật thông tin cá nhân");
+    } catch (error) {
+      message.error(error?.message || "Không thể cập nhật thông tin cá nhân");
+    } finally {
+      setSavingProfileInfo(false);
+    }
+  };
 
   const [profileImages, setProfileImages] = useState({ avatar: "", background: "" });
 
@@ -1097,6 +1146,75 @@ export const ProfileComponent = () => {
             description=""
           />
         </Card>
+
+        {profileUser && (
+          <Card
+            size="small"
+            style={{ marginTop: 12, borderRadius: 14 }}
+            styles={{ body: { padding: "16px clamp(14px, 3vw, 24px)" } }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 14 }}>
+              <div>
+                <div style={{ fontSize: 17, fontWeight: 700 }}>Thông tin cá nhân</div>
+                <div style={{ fontSize: 12, opacity: 0.6 }}>Một vài điều về {isOwnProfile ? "bạn" : profileUser.name || "người dùng này"}</div>
+              </div>
+              {isOwnProfile && !editingProfileInfo && (
+                <Button
+                  type="text"
+                  shape="circle"
+                  aria-label="Chỉnh sửa thông tin cá nhân"
+                  icon={<MoreOutlined style={{ fontSize: 22 }} />}
+                  onClick={startEditingProfileInfo}
+                />
+              )}
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 12 }}>
+              {[
+                { key: "address", label: "Địa chỉ", icon: <EnvironmentOutlined /> },
+                { key: "education", label: "Học vấn", icon: <ReadOutlined /> },
+              ].map((item) => (
+                <div key={item.key} style={{ padding: 13, borderRadius: 12, background: "rgba(127, 127, 127, 0.08)", minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 6, color: "#1677ff", fontWeight: 600 }}>
+                    {item.icon} {item.label}
+                  </div>
+                  {editingProfileInfo ? (
+                    <Input
+                      value={profileInfoDraft[item.key]}
+                      maxLength={item.key === "education" ? 255 : 500}
+                      onChange={(event) => setProfileInfoDraft((current) => ({ ...current, [item.key]: event.target.value }))}
+                    />
+                  ) : (
+                    <div style={{ overflowWrap: "anywhere" }}>{profileInfo[item.key] || "Chưa cập nhật"}</div>
+                  )}
+                </div>
+              ))}
+              <div style={{ gridColumn: "1 / -1", padding: 13, borderRadius: 12, background: "rgba(127, 127, 127, 0.08)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 6, color: "#1677ff", fontWeight: 600 }}>
+                  <FileTextOutlined /> Giới thiệu
+                </div>
+                {editingProfileInfo ? (
+                  <TextArea
+                    value={profileInfoDraft.bios}
+                    maxLength={2000}
+                    autoSize={{ minRows: 3, maxRows: 6 }}
+                    showCount
+                    onChange={(event) => setProfileInfoDraft((current) => ({ ...current, bios: event.target.value }))}
+                  />
+                ) : (
+                  <div style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere", lineHeight: 1.6 }}>{profileInfo.bios || "Chưa cập nhật"}</div>
+                )}
+              </div>
+            </div>
+
+            {editingProfileInfo && (
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 14 }}>
+                <Button onClick={cancelEditingProfileInfo} disabled={savingProfileInfo}>Hủy</Button>
+                <Button type="primary" onClick={saveProfileInfo} loading={savingProfileInfo}>OK</Button>
+              </div>
+            )}
+          </Card>
+        )}
       </div>
 
       {isOwnProfile && (
