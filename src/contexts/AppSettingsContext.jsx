@@ -11,8 +11,8 @@ const LANGUAGE_STORAGE_KEY = "pac-pac-language";
 const translations = {
   vi: {
     friends: "Bạn bè", groups: "Nhóm", setting: "Cài đặt",
-    theme: "Giao diện", language: "Ngôn ngữ", dark: "Đen", light: "Trắng",
     createAccount: "Tạo tài khoản", logout: "Đăng xuất", updateAccount: "Tài khoản",
+    theme: "Giao diện", language: "Ngôn ngữ", dark: "Đen", light: "Trắng",
     name: "Tên", currentPassword: "Mật khẩu hiện tại", newPassword: "Mật khẩu mới",
     confirmPassword: "Xác nhận mật khẩu mới", save: "Lưu", cancel: "Hủy",
     nameRequired: "Vui lòng nhập tên", currentPasswordRequired: "Vui lòng nhập mật khẩu hiện tại",
@@ -21,8 +21,8 @@ const translations = {
   },
   en: {
     friends: "Friends", groups: "Groups", setting: "Settings",
-    theme: "Theme", language: "Language", dark: "Black", light: "White",
     createAccount: "Create Account", logout: "Logout", updateAccount: "Update account",
+    theme: "Theme", language: "Language", dark: "Black", light: "White",
     name: "Name", currentPassword: "Current password", newPassword: "New password",
     confirmPassword: "Confirm new password", save: "Save", cancel: "Cancel",
     nameRequired: "Please enter your name", currentPasswordRequired: "Please enter your current password",
@@ -31,8 +31,8 @@ const translations = {
   },
   ja: {
     friends: "友達", groups: "グループ", setting: "設定",
-    theme: "テーマ", language: "言語", dark: "ブラック", light: "ホワイト",
     createAccount: "アカウント作成", logout: "ログアウト", updateAccount: "アカウント更新",
+    theme: "テーマ", language: "言語", dark: "ブラック", light: "ホワイト",
     name: "名前", currentPassword: "現在のパスワード", newPassword: "新しいパスワード",
     confirmPassword: "新しいパスワード（確認）", save: "保存", cancel: "キャンセル",
     nameRequired: "名前を入力してください", currentPasswordRequired: "現在のパスワードを入力してください",
