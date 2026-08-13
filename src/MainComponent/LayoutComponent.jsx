@@ -6,8 +6,6 @@ import { MenuLeftComponent } from "./MenuLeftComponent";
 import { PrivateAreaComponent } from "./PrivateAreaComponent";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { FaPhotoVideo } from "react-icons/fa";
-import { PiGameController } from "react-icons/pi";
 import { MenuRightComponent } from "./MenuRightComponent";
 import NotificationIcon from "../SideComponent/ButtonNewNotification";
 import ChatHistoryPanel from "../SideComponent/ChatHistoryPanel";
@@ -205,16 +203,6 @@ export const LayoutComponent = () => {
     },
     {
       key: "4",
-      label: <PiGameController style={{ fontSize: 17 }} />,
-      style: menuItemStyle,
-    },
-    {
-      key: "5",
-      label: <FaPhotoVideo style={{ fontSize: 17 }} />,
-      style: menuItemStyle,
-    },
-    {
-      key: "6",
       label: <NotificationIcon />,
       style: menuItemStyle,
     },
