@@ -58,9 +58,9 @@ export const LoginComponent = () => {
           </div>
 
           <div className="pac-login-heading">
-            <span className="pac-login-welcome">Chào mừng trở lại</span>
-            <h2>Đăng nhập tài khoản</h2>
-            <p>Nhập thông tin của bạn để tiếp tục khám phá Pac-Pac.</p>
+            <span className="pac-login-welcome"><i /> Chào bạn, lâu rồi không gặp!</span>
+            <h2>Tiếp tục cùng <strong>PacPac</strong></h2>
+            <p>Đăng nhập để xem những câu chuyện mới nhất từ bạn bè của bạn.</p>
           </div>
 
           <Form name="login-form" layout="vertical" requiredMark={false} onFinish={onFinish}>

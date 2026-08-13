@@ -137,10 +137,13 @@
 
 .pac-login-form-panel { display: flex; flex-direction: column; justify-content: center; padding: 58px clamp(42px, 6vw, 76px); }
 .pac-login-mobile-brand { display: none; color: var(--pac-blue); }
-.pac-login-heading { margin-bottom: 32px; }
-.pac-login-welcome { display: block; margin-bottom: 9px; color: var(--pac-blue); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-.pac-login-heading h2 { margin: 0 0 10px; color: #18213e; font-size: 31px; letter-spacing: -1px; }
-.pac-login-heading p { margin: 0; color: #78809a; line-height: 1.6; }
+.pac-login-heading { position: relative; margin-bottom: 34px; padding-bottom: 22px; }
+.pac-login-heading::after { position: absolute; bottom: 0; left: 0; width: 46px; height: 4px; border-radius: 99px; background: linear-gradient(90deg, var(--pac-blue), #ffd092); content: ""; }
+.pac-login-welcome { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 15px; padding: 7px 11px; border: 1px solid rgba(244, 164, 96, 0.28); border-radius: 99px; color: #a75a1e; background: rgba(244, 164, 96, 0.1); font-size: 12px; font-weight: 700; letter-spacing: 0.01em; }
+.pac-login-welcome i { width: 7px; height: 7px; border-radius: 50%; background: #ef9450; box-shadow: 0 0 0 4px rgba(239, 148, 80, 0.15); }
+.pac-login-heading h2 { margin: 0 0 12px; color: #18213e; font-size: clamp(29px, 3vw, 36px); line-height: 1.18; letter-spacing: -1.5px; }
+.pac-login-heading h2 strong { color: #d97932; font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif; font-style: italic; font-weight: 900; }
+.pac-login-heading p { max-width: 390px; margin: 0; color: #78809a; font-size: 14px; line-height: 1.7; }
 .pac-login-form-panel .ant-form-item-label > label { color: #38415e; font-weight: 650; }
 .pac-login-form-panel .ant-input-affix-wrapper { min-height: 50px; border-color: #e2e6f2; border-radius: 13px; background: #fafbff; box-shadow: none; }
 .pac-login-form-panel .ant-input-affix-wrapper:hover { border-color: #8fa3ef; }
@@ -159,6 +162,7 @@
 html[data-theme="dark"] .pac-login-page { background: radial-gradient(circle at 15% 15%, #27204d, transparent 35%), #111426; }
 html[data-theme="dark"] .pac-login-shell { border-color: rgba(255,255,255,.08); background: #191d31; }
 html[data-theme="dark"] .pac-login-heading h2 { color: #f1f3ff; }
+html[data-theme="dark"] .pac-login-welcome { color: #ffc58f; background: rgba(244, 164, 96, 0.12); }
 html[data-theme="dark"] .pac-login-heading p,
 html[data-theme="dark"] .pac-login-register { color: #9ba4c0; }
 
