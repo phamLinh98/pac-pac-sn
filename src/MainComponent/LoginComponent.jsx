@@ -2,11 +2,8 @@ import { useEffect, useState } from "react";
 import { Button, Form, Input, message } from "antd";
 import {
   ArrowRightOutlined,
-  HeartFilled,
   LockOutlined,
   MailOutlined,
-  SafetyCertificateFilled,
-  TeamOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { loginByEmailAndPassword } from "../api/restApiConfig";
@@ -48,11 +45,6 @@ export const LoginComponent = () => {
             <span>pac-pac</span>
           </div>
 
-          <div className="pac-login-story-copy">
-            <span className="pac-login-eyebrow"><HeartFilled /> Kết nối theo cách của bạn</span>
-            <h1>Chia sẻ khoảnh khắc.<br />Giữ bạn bè ở gần.</h1>
-            <p>Một không gian nhỏ cho những câu chuyện, cuộc trò chuyện và những người bạn quan tâm.</p>
-          </div>
         </aside>
 
         <div className="pac-login-form-panel">

@@ -33,12 +33,12 @@
 .pac-login-story {
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   padding: 44px;
   overflow: hidden;
   color: white;
-  background: linear-gradient(145deg, #243fc0 0%, #6848d4 58%, #9b60dc 100%);
+  background: linear-gradient(145deg, #F4A460 0%, #F4A460 58%, #F4A460 100%);
 }
 
 .pac-login-story::after {
@@ -72,21 +72,20 @@
   box-shadow: 0 8px 24px rgba(20, 24, 73, 0.25);
 }
 
-.pac-login-story-copy { position: relative; z-index: 1; max-width: 470px; }
-.pac-login-eyebrow { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 18px; font-size: 13px; font-weight: 600; opacity: 0.9; }
-.pac-login-story h1 { margin: 0 0 20px; font-size: clamp(38px, 4vw, 55px); line-height: 1.08; letter-spacing: -2.6px; }
-.pac-login-story-copy p { max-width: 420px; margin: 0; font-size: 16px; line-height: 1.75; color: rgba(255, 255, 255, 0.8); }
+.pac-login-story .pac-login-brand {
+  position: relative;
+  z-index: 1;
+  flex-direction: column;
+  gap: 18px;
+  font-size: 34px;
+}
 
-.pac-login-benefits { position: relative; z-index: 1; display: flex; gap: 30px; }
-.pac-login-benefits > div { display: flex; align-items: center; gap: 10px; }
-.pac-login-benefits .anticon { font-size: 23px; color: #ffd572; }
-.pac-login-benefits span { display: flex; flex-direction: column; gap: 2px; }
-.pac-login-benefits strong { font-size: 13px; }
-.pac-login-benefits small { color: rgba(255, 255, 255, 0.68); }
-
-.pac-login-decor-card { position: absolute; z-index: 0; padding: 10px 16px; border: 1px solid rgba(255,255,255,.2); border-radius: 14px; background: rgba(255,255,255,.1); font-size: 12px; backdrop-filter: blur(8px); }
-.pac-login-decor-card-one { top: 105px; right: -15px; transform: rotate(7deg); }
-.pac-login-decor-card-two { right: 32px; bottom: 120px; transform: rotate(-7deg); }
+.pac-login-story .pac-login-brand img {
+  width: clamp(180px, 21vw, 250px);
+  height: clamp(180px, 21vw, 250px);
+  border-width: 6px;
+  border-radius: 50%;
+}
 
 .pac-login-form-panel { display: flex; flex-direction: column; justify-content: center; padding: 58px clamp(42px, 6vw, 76px); }
 .pac-login-mobile-brand { display: none; color: var(--pac-blue); }
