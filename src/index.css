@@ -20,7 +20,7 @@ html[data-theme="dark"] #root {
 
 html[data-theme="light"] body,
 html[data-theme="light"] #root {
-  background: #f9eadc;
+  background: #F4A460;
   color: #4c3525;
 }
 

@@ -89,7 +89,7 @@ export const AppSettingsProvider = ({ children }) => {
             colorInfo: "#d9823b",
             colorLink: "#bf6f30",
             colorBgBase: "#fff8f1",
-            colorBgLayout: "#f9eadc",
+            colorBgLayout: "#F4A460",
             colorBgContainer: "#fffaf5",
             colorBgElevated: "#fffdf9",
             colorBorder: "#e9cdb4",
@@ -100,12 +100,12 @@ export const AppSettingsProvider = ({ children }) => {
           },
           components: themeMode === "dark" ? {} : {
             Layout: {
-              bodyBg: "#f9eadc",
-              siderBg: "#fff4e8",
+              bodyBg: "#F4A460",
+              siderBg: "#F4A460",
             },
             Menu: {
-              itemBg: "#fff4e8",
-              subMenuItemBg: "#fcebdd",
+              itemBg: "#F4A460",
+              subMenuItemBg: "#ef9952",
               itemSelectedBg: "#f4d4b8",
               itemSelectedColor: "#9b5420",
               itemHoverBg: "#f9dfc8",
