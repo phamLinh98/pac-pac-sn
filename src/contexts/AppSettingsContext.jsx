@@ -12,7 +12,7 @@ const translations = {
   vi: {
     friends: "Bạn bè", groups: "Nhóm", setting: "Cài đặt",
     theme: "Giao diện", language: "Ngôn ngữ", dark: "Đen", light: "Trắng",
-    createAccount: "Tạo tài khoản", logout: "Đăng xuất", updateAccount: "Cập nhật tài khoản",
+    createAccount: "Tạo tài khoản", logout: "Đăng xuất", updateAccount: "Tài khoản",
     name: "Tên", currentPassword: "Mật khẩu hiện tại", newPassword: "Mật khẩu mới",
     confirmPassword: "Xác nhận mật khẩu mới", save: "Lưu", cancel: "Hủy",
     nameRequired: "Vui lòng nhập tên", currentPasswordRequired: "Vui lòng nhập mật khẩu hiện tại",
