@@ -8,6 +8,7 @@ import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { MdAccountCircle } from "react-icons/md";
 import { useAppSettings } from "../contexts/AppSettingsContext";
 import { logoutClearToken as logoutApi } from "../api/restApiConfig";
+import { AccountSettingsButton } from "../SideComponent/AccountSettingsButton";
 
 // eslint-disable-next-line react/prop-types
 export const MenuLeftComponent = ({ collapsed }) => {
@@ -15,6 +16,7 @@ export const MenuLeftComponent = ({ collapsed }) => {
     useAppSettings();
   const [openKeys, setOpenKeys] = useState(["sub1"]);
   const [selectedKeys, setSelectedKeys] = useState(["1"]);
+  const [userToken, setUserToken] = useState(() => localStorage.getItem("allow-login"));
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -26,8 +28,7 @@ export const MenuLeftComponent = ({ collapsed }) => {
     }
   }
 
-  const getUserFromLocalStorage = localStorage.getItem('allow-login');
-  const getData = decodeJwt(getUserFromLocalStorage);
+  const getData = decodeJwt(userToken) ?? {};
   const { id, name, avatar } = getData;
   const currentAvatar = localStorage.getItem(`pac-pac-profile-avatar-${id}`) || avatar;
 
@@ -108,6 +109,14 @@ export const MenuLeftComponent = ({ collapsed }) => {
                   { value: "vi", label: "Tiếng Việt" },
                 ]}
               />
+            </div>
+          ),
+        },
+        {
+          key: "setting-account",
+          label: (
+            <div onClick={(event) => event.stopPropagation()}>
+              <AccountSettingsButton currentName={name} onUpdated={setUserToken} block />
             </div>
           ),
         },

@@ -375,6 +375,24 @@ export const updateUserImageApi =
     }
   };
 
+export const updateAccountApi = async (account) => {
+  const requestOptions = {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(account),
+  };
+  let response = await fetch(`${envConfig.host}/account`, requestOptions);
+  if (!response.ok && isAuthenticationError(response)) {
+    await refreshAccessToken();
+    response = await fetch(`${envConfig.host}/account`, requestOptions);
+  }
+  if (!response.ok) throw new Error(await readErrorResponse(response));
+  const data = await response.json();
+  if (!data?.token) throw new Error("Backend không trả về token người dùng mới.");
+  return data;
+};
+
 export const getProfileMediaApi = async () => {
   const response = await getApi('/profile-media');
   const data = await response.json();

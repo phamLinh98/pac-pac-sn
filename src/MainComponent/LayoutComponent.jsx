@@ -16,11 +16,11 @@ import PropTypes from "prop-types";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
 import { IoSettingsOutline } from "react-icons/io5";
 import { GrLogout } from "react-icons/gr";
-import { MdAccountCircle } from "react-icons/md";
 import { useAppSettings } from "../contexts/AppSettingsContext";
 import { logoutClearToken as logoutApi } from "../api/restApiConfig";
 import MobileUserSearch from "../SideComponent/MobileUserSearch";
 import PresenceHeartbeat from "../SideComponent/PresenceHeartbeat";
+import { AccountSettingsButton } from "../SideComponent/AccountSettingsButton";
 
 const MOBILE_BREAKPOINT = 430;
 
@@ -40,6 +40,7 @@ export const LayoutComponent = () => {
   // eslint-disable-next-line no-unused-vars
   const [collapsed, setCollapsed] = useState(false);
   const [mobileAccountOpen, setMobileAccountOpen] = useState(false);
+  const [userToken, setUserToken] = useState(() => localStorage.getItem("allow-login"));
   const { themeMode, setThemeMode, language, setLanguage, t } = useAppSettings();
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== "undefined"
@@ -67,7 +68,7 @@ export const LayoutComponent = () => {
     navigate('/home')
   }
 
-  const loginUser = decodeJwt(localStorage.getItem("allow-login")) ?? {};
+  const loginUser = decodeJwt(userToken) ?? {};
   const currentAvatar = localStorage.getItem(`pac-pac-profile-avatar-${loginUser.id}`) || loginUser.avatar;
   const loginUserId = Number(loginUser.id);
   const moveToMyProfile = () => {
@@ -90,8 +91,16 @@ export const LayoutComponent = () => {
 
   const mobileAccountContent = (
     <div onClick={(event) => event.stopPropagation()} style={{ width: 250 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "4px 4px 10px" }}>
-        <Avatar src={currentAvatar} size={42} />
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={moveToMyProfile}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") moveToMyProfile();
+        }}
+        style={{ display: "flex", alignItems: "center", gap: 10, padding: "4px 4px 10px", cursor: "pointer" }}
+      >
+        <Avatar src={currentAvatar} size={42}>{loginUser.name?.[0]}</Avatar>
         <div style={{ minWidth: 0 }}>
           <div style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {loginUser.name || "User"}
@@ -99,10 +108,6 @@ export const LayoutComponent = () => {
           <small style={{ opacity: 0.65 }}>ID: {loginUserId}</small>
         </div>
       </div>
-
-      <Button type="text" block icon={<MdAccountCircle />} onClick={moveToMyProfile} style={{ textAlign: "left" }}>
-        Profile
-      </Button>
 
       <Divider style={{ margin: "8px 0" }} />
       <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 600, marginBottom: 10 }}>
@@ -128,6 +133,11 @@ export const LayoutComponent = () => {
           { value: "en", label: "English" },
           { value: "vi", label: "Tiếng Việt" },
         ]}
+      />
+      <AccountSettingsButton
+        currentName={loginUser.name}
+        onUpdated={setUserToken}
+        block
       />
 
       <Divider style={{ margin: "10px 0" }} />
