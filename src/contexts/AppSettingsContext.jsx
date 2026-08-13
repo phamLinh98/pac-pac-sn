@@ -12,7 +12,7 @@ const translations = {
   vi: {
     friends: "Bạn bè", groups: "Nhóm", setting: "Cài đặt",
     createAccount: "Tạo tài khoản", logout: "Đăng xuất", updateAccount: "Tài khoản",
-    theme: "Giao diện", language: "Ngôn ngữ", dark: "Đen", light: "Trắng",
+    theme: "Giao diện", language: "Ngôn ngữ", dark: "Đen", light: "Nâu kem",
     name: "Tên", currentPassword: "Mật khẩu hiện tại", newPassword: "Mật khẩu mới",
     confirmPassword: "Xác nhận mật khẩu mới", save: "Lưu", cancel: "Hủy",
     nameRequired: "Vui lòng nhập tên", currentPasswordRequired: "Vui lòng nhập mật khẩu hiện tại",
@@ -22,7 +22,7 @@ const translations = {
   en: {
     friends: "Friends", groups: "Groups", setting: "Settings",
     createAccount: "Create Account", logout: "Logout", updateAccount: "Update account",
-    theme: "Theme", language: "Language", dark: "Black", light: "White",
+    theme: "Theme", language: "Language", dark: "Dark", light: "Warm",
     name: "Name", currentPassword: "Current password", newPassword: "New password",
     confirmPassword: "Confirm new password", save: "Save", cancel: "Cancel",
     nameRequired: "Please enter your name", currentPasswordRequired: "Please enter your current password",
@@ -32,7 +32,7 @@ const translations = {
   ja: {
     friends: "友達", groups: "グループ", setting: "設定",
     createAccount: "アカウント作成", logout: "ログアウト", updateAccount: "アカウント更新",
-    theme: "テーマ", language: "言語", dark: "ブラック", light: "ホワイト",
+    theme: "テーマ", language: "言語", dark: "ダーク", light: "ウォーム",
     name: "名前", currentPassword: "現在のパスワード", newPassword: "新しいパスワード",
     confirmPassword: "新しいパスワード（確認）", save: "保存", cancel: "キャンセル",
     nameRequired: "名前を入力してください", currentPasswordRequired: "現在のパスワードを入力してください",
@@ -84,6 +84,41 @@ export const AppSettingsProvider = ({ children }) => {
             themeMode === "dark"
               ? antdTheme.darkAlgorithm
               : antdTheme.defaultAlgorithm,
+          token: themeMode === "dark" ? {} : {
+            colorPrimary: "#d9823b",
+            colorInfo: "#d9823b",
+            colorLink: "#bf6f30",
+            colorBgBase: "#fff8f1",
+            colorBgLayout: "#f9eadc",
+            colorBgContainer: "#fffaf5",
+            colorBgElevated: "#fffdf9",
+            colorBorder: "#e9cdb4",
+            colorBorderSecondary: "#f0dcc9",
+            colorFillAlter: "#f7e7d8",
+            colorText: "#4c3525",
+            colorTextSecondary: "#806753",
+          },
+          components: themeMode === "dark" ? {} : {
+            Layout: {
+              bodyBg: "#f9eadc",
+              siderBg: "#fff4e8",
+            },
+            Menu: {
+              itemBg: "#fff4e8",
+              subMenuItemBg: "#fcebdd",
+              itemSelectedBg: "#f4d4b8",
+              itemSelectedColor: "#9b5420",
+              itemHoverBg: "#f9dfc8",
+            },
+            Card: {
+              colorBgContainer: "#fffaf5",
+            },
+            Input: {
+              colorBgContainer: "#fffdf9",
+              activeBorderColor: "#d9823b",
+              hoverBorderColor: "#e7a36a",
+            },
+          },
         }}
       >
         {children}
