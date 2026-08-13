@@ -20,8 +20,8 @@ html[data-theme="dark"] #root {
 
 html[data-theme="light"] body,
 html[data-theme="light"] #root {
-  background: #F4A460;
-  color: #4c3525;
+  background: #ffffff;
+  color: rgba(0, 0, 0, 0.88);
 }
 
 @media (max-width: 430px) {
