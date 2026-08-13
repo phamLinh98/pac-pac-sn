@@ -53,14 +53,6 @@ export const LoginComponent = () => {
             <h1>Chia sẻ khoảnh khắc.<br />Giữ bạn bè ở gần.</h1>
             <p>Một không gian nhỏ cho những câu chuyện, cuộc trò chuyện và những người bạn quan tâm.</p>
           </div>
-
-          <div className="pac-login-benefits">
-            <div><TeamOutlined /><span><strong>Kết nối</strong><small>Cập nhật câu chuyện cùng bạn bè</small></span></div>
-            <div><SafetyCertificateFilled /><span><strong>An toàn</strong><small>Tài khoản được bảo vệ riêng tư</small></span></div>
-          </div>
-
-          <div className="pac-login-decor-card pac-login-decor-card-one">Hello! 👋</div>
-          <div className="pac-login-decor-card pac-login-decor-card-two">Good vibes ✨</div>
         </aside>
 
         <div className="pac-login-form-panel">
