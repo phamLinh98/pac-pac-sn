@@ -1,0 +1,136 @@
+.pac-login-page {
+  --pac-blue: #3157df;
+  --pac-violet: #7655df;
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  padding: 32px;
+  place-items: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(119, 85, 223, 0.2), transparent 30%),
+    radial-gradient(circle at 92% 88%, rgba(49, 87, 223, 0.18), transparent 32%),
+    #f5f7ff;
+  color: #17203c;
+}
+
+.pac-login-shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(360px, 1.05fr) minmax(390px, 0.95fr);
+  width: min(1040px, 100%);
+  min-height: 650px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 30px 90px rgba(43, 57, 115, 0.2);
+  backdrop-filter: blur(18px);
+}
+
+.pac-login-story {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 44px;
+  overflow: hidden;
+  color: white;
+  background: linear-gradient(145deg, #243fc0 0%, #6848d4 58%, #9b60dc 100%);
+}
+
+.pac-login-story::after {
+  position: absolute;
+  right: -110px;
+  bottom: -100px;
+  width: 340px;
+  height: 340px;
+  border: 55px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  content: "";
+}
+
+.pac-login-brand,
+.pac-login-mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+}
+
+.pac-login-brand img,
+.pac-login-mobile-brand img {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(20, 24, 73, 0.25);
+}
+
+.pac-login-story-copy { position: relative; z-index: 1; max-width: 470px; }
+.pac-login-eyebrow { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 18px; font-size: 13px; font-weight: 600; opacity: 0.9; }
+.pac-login-story h1 { margin: 0 0 20px; font-size: clamp(38px, 4vw, 55px); line-height: 1.08; letter-spacing: -2.6px; }
+.pac-login-story-copy p { max-width: 420px; margin: 0; font-size: 16px; line-height: 1.75; color: rgba(255, 255, 255, 0.8); }
+
+.pac-login-benefits { position: relative; z-index: 1; display: flex; gap: 30px; }
+.pac-login-benefits > div { display: flex; align-items: center; gap: 10px; }
+.pac-login-benefits .anticon { font-size: 23px; color: #ffd572; }
+.pac-login-benefits span { display: flex; flex-direction: column; gap: 2px; }
+.pac-login-benefits strong { font-size: 13px; }
+.pac-login-benefits small { color: rgba(255, 255, 255, 0.68); }
+
+.pac-login-decor-card { position: absolute; z-index: 0; padding: 10px 16px; border: 1px solid rgba(255,255,255,.2); border-radius: 14px; background: rgba(255,255,255,.1); font-size: 12px; backdrop-filter: blur(8px); }
+.pac-login-decor-card-one { top: 105px; right: -15px; transform: rotate(7deg); }
+.pac-login-decor-card-two { right: 32px; bottom: 120px; transform: rotate(-7deg); }
+
+.pac-login-form-panel { display: flex; flex-direction: column; justify-content: center; padding: 58px clamp(42px, 6vw, 76px); }
+.pac-login-mobile-brand { display: none; color: var(--pac-blue); }
+.pac-login-heading { margin-bottom: 32px; }
+.pac-login-welcome { display: block; margin-bottom: 9px; color: var(--pac-blue); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.pac-login-heading h2 { margin: 0 0 10px; color: #18213e; font-size: 31px; letter-spacing: -1px; }
+.pac-login-heading p { margin: 0; color: #78809a; line-height: 1.6; }
+.pac-login-form-panel .ant-form-item-label > label { color: #38415e; font-weight: 650; }
+.pac-login-form-panel .ant-input-affix-wrapper { min-height: 50px; border-color: #e2e6f2; border-radius: 13px; background: #fafbff; box-shadow: none; }
+.pac-login-form-panel .ant-input-affix-wrapper:hover { border-color: #8fa3ef; }
+.pac-login-form-panel .ant-input-affix-wrapper-focused { border-color: var(--pac-blue); background: white; box-shadow: 0 0 0 4px rgba(49, 87, 223, 0.1); }
+.pac-login-form-panel .ant-input-prefix { margin-right: 10px; color: #8490b5; }
+.pac-login-submit { height: 51px; margin-top: 7px; border: 0; border-radius: 13px; font-weight: 700; background: linear-gradient(100deg, var(--pac-blue), var(--pac-violet)); box-shadow: 0 12px 26px rgba(58, 79, 196, 0.28); }
+.pac-login-submit:hover { transform: translateY(-1px); box-shadow: 0 15px 30px rgba(58, 79, 196, 0.34); }
+.pac-login-register { display: flex; align-items: center; justify-content: center; margin-top: 22px; color: #7c849c; }
+.pac-login-register .ant-btn { padding-inline: 7px; font-weight: 650; }
+.pac-login-secure { margin-top: 32px; color: #a0a6b8; font-size: 12px; text-align: center; }
+.pac-login-secure .anticon { margin-right: 5px; }
+.pac-login-orb { position: absolute; border-radius: 50%; filter: blur(2px); }
+.pac-login-orb-one { top: -90px; right: 10%; width: 230px; height: 230px; background: rgba(121, 84, 222, 0.13); }
+.pac-login-orb-two { bottom: -120px; left: 9%; width: 300px; height: 300px; background: rgba(51, 91, 225, 0.11); }
+
+html[data-theme="dark"] .pac-login-page { background: radial-gradient(circle at 15% 15%, #27204d, transparent 35%), #111426; }
+html[data-theme="dark"] .pac-login-shell { border-color: rgba(255,255,255,.08); background: #191d31; }
+html[data-theme="dark"] .pac-login-heading h2 { color: #f1f3ff; }
+html[data-theme="dark"] .pac-login-heading p,
+html[data-theme="dark"] .pac-login-register { color: #9ba4c0; }
+
+@media (max-width: 820px) {
+  .pac-login-page { padding: 20px; }
+  .pac-login-shell { grid-template-columns: 1fr; width: min(500px, 100%); min-height: 0; }
+  .pac-login-story { display: none; }
+  .pac-login-form-panel { padding: 42px clamp(24px, 8vw, 54px); }
+  .pac-login-mobile-brand { display: flex; margin-bottom: 42px; }
+  .pac-login-mobile-brand img { width: 42px; height: 42px; }
+}
+
+@media (max-width: 430px) {
+  .pac-login-page { align-items: stretch; min-height: 100dvh; padding: 0; background: white; }
+  .pac-login-shell { width: 100%; border: 0; border-radius: 0; box-shadow: none; }
+  .pac-login-form-panel { justify-content: center; padding: 30px 22px; }
+  .pac-login-mobile-brand { margin-bottom: 36px; }
+  .pac-login-heading { margin-bottom: 26px; }
+  .pac-login-heading h2 { font-size: 27px; }
+  .pac-login-register { flex-wrap: wrap; }
+  html[data-theme="dark"] .pac-login-page { background: #191d31; }
+}

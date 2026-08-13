@@ -1,132 +1,132 @@
-import { useEffect } from 'react';
-import { Form, Input, Button, Card, Row, Col, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { loginByEmailAndPassword } from '../api/restApiConfig';
+import { useEffect, useState } from "react";
+import { Button, Form, Input, message } from "antd";
+import {
+  ArrowRightOutlined,
+  HeartFilled,
+  LockOutlined,
+  MailOutlined,
+  SafetyCertificateFilled,
+  TeamOutlined,
+} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import { loginByEmailAndPassword } from "../api/restApiConfig";
+import "./LoginComponent.css";
+
+const LOGO_URL =
+  "https://i.pinimg.com/736x/40/5d/61/405d61bd97581fe4ef00cefd686aa6a3.jpg";
 
 export const LoginComponent = () => {
-    const navigate = useNavigate();
-    useEffect(() => {
-        const token = localStorage.getItem('allow-login');
-        if (token) {
-            navigate('/home');
-        }
-    }, [navigate]);
+  const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
 
-    const onFinish = async (values) => {
-        try {
-            await loginByEmailAndPassword(values.email, values.password);
-            navigate("/home");
-        } catch (error) {
-            console.error(error);
-            message.error(`Đăng nhập thất bại: ${error.message}`);
-        }
-    };
-    const goToRegister = () => {
-        navigate('/register'); 
+  useEffect(() => {
+    if (localStorage.getItem("allow-login")) navigate("/home", { replace: true });
+  }, [navigate]);
+
+  const onFinish = async ({ email, password }) => {
+    try {
+      setSubmitting(true);
+      const result = await loginByEmailAndPassword(email.trim(), password);
+      if (!result?.success) throw new Error(result?.error || "Đăng nhập thất bại");
+      navigate("/home", { replace: true });
+    } catch (error) {
+      message.error(error?.message || "Không thể đăng nhập. Vui lòng thử lại.");
+    } finally {
+      setSubmitting(false);
     }
+  };
 
-    return (
-        <Row justify="center" align="middle" style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
-            <Col xs={20} sm={16} md={12} lg={8}>
-                <Card
-                    title={<p style={{ textAlign: 'center' }}>Đăng Nhập</p>}
-                    bordered={false}
-                    style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)' }}
-                >
-                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                        <img
-                            src="https://i.pinimg.com/736x/40/5d/61/405d61bd97581fe4ef00cefd686aa6a3.jpg"
-                            alt="Logo"
-                            style={{ width: '100px', height: 'auto', borderRadius: '100%' }}
-                        />
-                    </div>
-                    <Form
-                        name="login-form"
-                        initialValues={{ remember: true }}
-                        onFinish={onFinish}
-                    >
-                        <Form.Item
-                            name="email"
-                            rules={[{ required: true, message: 'Vui lòng nhập email!' }]}
-                        >
-                            <Input
-                                prefix={<UserOutlined className="site-form-item-icon" />}
-                                placeholder="Email đăng nhập"
-                                style={{ borderRadius: '4px' }}
-                                autoComplete="email"
-                            />
-                        </Form.Item>
+  return (
+    <main className="pac-login-page">
+      <div className="pac-login-orb pac-login-orb-one" />
+      <div className="pac-login-orb pac-login-orb-two" />
 
-                        <Form.Item
-                            name="password"
-                            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
-                        >
-                            <Input.Password
-                                prefix={<LockOutlined className="site-form-item-icon" />}
-                                type="password"
-                                placeholder="Mật khẩu"
-                                style={{ borderRadius: '4px' }}
-                                autoComplete="current-password"
-                            />
-                        </Form.Item>
+      <section className="pac-login-shell" aria-label="Đăng nhập Pac-Pac">
+        <aside className="pac-login-story">
+          <div className="pac-login-brand">
+            <img src={LOGO_URL} alt="Pac-Pac" />
+            <span>pac-pac</span>
+          </div>
 
+          <div className="pac-login-story-copy">
+            <span className="pac-login-eyebrow"><HeartFilled /> Kết nối theo cách của bạn</span>
+            <h1>Chia sẻ khoảnh khắc.<br />Giữ bạn bè ở gần.</h1>
+            <p>Một không gian nhỏ cho những câu chuyện, cuộc trò chuyện và những người bạn quan tâm.</p>
+          </div>
 
-                        <Form.Item>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                <Button
-                                    type="primary"
-                                    htmlType="submit"
-                                    style={{ width: '100%', borderRadius: '4px' }}
-                                >
-                                    Login Password
-                                </Button>
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                    <Button
-                                        type="default"
-                                        style={{ 
-                                            flex: 1, 
-                                            borderRadius: '4px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            gap: '8px',
-                                            border: '1px solid #dadce0'
-                                        }}
-                                    >
-                                        <img 
-                                            src="https://developers.google.com/identity/images/g-logo.png" 
-                                            alt="Google" 
-                                            style={{ width: '18px', height: '18px' }}
-                                        />
-                                        Login Google
-                                    </Button>
-                                    <Button
-                                        onClick={goToRegister}
-                                        type="default"
-                                        style={{ 
-                                            flex: 1, 
-                                            borderRadius: '4px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            gap: '8px',
-                                            border: '1px solid #dadce0'
-                                        }}
-                                    >
-                                        <img 
-                                            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
-                                            alt="Register" 
-                                            style={{ width: '18px', height: '18px' }}
-                                        />
-                                        Register
-                                    </Button>
-                                </div>
-                            </div>
-                        </Form.Item>
-                    </Form>
-                </Card>
-            </Col>
-        </Row>
-    );
+          <div className="pac-login-benefits">
+            <div><TeamOutlined /><span><strong>Kết nối</strong><small>Cập nhật câu chuyện cùng bạn bè</small></span></div>
+            <div><SafetyCertificateFilled /><span><strong>An toàn</strong><small>Tài khoản được bảo vệ riêng tư</small></span></div>
+          </div>
+
+          <div className="pac-login-decor-card pac-login-decor-card-one">Hello! 👋</div>
+          <div className="pac-login-decor-card pac-login-decor-card-two">Good vibes ✨</div>
+        </aside>
+
+        <div className="pac-login-form-panel">
+          <div className="pac-login-mobile-brand">
+            <img src={LOGO_URL} alt="" />
+            <span>pac-pac</span>
+          </div>
+
+          <div className="pac-login-heading">
+            <span className="pac-login-welcome">Chào mừng trở lại</span>
+            <h2>Đăng nhập tài khoản</h2>
+            <p>Nhập thông tin của bạn để tiếp tục khám phá Pac-Pac.</p>
+          </div>
+
+          <Form name="login-form" layout="vertical" requiredMark={false} onFinish={onFinish}>
+            <Form.Item
+              label="Email"
+              name="email"
+              validateTrigger="onBlur"
+              rules={[
+                { required: true, message: "Vui lòng nhập email" },
+                { type: "email", message: "Email chưa đúng định dạng" },
+              ]}
+            >
+              <Input
+                size="large"
+                prefix={<MailOutlined />}
+                placeholder="you@example.com"
+                autoComplete="email"
+                autoFocus
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Mật khẩu"
+              name="password"
+              rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
+            >
+              <Input.Password
+                size="large"
+                prefix={<LockOutlined />}
+                placeholder="Nhập mật khẩu"
+                autoComplete="current-password"
+              />
+            </Form.Item>
+
+            <Button
+              className="pac-login-submit"
+              type="primary"
+              htmlType="submit"
+              size="large"
+              block
+              loading={submitting}
+            >
+              {!submitting && <>Đăng nhập <ArrowRightOutlined /></>}
+            </Button>
+          </Form>
+
+          <div className="pac-login-register">
+            <span>Chưa có tài khoản?</span>
+            <Button type="link" onClick={() => navigate("/register")}>Tạo tài khoản mới</Button>
+          </div>
+
+          <div className="pac-login-secure"><LockOutlined /> Kết nối được bảo mật</div>
+        </div>
+      </section>
+    </main>
+  );
 };
