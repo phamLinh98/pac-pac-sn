@@ -42,7 +42,9 @@ export const LoginComponent = () => {
         <aside className="pac-login-story">
           <div className="pac-login-brand">
             <img src={LOGO_URL} alt="Pac-Pac" />
-            <span>pac-pac</span>
+            <span className="pac-login-wordmark" aria-label="PacPac">
+              <span>Pac</span><span>Pac</span><i>●</i>
+            </span>
           </div>
 
         </aside>
@@ -50,7 +52,9 @@ export const LoginComponent = () => {
         <div className="pac-login-form-panel">
           <div className="pac-login-mobile-brand">
             <img src={LOGO_URL} alt="" />
-            <span>pac-pac</span>
+            <span className="pac-login-wordmark" aria-label="PacPac">
+              <span>Pac</span><span>Pac</span><i>●</i>
+            </span>
           </div>
 
           <div className="pac-login-heading">

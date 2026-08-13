@@ -77,7 +77,6 @@
   z-index: 1;
   flex-direction: column;
   gap: 18px;
-  font-size: 34px;
 }
 
 .pac-login-story .pac-login-brand img {
@@ -85,6 +84,55 @@
   height: clamp(180px, 21vw, 250px);
   border-width: 6px;
   border-radius: 50%;
+}
+
+.pac-login-wordmark {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+  font-size: 34px;
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: -2.5px;
+  line-height: 1;
+  text-shadow: 0 5px 18px rgba(92, 48, 8, 0.25);
+  transform: rotate(-3deg);
+}
+
+.pac-login-wordmark > span:first-child {
+  color: #fff8e9;
+}
+
+.pac-login-wordmark > span:nth-child(2) {
+  margin-left: 2px;
+  color: #5e3515;
+  transform: translateY(4px);
+}
+
+.pac-login-wordmark > i {
+  margin-left: 5px;
+  color: #fff2bc;
+  font-size: 9px;
+  font-style: normal;
+  filter: drop-shadow(0 2px 4px rgba(79, 38, 5, 0.3));
+}
+
+.pac-login-mobile-brand .pac-login-wordmark {
+  font-size: 27px;
+  text-shadow: none;
+}
+
+.pac-login-mobile-brand .pac-login-wordmark > span:first-child {
+  color: var(--pac-blue);
+}
+
+.pac-login-mobile-brand .pac-login-wordmark > span:nth-child(2) {
+  color: #75431b;
+}
+
+.pac-login-mobile-brand .pac-login-wordmark > i {
+  color: #e89a4f;
 }
 
 .pac-login-form-panel { display: flex; flex-direction: column; justify-content: center; padding: 58px clamp(42px, 6vw, 76px); }
