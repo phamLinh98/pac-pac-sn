@@ -60,7 +60,7 @@ export const MenuRightComponent = ({ collapsed }) => {
         ? [{ key: 'loading', disabled: true, label: <div style={{ textAlign: 'center' }}><Spin size="small" /></div> }]
         : friendItems.length
           ? friendItems
-          : [{ key: 'empty', disabled: true, label: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Chưa có bạn bè" /> }],
+          : [{ key: 'empty', disabled: true, label: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Friend" /> }],
     },
     { key: 'groups', icon: <GrGroup />, label: 'Groups' },
   ];
