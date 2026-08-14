@@ -78,7 +78,6 @@ export const LoginComponent = () => {
                 prefix={<MailOutlined />}
                 placeholder="you@example.com"
                 autoComplete="email"
-                autoFocus
               />
             </Form.Item>
 
