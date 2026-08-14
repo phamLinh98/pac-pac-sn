@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Avatar, Badge, Empty, Menu, Spin } from 'antd';
+import { Avatar, Badge, Menu, Spin } from 'antd';
 import { FaUserFriends } from 'react-icons/fa';
 import { GrGroup } from 'react-icons/gr';
 import { MdPhoneIphone } from 'react-icons/md';
@@ -60,7 +60,15 @@ export const MenuRightComponent = ({ collapsed }) => {
         ? [{ key: 'loading', disabled: true, label: <div style={{ textAlign: 'center' }}><Spin size="small" /></div> }]
         : friendItems.length
           ? friendItems
-          : [{ key: 'empty', disabled: true, label: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Friend" /> }],
+          : [{
+              key: 'empty',
+              disabled: true,
+              label: (
+                <div style={{ padding: '8px 0', color: '#8c8c8c', textAlign: 'center', fontSize: 13 }}>
+                  No Friend
+                </div>
+              ),
+            }],
     },
     { key: 'groups', icon: <GrGroup />, label: 'Groups' },
   ];
