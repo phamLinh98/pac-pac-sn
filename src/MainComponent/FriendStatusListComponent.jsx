@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   Button,
   Card,
@@ -40,6 +40,8 @@ export const FriendStatusListComponent = () => {
     error,
     loading,
     hasLoaded,
+    hasMore,
+    loadMore,
   } = useFacadeHomeList(idToNumber);
 
   const safeList = Array.isArray(list)
@@ -51,7 +53,21 @@ export const FriendStatusListComponent = () => {
         : [];
 
   const containerRefs = useRef([]);
+  const loadMoreRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const target = loadMoreRef.current;
+    if (!target || !hasMore) return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !loading) loadMore();
+      },
+      { rootMargin: '300px 0px' }
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [hasMore, loadMore, loading]);
 
   const isInitialLoading =
     Boolean(idToNumber) &&
@@ -503,6 +519,14 @@ export const FriendStatusListComponent = () => {
           </Card>
         );
       })}
+      <div ref={loadMoreRef} style={{ minHeight: '24px', padding: '8px 0' }}>
+        {loading && hasLoaded ? <LoadingComponent /> : null}
+        {!hasMore && safeList.length > 0 ? (
+          <div style={{ textAlign: 'center', color: '#888', fontSize: '12px' }}>
+            Đã hiển thị toàn bộ bài viết
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
   useDispatch,
   useSelector,
@@ -14,6 +14,7 @@ export const useFacadeHomeList = (id) => {
     error,
     loading,
     hasLoaded,
+    hasMore,
   } = useSelector(
     (state) => state.reduxListStatus
   );
@@ -27,14 +28,22 @@ export const useFacadeHomeList = (id) => {
     }
 
     dispatch(
-      getHomeListThunkFunction(id)
+      getHomeListThunkFunction(id, { reset: true })
     );
   }, [dispatch, id]);
+
+  const loadMore = useCallback(() => {
+    if (Number.isFinite(id) && id > 0 && hasMore && !loading) {
+      dispatch(getHomeListThunkFunction(id));
+    }
+  }, [dispatch, hasMore, id, loading]);
 
   return {
     list,
     error,
     loading,
     hasLoaded,
+    hasMore,
+    loadMore,
   };
 };

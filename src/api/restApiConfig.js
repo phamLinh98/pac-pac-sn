@@ -45,32 +45,30 @@ const readErrorResponse = async (response) => {
  * Chú ý: tên này đang bị thiếu chữ "r"
  * nhưng phải giữ nguyên nếu backend cũng đang dùng tên đó.
  */
-const refreshAccessToken = async () => {
-  const refreshResponse = await fetch(
+let refreshRequest = null;
+
+const refreshAccessToken = () => {
+  if (refreshRequest) return refreshRequest;
+
+  refreshRequest = fetch(
     `${envConfig.host}/refesh-token`,
     {
       method: "POST",
-      headers: {
-        "Content-Type":
-          "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
     }
-  );
+  ).then(async (refreshResponse) => {
+    if (!refreshResponse.ok) {
+      const errorMessage = await readErrorResponse(refreshResponse);
+      localStorage.removeItem("allow-login");
+      throw new Error(errorMessage || "Refresh token failed");
+    }
+    return refreshResponse;
+  }).finally(() => {
+    refreshRequest = null;
+  });
 
-  if (!refreshResponse.ok) {
-    const errorMessage =
-      await readErrorResponse(
-        refreshResponse
-      );
-
-    throw new Error(
-      errorMessage ||
-        "Refresh token failed"
-    );
-  }
-
-  return refreshResponse;
+  return refreshRequest;
 };
 
 /**
@@ -280,50 +278,21 @@ export const refeshTokenWhenExpired =
     }
   };
 
-export const logoutClearToken =
-  async (route) => {
-    try {
-      const url =
-        `${envConfig.host}${route}`;
+export const logoutClearToken = (route) => {
+  localStorage.removeItem("allow-login");
 
-      const response = await fetch(
-        url,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          credentials: "include",
-        }
-      );
+  fetch(`${envConfig.host}${route}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    keepalive: true,
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(await readErrorResponse(response));
+  }).catch((error) => {
+    console.error("Logout revoke error:", error);
+  });
 
-      if (!response.ok) {
-        const errorMessage =
-          await readErrorResponse(
-            response
-          );
-
-        throw new Error(
-          errorMessage ||
-            `Đăng xuất thất bại: ${response.status}`
-        );
-      }
-
-      localStorage.removeItem(
-        "allow-login"
-      );
-
-      return response;
-    } catch (error) {
-      console.error(
-        "Logout error:",
-        error
-      );
-
-      throw error;
-    }
-  };
+};
 
 /*
  * =========================================================

@@ -2,10 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const List = createSlice({
     name: "List",
-    initialState: { list: [], error: '', loading: false, hasLoaded: false },
+    initialState: {
+        list: [], error: '', loading: false, hasLoaded: false,
+        nextCursor: null, hasMore: true,
+    },
     reducers: {
         getListStatus: (state, action) => {
-            state.list = action.payload;
+            const { items = [], nextCursor = null, hasMore = false, reset = false } = action.payload ?? {};
+            const current = reset ? [] : state.list;
+            const knownIds = new Set(current.map((item) => item.id));
+            state.list = [...current, ...items.filter((item) => !knownIds.has(item.id))];
+            state.nextCursor = nextCursor;
+            state.hasMore = hasMore;
             state.loading = false;
             state.hasLoaded = true;
             state.error = "";
@@ -27,7 +35,7 @@ export const List = createSlice({
         },
         eventLoading: (state,action) => {
             state.loading = action.payload;
-            if (action.payload === true) {
+            if (action.payload === true && !state.hasLoaded) {
                 state.hasLoaded = false;
                 state.error = "";
             }

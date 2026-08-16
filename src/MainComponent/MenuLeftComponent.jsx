@@ -19,13 +19,11 @@ export const MenuLeftComponent = ({ collapsed }) => {
   const [userToken, setUserToken] = useState(() => localStorage.getItem("allow-login"));
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      await logoutApi("/logout");
-    } finally {
-      localStorage.removeItem("allow-login");
-      navigate("/login");
-    }
+  const handleLogout = () => {
+    logoutApi("/logout");
+    localStorage.removeItem("allow-login");
+    setUserToken(null);
+    navigate("/login", { replace: true });
   }
 
   const getData = decodeJwt(userToken) ?? {};

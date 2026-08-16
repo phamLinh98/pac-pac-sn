@@ -76,15 +76,13 @@ export const LayoutComponent = () => {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logoutApi("/logout");
-    } finally {
-      localStorage.removeItem("allow-login");
-      localStorage.removeItem(`pac-pac-profile-avatar-${loginUserId}`);
-      setMobileAccountOpen(false);
-      navigate("/login");
-    }
+  const handleLogout = () => {
+    logoutApi("/logout");
+    localStorage.removeItem("allow-login");
+    localStorage.removeItem(`pac-pac-profile-avatar-${loginUserId}`);
+    setUserToken(null);
+    setMobileAccountOpen(false);
+    navigate("/login", { replace: true });
   };
 
   const mobileAccountContent = (
