@@ -19,6 +19,7 @@ import { logoutClearToken as logoutApi } from "../api/restApiConfig";
 import MobileUserSearch from "../SideComponent/MobileUserSearch";
 import PresenceHeartbeat from "../SideComponent/PresenceHeartbeat";
 import { AccountSettingsButton } from "../SideComponent/AccountSettingsButton";
+import { getRenderableImageUrl } from "../utils/imageUrl";
 
 const MOBILE_BREAKPOINT = 430;
 
@@ -67,7 +68,9 @@ export const LayoutComponent = () => {
   }
 
   const loginUser = decodeJwt(userToken) ?? {};
-  const currentAvatar = localStorage.getItem(`pac-pac-profile-avatar-${loginUser.id}`) || loginUser.avatar;
+  const currentAvatar = getRenderableImageUrl(
+    localStorage.getItem(`pac-pac-profile-avatar-${loginUser.id}`) || loginUser.avatar
+  );
   const loginUserId = Number(loginUser.id);
   const moveToMyProfile = () => {
     if (Number.isFinite(loginUserId) && loginUserId > 0) {

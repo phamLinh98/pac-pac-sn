@@ -9,6 +9,7 @@ import { MdAccountCircle } from "react-icons/md";
 import { useAppSettings } from "../contexts/AppSettingsContext";
 import { logoutClearToken as logoutApi } from "../api/restApiConfig";
 import { AccountSettingsButton } from "../SideComponent/AccountSettingsButton";
+import { getRenderableImageUrl } from "../utils/imageUrl";
 
 // eslint-disable-next-line react/prop-types
 export const MenuLeftComponent = ({ collapsed }) => {
@@ -28,7 +29,9 @@ export const MenuLeftComponent = ({ collapsed }) => {
 
   const getData = decodeJwt(userToken) ?? {};
   const { id, name, avatar } = getData;
-  const currentAvatar = localStorage.getItem(`pac-pac-profile-avatar-${id}`) || avatar;
+  const currentAvatar = getRenderableImageUrl(
+    localStorage.getItem(`pac-pac-profile-avatar-${id}`) || avatar
+  );
 
   const moveToProfile = (userId) => {
     navigate(`/profile/${userId}`);

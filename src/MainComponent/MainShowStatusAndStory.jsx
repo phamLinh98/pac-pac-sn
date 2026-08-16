@@ -4,6 +4,7 @@ import { FriendStatusListComponent } from "./FriendStatusListComponent";
 import { useDispatch } from "react-redux";
 import { addListStatus } from "../reduxs/reduxListStatus";
 import { decodeJwt } from "../SideFunction/VerifyJwtGetUserInfo";
+import { getRenderableImageUrl } from "../utils/imageUrl";
 
 export const MainShowStatusAndStory = () => {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ export const MainShowStatusAndStory = () => {
           : post.user_id,
         user_name: post.user_name ?? currentUser.name,
         name: post.name ?? currentUser.name,
-        avatar: post.avatar ?? currentUser.avatar,
+        avatar: getRenderableImageUrl(post.avatar ?? currentUser.avatar),
       })
     );
   };
